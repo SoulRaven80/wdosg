@@ -30,7 +30,7 @@ export async function findGame(gameId) {
 
 export async function saveNewGame(gamesLibrary, file, game) {
   // TODO Validate if exists, then throw an error
-  fs.mkdirSync(`${gamesLibrary}/${game.path}`);
+  fs.mkdirSync(`${gamesLibrary}/${game.path}`, { recursive: true });
   file.mv(`${gamesLibrary}/${game.path}/bundle.jsdos`);
   fs.copyFileSync(`${template_path}/index.html`, `${gamesLibrary}/${game.path}/index.html`);
   fs.copyFileSync(`${template_path}/game.html`, `${gamesLibrary}/${game.path}/game.html`);

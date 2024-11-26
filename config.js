@@ -12,9 +12,9 @@ export function getBundleTemplatePath() {
 }
 
 export function getDbPath() {
-    return './database';
+    return process.env.DB_PATH || path.join(__dirname, '/database');
 }
 
 export function getGamesLibraryLocation() {
-    return path.join(process.env.GAMES_LIBRARY || (__dirname, '/app/wdosglibrary'));
+    return process.env.GAMES_LIBRARY || path.join(__dirname, '/app/wdosglibrary');
 }

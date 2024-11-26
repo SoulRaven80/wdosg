@@ -170,7 +170,7 @@ export async function updateGame(game) {
 }
 
 export async function deleteGame(gamesLibrary, gameId) {
-  console.log(`Deleting game: ${game.name}`);
+  console.log(`Deleting game: ${gameId}`);
   try {
     const game = await fetchGame(gameId);
     await sqlite.execute(`DELETE FROM games_x_genres WHERE game_id = ?`, [gameId]);

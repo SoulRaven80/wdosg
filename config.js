@@ -2,6 +2,8 @@ import * as url from 'url';
 import path from 'path';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const dbPath = process.env.DB_PATH || path.join(__dirname, '/database');
+const libPath = process.env.GAMES_LIBRARY || path.join(__dirname, './wdosglibrary');
 
 export function getRootPath() {
     return __dirname;
@@ -12,9 +14,9 @@ export function getBundleTemplatePath() {
 }
 
 export function getDbPath() {
-    return process.env.DB_PATH || path.join(__dirname, '/database');
+    return dbPath;
 }
 
 export function getGamesLibraryLocation() {
-    return process.env.GAMES_LIBRARY || path.join(__dirname, '/app/wdosglibrary');
+    return libPath;
 }

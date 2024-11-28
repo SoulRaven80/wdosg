@@ -1,8 +1,13 @@
-const openCreateModal = () => {
-    $('#createForm').trigger("reset");
+const openCreateModal = (reset) => {
+    if (reset) {
+        $('#createForm').trigger("reset");
+    }
     $('#createName').removeClass('is-valid is-invalid');
+    $('#createFile').removeClass('is-valid is-invalid');
     $('#createDiv').empty();
-
+    $('#createButtonFind').prop('disabled', false);
+    $('#createModalClose').prop('disabled', false);
+    
     const uploadModal = new bootstrap.Modal('#createModal', {});
     uploadModal.show();
 }

@@ -42,8 +42,6 @@ const configureModalNavigation = () => {
         if (inputFile.val() != '') {
             inputFile.addClass('is-valid');
             getExecutableFiles(inputFile[0].files);
-            $('#createBundleStepOneModal').modal('hide');
-            $('#createBundleStepTwoModal').modal('show');
         }
         else {
             inputFile.addClass('is-invalid');
@@ -61,6 +59,9 @@ function getExecutableFiles(files) {
     if (files.length === 0) {
         return;
     }
+    $("#createBundleStepOneModalNext").addClass("d-none");
+    $("#createBundleStepOneModalSpinner").removeClass("d-none");
+    
     const file = files[0];
     const reader = new FileReader();
     reader.addEventListener("load", async (e) => {
@@ -78,9 +79,15 @@ function getExecutableFiles(files) {
                 ].join('');
                 $('#radioExecutables').append(wrapper);
                 $('#exec0').attr('checked', 'checked');
+                $('#createBundleStepOneModal').modal('hide');
+                $("#createBundleStepOneModalNext").removeClass("d-none");
+                $("#createBundleStepOneModalSpinner").addClass("d-none");
+                $('#createBundleStepTwoModal').modal('show');
             }
         } catch (e) {
             console.log(e);
+            $("#createBundleStepOneModalNext").removeClass("d-none");
+            $("#createBundleStepOneModalSpinner").addClass("d-none");
         }
     });
     reader.readAsArrayBuffer(file);
@@ -147,7 +154,11 @@ function populateConfig(config) {
 async function createArchive() {
     $('#createBundleStepThreeModalSave').prop('disabled', true);
     $('#createBundleStepThreeModalSave').addClass('d-none');
-    $('#createModalSpinner').removeClass('d-none');
+    $('#createBundleStepThreeModalSaveContinue').prop('disabled', true);
+    $('#createBundleStepThreeModalSaveContinue').addClass('d-none');
+    $('#createBundleStepThreeModalBack').addClass('d-none');
+    $('#createBundleStepThreeModalBack').prop('disabled', true);
+    $('#createBundleStepThreeModalSpinner').removeClass('d-none');
 
     const dosBundle = await emulators.dosBundle();
     populateConfig(dosBundle.config);
@@ -170,5 +181,44 @@ async function createArchive() {
 
     $('#createBundleStepThreeModalSave').prop('disabled', false);
     $('#createBundleStepThreeModalSave').removeClass('d-none');
-    $('#createModalSpinner').addClass('d-none');
+    $('#createBundleStepThreeModalSaveContinue').prop('disabled', false);
+    $('#createBundleStepThreeModalSaveContinue').removeClass('d-none');
+    $('#createBundleStepThreeModalBack').prop('disabled', false);
+    $('#createBundleStepThreeModalBack').removeClass('d-none');
+    $('#createBundleStepThreeModalSpinner').addClass('d-none');
+}
+
+async function createAndAdd() {
+    $('#createBundleStepThreeModalSave').prop('disabled', true);
+    $('#createBundleStepThreeModalSave').addClass('d-none');
+    $('#createBundleStepThreeModalSaveContinue').prop('disabled', true);
+    $('#createBundleStepThreeModalSaveContinue').addClass('d-none');
+    $('#createBundleStepThreeModalBack').prop('disabled', true);
+    $('#createBundleStepThreeModalBack').addClass('d-none');
+    $('#createBundleStepThreeModalSpinner').removeClass('d-none');
+
+    const dosBundle = await emulators.dosBundle();
+    populateConfig(dosBundle.config);
+    const blob = new Blob([zipFile]);
+    const url = URL.createObjectURL(blob);
+    dosBundle.extract(url);
+    const archive = await dosBundle.toUint8Array(true);
+    URL.revokeObjectURL(url);
+
+    const bundleFile = new Blob([archive]);
+    const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
+    const container = new DataTransfer();
+    container.items.add(file);
+
+    $("#createFile")[0].files = container.files;
+
+    $('#createBundleStepThreeModalSave').prop('disabled', false);
+    $('#createBundleStepThreeModalSave').removeClass('d-none');
+    $('#createBundleStepThreeModalSaveContinue').prop('disabled', false);
+    $('#createBundleStepThreeModalSaveContinue').removeClass('d-none');
+    $('#createBundleStepThreeModalBack').prop('disabled', false);
+    $('#createBundleStepThreeModalBack').removeClass('d-none');
+    $('#createBundleStepThreeModalSpinner').addClass('d-none');
+    $("#createBundleStepThreeModal").modal("hide");
+    openCreateModal(false);
 }

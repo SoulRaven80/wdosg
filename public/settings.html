@@ -43,19 +43,31 @@
             </div>
           </div>
           <div class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <a class="bi-cloud-plus nav-link primary" aria-current="page" onclick="openCreateModal()" style="cursor: pointer;">
-                  <svg class="bi pe-none" width="16" height="16"></svg>
-                  Upload new
-                </a>
-              </div>
+            <div class="d-flex w-100 justify-content-between">
+              <a class="bi-box-seam nav-link primary" aria-current="page" onclick="openGameStudio()" style="cursor: pointer;">
+                <svg class="bi pe-none" width="16" height="16"></svg>
+                Create new bundle
+              </a>
+            </div>
+          </div>
+          <div class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <a class="bi-cloud-arrow-up nav-link primary" aria-current="page" onclick="openCreateModal()" style="cursor: pointer;">
+                <svg class="bi pe-none" width="16" height="16"></svg>
+                Add bundle to library
+              </a>
+            </div>
           </div>
         </div>
-
       </div>
       <div class="col-9" id="content_div">
 
       </div>
+      <form action="/api/createBundle" id="bundleStudioForm" method="post" enctype="multipart/form-data">
+        <div w3-include-html="/game-studio/step-1.html"></div>
+        <div w3-include-html="/game-studio/step-2.html"></div>
+        <div w3-include-html="/game-studio/step-3.html"></div>
+      </form>
     </div>
   </div>
 </main>
@@ -71,15 +83,18 @@
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/selectize.min.js"></script>
 <script src="/js/w3.js"></script>
+<script src="/js/settings/game-studio.js"></script>
 <script>
   w3.includeHTML(async function() {
     initializeColorMode();
     afterLoadingPage();
+    prepareGameStudio();
   });
 </script>
 <script src="/js/color-modes.js"></script>
 <script src="/js/common.js"></script>
 <script src="/js/settings.js"></script>
+<script src="/js-dos/js-dos.js"></script>
 <script src="/js/settings/create.js"></script>
 <script src="/js/settings/create-manually.js"></script>
 <script src="/js/settings/edit.js"></script>

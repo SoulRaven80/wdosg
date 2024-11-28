@@ -43,3 +43,16 @@
 .selectize-dropdown .active.create.selected {
     color: var(--bs-purple) !important;
 }
+
+.collapse.card-body {
+    padding-top: 0px !important;
+}
+
+.collapsing.card-body {
+    padding-top: 0px !important;
+}
+
+.tooltip-inner {
+    max-width: none !important;
+    text-align: left !important;
+}

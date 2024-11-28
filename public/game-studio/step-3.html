@@ -1,0 +1,334 @@
+<div class="modal fade" id="createBundleStepThreeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create game bundle - Step 3/3</h5>
+            </div>
+            <div class="modal-body">
+                <legend>Configure emulation</legend>
+                <div class="mb-3">
+                    <div class="row py-1">
+                        <div class="col">
+                            <div class="card p-2">
+                                <div class="row">
+                                    <div class="col-auto me-auto">
+                                        <div class="row">
+                                            <div class="col-auto me-auto">
+                                                <h5 class="card-title">DOSBOX</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" id="buttonEyeDosbox" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleDosbox" aria-expanded="true">
+                                            <i class="bi bi-eye" id="eyeDosbox"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="collapse show card-body" id="collapsibleDosbox">
+                                    <div class="row">
+                                        <div class="col-auto me-auto">
+                                            <p class="card-text">Machine</p>
+                                        </div>
+                                        <div class="col me-auto">
+                                            <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                            data-bs-title="The type of machine (specifically the type of graphics hardware) DOSBox tries to emulate."></i>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine1" value="hercules">
+                                                <label class="form-check-label" for="machine1">hercules</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine2" value="cga">
+                                                <label class="form-check-label" for="machine2">cga</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine3" value="tandy">
+                                                <label class="form-check-label" for="machine3">tandy</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine4" value="pcjr">
+                                                <label class="form-check-label" for="machine4">pcjr</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine5" value="ega">
+                                                <label class="form-check-label" for="machine5">ega</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine6" value="vgaonly">
+                                                <label class="form-check-label" for="machine6">vgaonly</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine7" value="svga_s3" checked>
+                                                <label class="form-check-label" for="machine7">svga_s3</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine8" value="svga_et3000">
+                                                <label class="form-check-label" for="machine8">svga_et3000</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine9" value="svga_et4000">
+                                                <label class="form-check-label" for="machine9">svga_et4000</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine10" value="svga_paradise">
+                                                <label class="form-check-label" for="machine10">svga_paradise</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine11" value="vesa_nolfb">
+                                                <label class="form-check-label" for="machine11">vesa_nolfb</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="machine" id="machine12" value="vesa_oldvbe">
+                                                <label class="form-check-label" for="machine12">vesa_oldvbe</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col">
+                            <div class="card p-2">
+                                <div class="row">
+                                    <div class="col-auto me-auto">
+                                        <div class="row">
+                                            <div class="col-auto me-auto">
+                                                <h5 class="card-title">CPU</h5>
+                                            </div>
+                                            <div class="col me-auto">
+                                                <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                                data-bs-title="The CPU section controls how DOSBox tries to emulate the CPU, how fast the emulation should be, and to adjust it."></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" type="button" id="buttonEyeCpu" data-bs-toggle="collapse" data-bs-target="#collapsibleCpu" aria-expanded="true">
+                                            <i class="bi bi-eye" id="eyeCpu"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="collapse show card-body" id="collapsibleCpu">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-auto me-auto">
+                                                    <p class="card-text">Core</p>
+                                                </div>
+                                                <div class="col me-auto">
+                                                    <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                                    data-bs-title="CPU core used in emulation. The choices result in a different efficency of DOSBox and in very rare cases have an effect on stability."></i>
+                                                </div>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="core" id="core1" value="auto" checked>
+                                                <label class="form-check-label" for="core1">auto</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="core" id="core2" value="normal">
+                                                <label class="form-check-label" for="core2">normal</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="core" id="core3" value="simple">
+                                                <label class="form-check-label" for="core3">simple</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-auto me-auto">
+                                                    <p class="card-text">CPU Type</p>
+                                                </div>
+                                                <div class="col me-auto">
+                                                    <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                                    data-bs-title="CPU Type used in emulation. <strong>auto</strong> is the fastest choice."></i>
+                                                </div>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cputype" id="cputype1" value="auto" checked>
+                                                <label class="form-check-label" for="cputype1">auto</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cputype" id="cputype2" value="386">
+                                                <label class="form-check-label" for="cputype2">386</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cputype" id="cputype3" value="386_slow">
+                                                <label class="form-check-label" for="cputype3">386_slow</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cputype" id="cputype4" value="486_slow">
+                                                <label class="form-check-label" for="cputype4">486_slow</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cputype" id="cputype5" value="pentium_slow">
+                                                <label class="form-check-label" for="cputype5">pentium_slow</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cputype" id="cputype6" value="386_prefetch">
+                                                <label class="form-check-label" for="cputype6">386_prefetch</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-auto me-auto">
+                                                    <p class="card-text">Cycles</p>
+                                                </div>
+                                                <div class="col me-auto">
+                                                    <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                                    data-bs-title="Amount of instructions DOSBox tries to emulate each millisecond. Setting this value too high results in sound dropouts and lags.<br> Cycles can be set in 3 ways:<br><ul><li>'auto' tries to guess what a game needs. It usually works, but can fail for certain games.</li><li>'fixed #number' will set a fixed amount of cycles. This is what you usually need if 'auto' fails. (Example: fixed 4000).</li><li>'max' will allocate as much cycles as your computer is able to handle.</li></ul>"></i>
+                                                </div>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cycles" id="cycles1" value="auto" checked>
+                                                <label class="form-check-label" for="cycles1">auto</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cycles" id="cycles2" value="fixed">
+                                                <label class="form-check-label" for="cycles2">fixed</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cycles" id="cycles3" value="max">
+                                                <label class="form-check-label" for="cycles3">max</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col">
+                            <div class="card p-2">
+                                <div class="row">
+                                    <div class="col-auto me-auto">
+                                        <div class="row">
+                                            <div class="col-auto me-auto">
+                                                <h5 class="card-title">SDL</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" type="button" id="buttonEyeSdl" data-bs-toggle="collapse" data-bs-target="#collapsibleSdl" aria-expanded="true">
+                                            <i class="bi bi-eye" id="eyeSdl"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="collapse show card-body" id="collapsibleSdl">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <div class="row">
+                                                <div class="col-auto me-auto">
+                                                    <label class="form-check-label" for="autolock1">autolock</label>
+                                                </div>
+                                                <div class="col me-auto">
+                                                    <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                                    data-bs-title="Mouse will automatically lock if you click on the screen."></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" name="autolock" type="checkbox" role="switch" id="autolock1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col">
+                            <div class="card p-2">
+                                <div class="row">
+                                    <div class="col-auto me-auto">
+                                        <div class="row">
+                                            <div class="col-auto me-auto">
+                                                <h5 class="card-title">MIXER</h5>
+                                            </div>
+                                            <div class="col me-auto">
+                                                <i class="bi bi-info-circle" style="vertical-align: 0px !important;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+                                                data-bs-title="Here you can define the quality of emulated audio."></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" type="button" id="buttonEyeMixer" data-bs-toggle="collapse" data-bs-target="#collapsibleMixer" aria-expanded="true">
+                                            <i class="bi bi-eye" id="eyeMixer"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="collapse show card-body" id="collapsibleMixer">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <label class="form-check-label" for="rate1">Rate</label>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" type="text" name="rate" id="rate1" aria-label="rate" value="44100">
+                                        </div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <label class="form-check-label" for="nosound1">No sound</label>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" name="nosound" id="nosound1">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="createBundleStepThreeModalClose">Close</button>
+                <button type="button" class="btn btn-secondary" id="createBundleStepThreeModalBack" data-bs-target="#createBundleStepTwoModal" data-bs-toggle="modal">Back</button>
+                <button type="button" class="btn btn-primary" id="createBundleStepThreeModalSave" onclick="createArchive()">Download</button>
+                <button class="btn btn-secondary d-none" type="button" id="createModalSpinner" disabled>
+                    <span class="spinner-border spinner-border-sm"></span>
+                    <span role="status">Saving...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

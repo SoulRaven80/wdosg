@@ -2,6 +2,7 @@ const openGameStudio = () => {
     $('#bundleStudioForm').trigger("reset");
     $('#createBundleStepOneFile').removeClass('is-valid is-invalid');
     $('#radioExecutables').empty();
+    $('#panelExecutables').addClass("d-none");
     const uploadModal = new bootstrap.Modal('#createBundleStepOneModal', {});
     uploadModal.show();
 }
@@ -36,7 +37,7 @@ const setCollapsibleEvents = () => {
 }
 
 const configureModalNavigation = () => {
-    $('#createBundleStepOneModalNext').on('click', () => {
+    $('#createBundleLoadButton').on('click', () => {
         var inputFile = $('#createBundleStepOneFile');
         inputFile.removeClass('is-valid is-invalid');
         if (inputFile.val() != '') {
@@ -59,7 +60,7 @@ function getExecutableFiles(files) {
     if (files.length === 0) {
         return;
     }
-    $("#createBundleStepOneModalNext").addClass("d-none");
+    $("#createBundleLoadButton").addClass("d-none");
     $("#createBundleStepOneModalSpinner").removeClass("d-none");
     
     const file = files[0];
@@ -78,16 +79,18 @@ function getExecutableFiles(files) {
                     '</div>'
                 ].join('');
                 $('#radioExecutables').append(wrapper);
-                $('#exec0').attr('checked', 'checked');
-                $('#createBundleStepOneModal').modal('hide');
-                $("#createBundleStepOneModalNext").removeClass("d-none");
-                $("#createBundleStepOneModalSpinner").addClass("d-none");
-                $('#createBundleStepTwoModal').modal('show');
             }
-        } catch (e) {
-            console.log(e);
-            $("#createBundleStepOneModalNext").removeClass("d-none");
+            $('#exec0').attr('checked', 'checked');
+            $("#createBundleLoadButton").removeClass("d-none");
             $("#createBundleStepOneModalSpinner").addClass("d-none");
+            $('#panelExecutables').removeClass("d-none");
+            $('#createBundleStepOneModalNext').prop("disabled", false);
+        } catch (e) {
+            appendAlert(`An error has occurred while reading the zip file: ${e}`);
+            $("#createBundleLoadButton").removeClass("d-none");
+            $("#createBundleStepOneModalSpinner").addClass("d-none");
+            $('#createBundleStepOneModal').modal('hide');
+            $('#panelExecutables').addClass("d-none");
         }
     });
     reader.readAsArrayBuffer(file);
@@ -152,13 +155,13 @@ function populateConfig(config) {
 }
 
 async function createArchive() {
-    $('#createBundleStepThreeModalSave').prop('disabled', true);
-    $('#createBundleStepThreeModalSave').addClass('d-none');
-    $('#createBundleStepThreeModalSaveContinue').prop('disabled', true);
-    $('#createBundleStepThreeModalSaveContinue').addClass('d-none');
-    $('#createBundleStepThreeModalBack').addClass('d-none');
-    $('#createBundleStepThreeModalBack').prop('disabled', true);
-    $('#createBundleStepThreeModalSpinner').removeClass('d-none');
+    $('#createBundleStepTwoModalSave').prop('disabled', true);
+    $('#createBundleStepTwoModalSave').addClass('d-none');
+    $('#createBundleStepTwoModalSaveContinue').prop('disabled', true);
+    $('#createBundleStepTwoModalSaveContinue').addClass('d-none');
+    $('#createBundleStepTwoModalBack').addClass('d-none');
+    $('#createBundleStepTwoModalBack').prop('disabled', true);
+    $('#createBundleStepTwoModalSpinner').removeClass('d-none');
 
     const dosBundle = await emulators.dosBundle();
     populateConfig(dosBundle.config);
@@ -179,23 +182,23 @@ async function createArchive() {
     a.click();
     URL.revokeObjectURL(bundleUrl);
 
-    $('#createBundleStepThreeModalSave').prop('disabled', false);
-    $('#createBundleStepThreeModalSave').removeClass('d-none');
-    $('#createBundleStepThreeModalSaveContinue').prop('disabled', false);
-    $('#createBundleStepThreeModalSaveContinue').removeClass('d-none');
-    $('#createBundleStepThreeModalBack').prop('disabled', false);
-    $('#createBundleStepThreeModalBack').removeClass('d-none');
-    $('#createBundleStepThreeModalSpinner').addClass('d-none');
+    $('#createBundleStepTwoModalSave').prop('disabled', false);
+    $('#createBundleStepTwoModalSave').removeClass('d-none');
+    $('#createBundleStepTwoModalSaveContinue').prop('disabled', false);
+    $('#createBundleStepTwoModalSaveContinue').removeClass('d-none');
+    $('#createBundleStepTwoModalBack').prop('disabled', false);
+    $('#createBundleStepTwoModalBack').removeClass('d-none');
+    $('#createBundleStepTwoModalSpinner').addClass('d-none');
 }
 
 async function createAndAdd() {
-    $('#createBundleStepThreeModalSave').prop('disabled', true);
-    $('#createBundleStepThreeModalSave').addClass('d-none');
-    $('#createBundleStepThreeModalSaveContinue').prop('disabled', true);
-    $('#createBundleStepThreeModalSaveContinue').addClass('d-none');
-    $('#createBundleStepThreeModalBack').prop('disabled', true);
-    $('#createBundleStepThreeModalBack').addClass('d-none');
-    $('#createBundleStepThreeModalSpinner').removeClass('d-none');
+    $('#createBundleStepTwoModalSave').prop('disabled', true);
+    $('#createBundleStepTwoModalSave').addClass('d-none');
+    $('#createBundleStepTwoModalSaveContinue').prop('disabled', true);
+    $('#createBundleStepTwoModalSaveContinue').addClass('d-none');
+    $('#createBundleStepTwoModalBack').prop('disabled', true);
+    $('#createBundleStepTwoModalBack').addClass('d-none');
+    $('#createBundleStepTwoModalSpinner').removeClass('d-none');
 
     const dosBundle = await emulators.dosBundle();
     populateConfig(dosBundle.config);
@@ -212,13 +215,13 @@ async function createAndAdd() {
 
     $("#createFile")[0].files = container.files;
 
-    $('#createBundleStepThreeModalSave').prop('disabled', false);
-    $('#createBundleStepThreeModalSave').removeClass('d-none');
-    $('#createBundleStepThreeModalSaveContinue').prop('disabled', false);
-    $('#createBundleStepThreeModalSaveContinue').removeClass('d-none');
-    $('#createBundleStepThreeModalBack').prop('disabled', false);
-    $('#createBundleStepThreeModalBack').removeClass('d-none');
-    $('#createBundleStepThreeModalSpinner').addClass('d-none');
-    $("#createBundleStepThreeModal").modal("hide");
+    $('#createBundleStepTwoModalSave').prop('disabled', false);
+    $('#createBundleStepTwoModalSave').removeClass('d-none');
+    $('#createBundleStepTwoModalSaveContinue').prop('disabled', false);
+    $('#createBundleStepTwoModalSaveContinue').removeClass('d-none');
+    $('#createBundleStepTwoModalBack').prop('disabled', false);
+    $('#createBundleStepTwoModalBack').removeClass('d-none');
+    $('#createBundleStepTwoModalSpinner').addClass('d-none');
+    $("#createBundleStepTwoModal").modal("hide");
     openCreateModal(false);
 }

@@ -1,6 +1,6 @@
 # wDOSg
 
-A Simple web server to manage and run DOS based games on browser.
+A Simple web server to manage and run DOS based games on your browser.
 
 ## Overview
 
@@ -55,7 +55,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 - [ ] Basic features
   - [x] Add / remove games
   - [x] Edit games information
-  - [x] Download IGBDB metadata
+  - [x] Download IGDB metadata
   - [x] Local save games / states
   - [x] Dark / Light themes
   - [ ] User authentication
@@ -80,8 +80,8 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 **wDOSg** currently supports games as [js-dos bundle files](https://js-dos.com/jsdos-bundle.html): a **.zip** archive that 
 contains the game itself and a _js-dos_ configuration file and a _dosbox.conf_ file.
 
-Before loading a game into **wDOSg**, you should pack it. The preferred / recommended way to do it is to go through
-the _Game Studio_ feature from [DOS.Zone](https://dos.zone/studio/).
+Before uploading a game into **wDOSg**, you should pack it. **wDOSg** has a convenient bundle creation feature to do so.
+If you prefer, you can always go through the _Game Studio_ feature from [DOS.Zone](https://dos.zone/studio-v8/).
 
 ### How it works
 
@@ -93,10 +93,18 @@ ultimately served so the underlying _js-dos_ engine executes the game on screen.
 **wDOSg** uses _IGDB_ as a metadata provider to fetch metadata for your games. To use the _IGDB_ metadata provider, please 
 follow these [instructions](https://api-docs.igdb.com/#account-creation).
 
+Once you get your Twitch **client secret**, you can obtain your token through a post request, such as the following:
+
+```
+curl -X POST https://id.twitch.tv/oauth2/token \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'grant_type=client_credentials&client_id=YOUR_ID_HERE&client_secret=YOUR_SECRET_HERE'
+```
+
 ### Requirements
 
-> - Docker
-> - Credentials for [IGDB](#igdb) as environment variables:
+> - Docker (Highly recommended)
+> - Credentials for IGDB as environment variables:
 
 - TWITCH_CLIENT_ID
 - TWITCH_APP_ACCESS_TOKEN

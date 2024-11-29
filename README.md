@@ -61,7 +61,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [ ] User authentication
 - [ ] Desired features
   - [ ] Cloud saving (enabled through _js-dos_)
-  - [ ] _js-dos_ per-game configuration
+  - [x] _js-dos_ per-game configuration
   - [ ] Create entry from game folder - as opposed to a _jsdos bundle_ file
   - [ ] Support for _js-dos_ v8 (currently v7)
   - [ ] Ability to scan library folder (bulk import)
@@ -81,7 +81,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 contains the game itself and a _js-dos_ configuration file and a _dosbox.conf_ file.
 
 Before uploading a game into **wDOSg**, you should pack it. **wDOSg** has a convenient bundle creation feature to do so.
-If you prefer, you can always go through the _Game Studio_ feature from [DOS.Zone](https://dos.zone/studio-v8/).
+If you prefer, you can always go through the _Game Studio_ feature from [DOS.Zone](https://dos.zone/studio-v8/) as well.
 
 ### How it works
 

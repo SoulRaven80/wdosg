@@ -28,6 +28,18 @@ export async function findGame(gameId) {
   return await dbManager.fetchGame(gameId);
 }
 
+export async function listDosZoneGames(itemsPerPage, offset, searchTerm) {
+  return await dbManager.listDosZoneGames(itemsPerPage, offset, searchTerm);
+}
+
+export async function countDosZoneGames(searchTerm) {
+  return await dbManager.countDosZoneGames(searchTerm);
+}
+
+export async function findDosZoneGame(gameId) {
+  return await dbManager.fetchDosZoneGame(gameId);
+}
+
 export async function saveNewGame(gamesLibrary, file, game) {
   // TODO Validate if exists, then throw an error
   fs.mkdirSync(`${gamesLibrary}/${game.path}`, { recursive: true });

@@ -35,6 +35,54 @@ app.get('/api/games', async function(req, res, next) {
     res.json(list);
 });
 
+app.get('/api/dosZoneGames', async function(req, res, next) {
+    const itemsPerPage = 20;
+    var page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
+    const filter = req.query.filter || ''; // Filter keyword from query params
+
+    var count = await dataProvider.countDosZoneGames(filter);
+    const totalPages = Math.ceil(count / itemsPerPage);
+    page = Math.min(page, totalPages);
+    const offset = (page - 1) * itemsPerPage;
+
+    var list = await dataProvider.listDosZoneGames(itemsPerPage, offset, filter);
+
+    // Calculate the range of pages to display (limit to 10 page links)
+    const rangeSize = 10;
+    let startPage = Math.max(1, page - Math.floor(rangeSize / 2));
+    let endPage = Math.min(totalPages, startPage + rangeSize - 1);
+
+    // Adjust startPage if we are near the last page
+    if (endPage - startPage < rangeSize - 1) {
+        startPage = Math.max(1, endPage - rangeSize + 1);
+    }
+    res.json({
+      currentPage: page,
+      totalPages: totalPages,
+      startPage: startPage,
+      endPage: endPage,
+      items: list
+    });
+});
+
+app.get('/api/getDosZoneGame', async function(req, res, next) {
+    const itemsPerPage = 20;
+    var gameId = parseInt(req.query.id);
+    if (!gameId) {
+        // TODO
+        res.json("ERROR");
+        return;
+    }
+    var game = await dataProvider.findDosZoneGame(gameId);
+    // TODO fetch game ? return url?
+
+    res.json({
+      url: game.url,
+      title: game.title,
+      id: game.id
+    });
+});
+
 app.get('/api/game', async function(req, res, next) {
     if (req.query.gameId) {
         var game = await dataProvider.findGame(req.query.gameId);

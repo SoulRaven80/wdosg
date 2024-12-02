@@ -8,6 +8,7 @@ const __dirname = config.getRootPath();
 
 const genresInserts = __dirname + 'sql/genres.sql';
 const companiesInserts = __dirname + 'sql/companies.sql';
+const dosGamesInserts = __dirname + 'sql/dos-zone-titles.sql';
 
 const ensurePathExists = () => {
   console.log("DB setup: Checking DB path");
@@ -67,6 +68,13 @@ const createTables = async() => {
         game_id text not null,
         company_id text not null
     );`);
+  await execute(`CREATE TABLE IF NOT EXISTS dos_zone_games (
+      id int primary key not null,
+      title text not null,
+      release int null,
+      genre text null,
+      url text null
+    );`);
   await populateTablesIfEmpty();
 }
 
@@ -84,6 +92,13 @@ const populateTablesIfEmpty = async() => {
     console.log("DB setup: Populating companies");
     const companies = fs.readFileSync(companiesInserts).toString().split(os.EOL);
     runTransaction(companies);
+  }
+
+  var countDosGames = await fetch(`SELECT count(1) as c FROM dos_zone_games`);
+  if (countDosGames.c == 0) {
+    console.log("DB setup: Populating dos_games");
+    const dosGames = fs.readFileSync(dosGamesInserts).toString().split(os.EOL);
+    runTransaction(dosGames);
   }
 }
 

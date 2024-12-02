@@ -14,13 +14,45 @@ function setMultiValues(elementId, prop) {
         selectize.setValue(selectize.search(prop).items[0]);
     }
     else if (prop.length > 0) {
-        prop.forEach(function(i) {
+        let uniques = uniq(prop);
+        uniques.forEach(function(i) {
             selectize.addOption(i);
         });
-        selectize.setValue(prop.map(function (i) { return i.id }));
+        selectize.setValue(uniques.map(function (i) { return i.id }));
     }
 }
 
+function setCreateMultiValues(elementId, prop) {
+    var selectize = document.getElementById(elementId).selectize;
+    if (typeof prop === "string") {
+        selectize.setValue(selectize.search(prop).items[0]);
+    }
+    else if (prop.length > 0) {
+        let uniques = uniq(prop.map(function (i) { 
+            return i.company;
+        }));
+        uniques.forEach(function(i) {
+            selectize.addOption(i);
+        });
+        selectize.setValue([...uniques.map(function (i) { 
+            return i.id;
+        })]);
+    }
+}
+
+function uniq(array) {
+    var unique = [];
+    array.forEach(elem => {
+        var found = unique.filter(i => {
+            return i.id == elem.id;
+        });
+        if (found.length == 0) {
+            unique.push(elem);
+        }
+    });
+    return unique;
+}
+ 
 $("#gamesListLink").on("click", function(e) {
     const contentDiv = document.getElementById('content_div');
     contentDiv.innerHTML = '';

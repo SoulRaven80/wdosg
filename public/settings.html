@@ -17,7 +17,7 @@
 </head>
 <body>
   <!-- HEADER -->
-  <div w3-include-html="/header.html"></div>
+  <div class="sticky-top" w3-include-html="/header.html"></div>
 
 <!-- MAIN -->
 <main>
@@ -58,6 +58,14 @@
               </a>
             </div>
           </div>
+          <div class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <a class="bi-cloud-download nav-link primary" aria-current="page" onclick="openListDOSZone(1, '')" style="cursor: pointer;">
+                <svg class="bi pe-none" width="16" height="16"></svg>
+                Import from DOS-Zone
+              </a>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-9" id="content_div">
@@ -76,6 +84,9 @@
 <div w3-include-html="/settings/create-manually.html"></div>
 <div w3-include-html="/settings/edit.html"></div>
 <div w3-include-html="/settings/confirm-remove.html"></div>
+
+<!-- FOOTER -->
+<div class="fixed-bottom" w3-include-html="/footer.html"></div>
 
 <!--  Scripts-->
 <script src="/js/jquery.min.js"></script>
@@ -98,5 +109,6 @@
 <script src="/js/settings/create-manually.js"></script>
 <script src="/js/settings/edit.js"></script>
 <script src="/js/settings/confirm-remove.js"></script>
+<script src="/js/settings/dos-zone-titles.js"></script>
 </body>
 </html>

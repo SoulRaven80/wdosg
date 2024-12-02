@@ -74,15 +74,18 @@ const getCover = (igdb_id, parentElement) => {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
     for (let i = 0; i < popoverTriggerList.length; i++) {
         const element = popoverTriggerList[i];
-        if(bootstrap.Popover.getInstance(element)) {
-            bootstrap.Popover.getInstance(element).dispose();
+        var popover = bootstrap.Popover.getInstance(element);
+        if(popover) {
+            popover.dispose();
+            // workaround for https://github.com/twbs/bootstrap/issues/37474
+            popover._activeTrigger = {};
+            popover._element = document.createElement('noscript'); // placeholder with no behavior
         }
     }
     var data_content = parentElement.getAttribute('data-bs-content');
     if (data_content !== null && data_content !== undefined && data_content !== '') {
         const popover = new bootstrap.Popover(parentElement, {
             html: true,
-            container: '.modal-body',
             trigger: 'focus'
         }).show();              
     }
@@ -94,7 +97,6 @@ const getCover = (igdb_id, parentElement) => {
         parentElement.setAttribute('data-bs-content', `<img src='https://images.igdb.com/igdb/image/upload/t_cover_big/${result.cover.image_id}.jpg'>`);
         const popover = new bootstrap.Popover(parentElement, {
             html: true,
-            container: '.modal-body',
             trigger: 'focus'
         }).show();
     }
@@ -117,10 +119,10 @@ function onCreateSubmit() {
         }
         $("#createDescription").val(`${result.summary}`);
 
-        setMultiValues('createDevelopers', result.involved_companies.filter(function (i) {
+        setCreateMultiValues('createDevelopers', result.involved_companies.filter(function (i) {
             return i.developer;
         }));
-        setMultiValues('createPublishers', result.involved_companies.filter(function (i) {
+        setCreateMultiValues('createPublishers', result.involved_companies.filter(function (i) {
             return i.publisher;
         }));
         setGenresValues('createGenres', result.genres);

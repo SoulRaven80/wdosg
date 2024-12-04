@@ -14,6 +14,24 @@ export async function listGames() {
     }
 }
 
+export async function listDosZoneGames(itemsPerPage, offset, searchTerm) {
+  try {
+    var games = await sqlite.fetchAll(`SELECT * FROM dos_zone_games WHERE title LIKE '%${searchTerm}%' LIMIT ${itemsPerPage} OFFSET ${offset}`);
+    return games;
+  } catch (err) {
+      console.log(err);
+  }
+}
+
+export async function countDosZoneGames(searchTerm) {
+  try {
+    var count = await sqlite.fetch(`SELECT count(1) as c FROM dos_zone_games WHERE title LIKE '%${searchTerm}%'`);
+    return count.c;
+  } catch (err) {
+      console.log(err);
+  }
+}
+
 export async function listCompanies() {
   try {
       return await sqlite.fetchAll(`SELECT * FROM companies`);
@@ -49,9 +67,16 @@ export async function listGenres() {
 
 export async function fetchGame(gameId) {
     try {
+      // console.log(`SELECT * FROM games WHERE id = ${gameId}`);
       const game = await sqlite.fetch(`SELECT * FROM games WHERE id = ?`, [gameId]);
+
+      // console.log(`SELECT g.name, g.id FROM games_x_genres gg, genres g WHERE gg.game_id = ${gameId} AND gg.genre_id = g.id;`);
       const genres = await sqlite.fetchAll(`SELECT g.name, g.id FROM games_x_genres gg, genres g WHERE gg.game_id = ? AND gg.genre_id = g.id;`, [gameId]);
+
+      // console.log(`SELECT c.name, c.id FROM games_x_developers gd, companies c WHERE gd.game_id = ${gameId} AND gd.company_id = c.id;`);
       const developers = await sqlite.fetchAll(`SELECT c.name, c.id FROM games_x_developers gd, companies c WHERE gd.game_id = ? AND gd.company_id = c.id;`, [gameId]);
+      
+      // console.log(`SELECT c.name, c.id FROM games_x_publishers gp, companies c WHERE gp.game_id = ${gameId} AND gp.company_id = c.id;`);
       const publishers = await sqlite.fetchAll(`SELECT c.name, c.id FROM games_x_publishers gp, companies c WHERE gp.game_id = ? AND gp.company_id = c.id;`, [gameId]);
       game.genres = genres;
       game.developers = developers;
@@ -60,6 +85,14 @@ export async function fetchGame(gameId) {
     } catch (err) {
         console.log(err);
     }
+}
+export async function fetchDosZoneGame(gameId) {
+  try {
+    const game = await sqlite.fetch(`SELECT * FROM dos_zone_games WHERE id = ?`, [gameId]);
+    return game;
+  } catch (err) {
+      console.log(err);
+  }
 }
 
 export async function saveNewGame(game) {
@@ -72,13 +105,23 @@ export async function saveNewGame(game) {
           const genre = game.genres[i];
           await sqlite.execute(`INSERT INTO games_x_genres(game_id,genre_id) VALUES (?, ?)`, [game.id, genre]);
         }
-        for (let i = 0; i < game.developers.length; i++) {
-          const developer = game.developers[i];
-          await sqlite.execute(`INSERT INTO games_x_developers(game_id,company_id) VALUES (?, ?)`, [game.id, developer]);
+        if (Array.isArray(game.developers)) {
+          for (let i = 0; i < game.developers.length; i++) {
+            const developer = game.developers[i];
+            await sqlite.execute(`INSERT INTO games_x_developers(game_id,company_id) VALUES (?, ?)`, [game.id, developer]);
+          }
         }
-        for (let i = 0; i < game.publishers.length; i++) {
-          const publisher = game.publishers[i];
-          await sqlite.execute(`INSERT INTO games_x_publishers(game_id,company_id) VALUES (?, ?)`, [game.id, publisher]);
+        else if (game.developers) {
+          await sqlite.execute(`INSERT INTO games_x_developers(game_id,company_id) VALUES (?, ?)`, [game.id, game.developers]);
+        }
+        if (Array.isArray(game.publishers)) {
+          for (let i = 0; i < game.publishers.length; i++) {
+            const publisher = game.publishers[i];
+            await sqlite.execute(`INSERT INTO games_x_publishers(game_id,company_id) VALUES (?, ?)`, [game.id, publisher]);
+          }
+        }
+        else if (game.publishers) {
+          await sqlite.execute(`INSERT INTO games_x_publishers(game_id,company_id) VALUES (?, ?)`, [game.id, game.publishers]);
         }
     } catch (err) {
       console.error(err);

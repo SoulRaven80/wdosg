@@ -18,7 +18,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [Game Bundles](#game-bundles)
   - [How it works](#how-it-works)
   - [Metadata](#metadata)
-  - [Requirements](#requirements)
+  - [Configuration](#configuration)
     - [Docker compose example](#docker-compose-example)
 
 <!--toc:end-->
@@ -101,13 +101,20 @@ curl -X POST https://id.twitch.tv/oauth2/token \
 -d 'grant_type=client_credentials&client_id=YOUR_ID_HERE&client_secret=YOUR_SECRET_HERE'
 ```
 
-### Requirements
+### Configuration
 
-> - Docker (Highly recommended)
-> - Credentials for IGDB as environment variables:
+- Docker (Highly recommended)
+- Environment variables:
 
-- TWITCH_CLIENT_ID
-- TWITCH_APP_ACCESS_TOKEN
+| Variable | Description | Default value |
+| --- | --- | --- |
+|`TWITCH_CLIENT_ID`|Your personal Twitch Client ID|Empty|
+|`TWITCH_APP_ACCESS_TOKEN`|Your Twitch Access Token|Empty|
+|`LOG_LEVEL`|info, debug, trace|info|
+|`GAMES_LIBRARY` (*) |Path to your games library (If using docker this variable references its internal location, so make sure the appropriate path gets reflected as a mapped volume)|/app/wdosglibrary|
+|`DB_PATH` (*)|Path to the sqlite database|/app/database/
+
+(*): _If using docker, it's recommended to leave them as-is, and instead map the corresponding folder to the default value_
 
 #### Docker compose example
 
@@ -123,12 +130,15 @@ services:
     restart: unless-stopped
     ports:
       - 3001:3001 # to access the web client
-    volumes:
-      - your_library_location:/app/wdosglibrary # directory containing your library
-      - your_db_location:/app/database # directory containing your database
     environment:
       - TWITCH_CLIENT_ID=xxxx # Your IGDB (Twitch) client ID
       - TWITCH_APP_ACCESS_TOKEN=xxxx # Your IGDB (Twitch) Token - **NOT your secret**
+      - LOG_LEVEL=info # Your IGDB (Twitch) Token - **NOT your secret**
+      # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this, make sure mapped volumes are consistent with this value
+      # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this, make sure mapped volumes are consistent with this value
+    volumes:
+      - your_library_location:/app/wdosglibrary # directory containing your library
+      - your_db_location:/app/database # directory containing your database
     networks:
       - proxy # assuming "proxy" is the network for the reverse proxy (i.e. Traefik)
 

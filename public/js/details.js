@@ -4,15 +4,15 @@ $(document).ready(function() {
         $.getJSON("/api/game?gameId=" + urlParams.get('game'), function(game) {
             try {
                 $("#title").text(game.name);
-                $("#description").html(game.description);
-                $("#image").attr('src', game.img);
+                $("#description").html((game.description ? game.description : "-"));
+                $("#image").attr('src', (game.img ? game.img : '/img/image-not-found.png'));
                 $("#image").attr('alt', game.name);
                 if (game.trailer.includes("youtube")) {
                     $("#video").attr('src', game.trailer);
                     $("#video").removeClass("d-none");
                 }
                 else {
-                    $("#screenshot").attr('src', game.trailer);
+                    $("#screenshot").attr('src', (game.trailer ? game.trailer : '/img/image-not-found.png'));
                     $("#screenshot").removeClass("d-none");
                 }
                 arrayToText(game.developers, "#developers");

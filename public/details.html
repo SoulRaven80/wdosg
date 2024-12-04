@@ -23,11 +23,11 @@
 
   <div class="container px-4 py-4" id="details_container">
     <div id="alertPlaceholder"></div>
-    <div class="row row-cols-2 align-items-md-center g-5 mb-2 border-bottom">
+    <div class="row align-items-md-center g-5 mb-2 border-bottom">
           <div class="col">
               <h2 class="pb-2" id="title"></h2>
           </div>
-          <div class="col d-flex flex-column align-items-end gap-2">
+          <div class="col-auto d-flex flex-column align-items-end gap-2">
               <a href="#" class="btn btn-bd-primary" id="play_button">Play!</a>
           </div>
       </div>
@@ -74,9 +74,9 @@
 
               <div class="col-8">
                   <iframe class="d-none" id="video" width="560" height="315" src="#" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                  <img class="d-none" id="screenshot" height="315" src="#" alt="screenshot">
+                  <img class="d-none" id="screenshot" src="#" alt="screenshot" style="max-height: 315px !important;">
                   <p class="text-start">
-                      <span class="text-body-secondary" id="description"></span>
+                      <code id="description"></code>
                   </p>
               </div>
           </div>

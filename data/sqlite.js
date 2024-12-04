@@ -2,6 +2,7 @@ import fs from 'fs';
 import sqlite from "sqlite3";
 import os from 'os';
 import * as config from '../config.js';
+import { logger } from '../logger/logger.js';
 
 const sqlite3 = sqlite.verbose();
 const __dirname = config.getRootPath();
@@ -11,9 +12,9 @@ const companiesInserts = __dirname + 'sql/companies.sql';
 const dosGamesInserts = __dirname + 'sql/dos-zone-titles.sql';
 
 const ensurePathExists = () => {
-  console.log("DB setup: Checking DB path");
+  logger.debug("DB setup: Checking DB path");
   if (!fs.existsSync(config.getDbPath())) {
-    console.log("DB setup: DB path does not exist. Creating...");
+    logger.info(`DB setup: DB path does not exist. Creating under ${config.getDbPath()}`);
     fs.mkdirSync(config.getDbPath(), { recursive: true }, (err) => {
       if (err) {
         throw err;
@@ -24,7 +25,7 @@ const ensurePathExists = () => {
 
 const connectDb = async() => {
   return new Promise((resolve, reject) => {
-    console.log("DB setup: Opening database");
+    logger.debug("DB setup: Opening database");
     let db = new sqlite3.Database(config.getDbPath() + '/database.db', (err) => {
       if (err) {
         return reject(err);
@@ -35,7 +36,7 @@ const connectDb = async() => {
 }
 
 const createTables = async() => {
-  console.log("DB setup: Creating tables");
+  logger.info("DB setup: Creating tables");
   await execute(`CREATE TABLE IF NOT EXISTS genres (
       id text primary key not null,
       name text not null
@@ -79,24 +80,24 @@ const createTables = async() => {
 }
 
 const populateTablesIfEmpty = async() => {
-  console.log("DB setup: Checking tables content");
+  logger.debug("DB setup: Checking tables content");
   var countGenres = await fetch(`SELECT count(1) as c FROM genres`);
   if (countGenres.c == 0) {
-    console.log("DB setup: Populating genres");
+    logger.info("DB setup: Populating genres");
     const genres = fs.readFileSync(genresInserts).toString().split(os.EOL);
     runTransaction(genres);
   }
 
   var countCompanies = await fetch(`SELECT count(1) as c FROM companies`);
   if (countCompanies.c == 0) {
-    console.log("DB setup: Populating companies");
+    logger.info("DB setup: Populating companies");
     const companies = fs.readFileSync(companiesInserts).toString().split(os.EOL);
     runTransaction(companies);
   }
 
   var countDosGames = await fetch(`SELECT count(1) as c FROM dos_zone_games`);
   if (countDosGames.c == 0) {
-    console.log("DB setup: Populating dos_games");
+    logger.info("DB setup: Populating dos_games");
     const dosGames = fs.readFileSync(dosGamesInserts).toString().split(os.EOL);
     runTransaction(dosGames);
   }
@@ -109,6 +110,7 @@ const runTransaction = (data) => {
       if (query) {
         db.run(query, (err) => {
           if (err) {
+            logger.error(err, `Error while running transaction: ${query}`);
             db.run('ROLLBACK;');
             throw err;
           }
@@ -123,6 +125,7 @@ export const fetch = (sql, params) => {
   return new Promise((resolve, reject) => {
     db.get(sql, params, (err, rows) => {
       if (err) {
+        logger.error(err, `Error while getting result for query: ${sql}`);
         reject(err);
       }
       resolve(rows);
@@ -134,6 +137,7 @@ export const fetchAll = (sql, params) => {
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
+        logger.error(err, `Error while getting all rows for query: ${sql}`);
         reject(err);
       }
       resolve(rows);
@@ -146,6 +150,7 @@ export const execute = async(sql, params = []) => {
       return new Promise((resolve, reject) => {
         db.run(sql, params, (err) => {
           if (err) {
+            logger.error(err, `Error while running query: ${sql}`);
             reject(err);
           }
           resolve();
@@ -155,6 +160,7 @@ export const execute = async(sql, params = []) => {
     return new Promise((resolve, reject) => {
         db.exec(sql, (err) => {
           if (err) {
+            logger.error(err, `Error while executing query: ${sql}`);
             reject(err);
           }
           resolve();
@@ -167,14 +173,16 @@ let db;
 export const init = async() => {
   return new Promise(async(resolve, reject) => {
     try {
+      logger.debug(`Initializing DB`);
       ensurePathExists();
       db = await connectDb();
-      // db.on('trace', function(query) {
-      //   console.log(query);
-      // });
+      db.on('trace', function(query) {
+        logger.debug(query);
+      });
       await createTables();
       resolve();
     } catch (error) {
+      logger.error(error, 'Error while initializing DB');
       reject(error);
     }
   });

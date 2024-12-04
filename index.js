@@ -7,10 +7,12 @@ import stringSanitizer from "string-sanitizer";
 import * as dataProvider from './providers/dataProvider.js';
 import * as igdbProvider from './providers/igdbProvider.js';
 import * as config from './config.js';
+import httpLogger from "pino-http";
+import { logger } from './logger/logger.js';
 
 if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
-    console.log("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_APP_ACCESS_TOKEN as environment variables");
-    console.log("following the instructions located at https://api-docs.igdb.com/#account-creation");
+    logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_APP_ACCESS_TOKEN as environment variables");
+    logger.fatal("following the instructions located at https://api-docs.igdb.com/#account-creation");
     process.exit(1);
 }
 
@@ -28,10 +30,17 @@ app.use(fileUpload({
     tempFileDir : './tmp/'
 }));
 
+app.use(httpLogger({ useLevel: 'debug', logger: logger }));
+
 app.set('port', process.env.PORT || 3001);
 
 app.get('/api/games', async function(req, res, next) {
 	var list = await dataProvider.listGames();
+    res.json(list);
+});
+
+app.get('/api/gamesShallowInfo', async function(req, res, next) {
+	var list = await dataProvider.listGamesShallow();
     res.json(list);
 });
 
@@ -74,7 +83,6 @@ app.get('/api/getDosZoneGame', async function(req, res, next) {
         return;
     }
     var game = await dataProvider.findDosZoneGame(gameId);
-    // TODO fetch game ? return url?
 
     res.json({
       url: game.url,
@@ -122,7 +130,9 @@ app.post('/api/create', async function(req, res, next) {
     game.publishers = req.body.publishers;
     game.genres = req.body.genres;
 
+    logger.debug(`Generating unique game id`);
     game.id = shortuuid.generate();
+    logger.debug(`Generating game path`);
     game.path = stringSanitizer.sanitize.keepNumber(game.name);
     dataProvider.saveNewGame(games_library, req.files.file, game);
     res.redirect('/settings.html?action=created');
@@ -146,22 +156,24 @@ app.delete('/api/delete', (req, res) => {
 });
 
 const getGameFromBody = (body) => {
+    logger.debug(`Parsing request body to build game: ${JSON.stringify(body, null, 2)}`);
     var game = {};
     game.igdb_id = body.igdb_id;
     game.name = body.name;
     game.img = body.img;
-    game.description = body.description;
+    game.description = (body.description ? body.description : '');
     game.year = body.year;
     game.trailer = body.trailer;
+    logger.debug(`Built game from body: ${JSON.stringify(game, null, 2)}`);
     return game;
 };
 
 dataProvider.init().then(() => {
     app.listen(app.get('port'), function(err){
         if (err) {
-            console.log("Error in server setup");
-            exit(1);
+            logger.fatal(err, "Error in server setup");
+            process.exit(1);
         }
-        console.log("Application ready. Server listening on port", app.get('port'));
+        logger.info(`Application ready. Server listening on port ${app.get('port')}`);
     })
 });

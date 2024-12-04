@@ -32,7 +32,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: soulraven1980/${{ env.IMAGE_NAME }}
+          images: soulraven1980/wdosg
 
       - name: Build and push Docker image
         id: build-and-push

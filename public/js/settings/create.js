@@ -66,7 +66,7 @@ const findMetadata = () => {
             $('#createDiv').html('No matched games. Do you want to <a href="#" onclick="openCreateManuallyModal()">manually edit it?</a>');
         }
     }).fail(function(jqXHR, status, error) {
-        appendAlert('An error has occurred while getting the game information');
+        appendAlert(`An error has occurred while getting the game information: ${error}`);
     });
 } 
 
@@ -117,15 +117,27 @@ function onCreateSubmit() {
         if (result.cover && result.cover.image_id) {
             $("#createImageUrl").val(`https://images.igdb.com/igdb/image/upload/t_cover_big/${result.cover.image_id}.jpg`);
         }
-        $("#createDescription").val(`${result.summary}`);
+        $("#createDescription").val(`${(result.summary ? result.summary : '')}`);
 
-        setCreateMultiValues('createDevelopers', result.involved_companies.filter(function (i) {
-            return i.developer;
-        }));
-        setCreateMultiValues('createPublishers', result.involved_companies.filter(function (i) {
-            return i.publisher;
-        }));
-        setGenresValues('createGenres', result.genres);
+        if (Array.isArray(result.involved_companies)) {
+            setCreateMultiValues('createDevelopers', result.involved_companies.filter(function (i) {
+                return i.developer;
+            }));
+            setCreateMultiValues('createPublishers', result.involved_companies.filter(function (i) {
+                return i.publisher;
+            }));
+        }
+        else if (result.involved_companies) {
+            if (result.involved_companies.developer) {
+                setCreateMultiValues('createDevelopers', result.involved_companies);
+            }
+            if (result.involved_companies.publisher) {
+                setCreateMultiValues('createPublishers', result.involved_companies);
+            }
+        }
+        if (result.genres) {
+            setGenresValues('createGenres', result.genres);
+        }
 
         $("#createYear").val(`${new Date(result.first_release_date * 1000).getFullYear()}`);
         if (result.videos && result.videos.length > 0) {

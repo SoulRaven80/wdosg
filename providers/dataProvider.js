@@ -1,11 +1,16 @@
 import fs from 'fs';
 import * as dbManager from '../data/dbManager.js';
 import * as config from '../config.js';
+import { logger } from '../logger/logger.js';
 
 const template_path = config.getBundleTemplatePath();
 
 export async function listGames() {
   return await dbManager.listGames();
+}
+
+export async function listGamesShallow() {
+  return await dbManager.listGamesShallow();
 }
 
 export async function listCompanies() {
@@ -42,10 +47,14 @@ export async function findDosZoneGame(gameId) {
 
 export async function saveNewGame(gamesLibrary, file, game) {
   // TODO Validate if exists, then throw an error
+  logger.debug(`Creating ${gamesLibrary}/${game.path} directory`);
   fs.mkdirSync(`${gamesLibrary}/${game.path}`, { recursive: true });
+  logger.debug(`Moving ${file} to ${gamesLibrary}/${game.path}/bundle.jsdos`);
   file.mv(`${gamesLibrary}/${game.path}/bundle.jsdos`);
+  logger.debug(`Copying templates to ${gamesLibrary}/${game.path}`);
   fs.copyFileSync(`${template_path}/index.html`, `${gamesLibrary}/${game.path}/index.html`);
   fs.copyFileSync(`${template_path}/game.html`, `${gamesLibrary}/${game.path}/game.html`);
+  logger.debug(`Saving ${game.name} to DB`);
   return await dbManager.saveNewGame(game);
 }
 

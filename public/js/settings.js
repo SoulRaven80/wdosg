@@ -57,7 +57,7 @@ $("#gamesListLink").on("click", function(e) {
     const contentDiv = document.getElementById('content_div');
     contentDiv.innerHTML = '';
 
-    $.getJSON("/api/games", function(data) {
+    $.getJSON("/api/gamesShallowInfo", function(data) {
         try {
             if (data.length == 0) {
                 contentDiv.append("Empty games library");

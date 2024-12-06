@@ -248,6 +248,26 @@ export async function deleteGame(gamesLibrary, gameId) {
   }
 }
 
+export async function findUser(email) {
+  logger.debug(`Retrieving user with email: ${email}`);
+  try {
+    const user = await sqlite.fetch(`SELECT * FROM users WHERE email = ?`, [email]);
+    return user;
+  } catch (err) {
+    logger.error(err, `Error while retrieving user with email: ${email}`);
+  }
+}
+
+export async function blacklistToken(token) {
+  logger.info(`Invalidating token`);
+  return await sqlite.execute(`INSERT INTO tokens_blacklist(token) VALUES (?)`, [token]);
+}
+
+export async function findBlacklistedToken(token) {
+  logger.debug(`Retrieving blacklisted token`);
+  return await sqlite.fetch(`SELECT * FROM tokens_blacklist WHERE token = ?`, [token]);
+}
+
 export async function init() {
   return sqlite.init();
 }

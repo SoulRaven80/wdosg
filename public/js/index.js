@@ -18,7 +18,7 @@ $(document).ready(function() {
             appendAlert(`An error has occurred while reading the games information: ${error}`);
         }
     }).fail(function(jqXHR, status, error) {
-        appendAlert('An error has occurred while getting the game list information');
+        appendAlert(`An error has occurred while getting the game list information: ${error}`);
     });
 });
 

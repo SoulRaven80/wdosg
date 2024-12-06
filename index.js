@@ -4,6 +4,9 @@ import path from 'path';
 import cors from 'cors';
 import shortuuid from 'short-uuid';
 import stringSanitizer from "string-sanitizer";
+import cookieParser from "cookie-parser";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import * as dataProvider from './providers/dataProvider.js';
 import * as igdbProvider from './providers/igdbProvider.js';
 import * as config from './config.js';
@@ -21,8 +24,10 @@ const games_library = config.getGamesLibraryLocation();
 var app = express();
 app.use('/', express.static(path.join(config.getRootPath(), 'public')));
 app.use('/library', express.static(games_library));
+app.disable("x-powered-by");
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(fileUpload({
@@ -30,21 +35,74 @@ app.use(fileUpload({
     tempFileDir : './tmp/'
 }));
 
-app.use(httpLogger({ useLevel: 'debug', logger: logger }));
+app.use(httpLogger({ 
+    useLevel: 'debug', 
+    logger: logger, 
+    autoLogging: {
+        ignore: (req) => { return req.url.includes('bootstrap') } 
+    }
+}));
 
 app.set('port', process.env.PORT || 3001);
 
-app.get('/api/games', async function(req, res, next) {
+// Middleware for JWT validation
+const verifyToken = async (req, res, next) => {
+    var token = getAuthToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // check db blacklist
+    var result = await dataProvider.findBlacklistedToken();
+    if (result) {
+        return res.status(401).json({ error: 'Session expired' });
+    }
+
+    jwt.verify(token, 'secret', (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        req.user = decoded;
+        next();
+    });
+};
+
+const verifyAdminToken = async (req, res, next) => {
+    var token = getAuthToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // check db blacklist
+    var result = await dataProvider.findBlacklistedToken();
+    if (result) {
+        return res.status(401).json({ error: 'Session expired' });
+    }
+
+    jwt.verify(token, 'secret', async(err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        req.user = decoded;
+        var isAdmin = await isAdmin(req.user.email);
+        if (!isAdmin) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        next();
+    });
+};
+
+app.get('/api/games', verifyToken, async(req, res, next) => {
 	var list = await dataProvider.listGames();
-    res.json(list);
+    res.status(200).json(list);
 });
 
-app.get('/api/gamesShallowInfo', async function(req, res, next) {
+app.get('/api/gamesShallowInfo', verifyToken, async(req, res, next) => {
 	var list = await dataProvider.listGamesShallow();
-    res.json(list);
+    res.status(200).json(list);
 });
 
-app.get('/api/dosZoneGames', async function(req, res, next) {
+app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {
     const itemsPerPage = 20;
     var page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
     const filter = req.query.filter || ''; // Filter keyword from query params
@@ -65,7 +123,7 @@ app.get('/api/dosZoneGames', async function(req, res, next) {
     if (endPage - startPage < rangeSize - 1) {
         startPage = Math.max(1, endPage - rangeSize + 1);
     }
-    res.json({
+    res.status(200).json({
       currentPage: page,
       totalPages: totalPages,
       startPage: startPage,
@@ -74,7 +132,7 @@ app.get('/api/dosZoneGames', async function(req, res, next) {
     });
 });
 
-app.get('/api/getDosZoneGame', async function(req, res, next) {
+app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res, next) => {
     const itemsPerPage = 20;
     var gameId = parseInt(req.query.id);
     if (!gameId) {
@@ -84,42 +142,41 @@ app.get('/api/getDosZoneGame', async function(req, res, next) {
     }
     var game = await dataProvider.findDosZoneGame(gameId);
 
-    res.json({
+    res.status(200).json({
       url: game.url,
       title: game.title,
       id: game.id
     });
 });
 
-app.get('/api/game', async function(req, res, next) {
+app.get('/api/game', verifyToken, async(req, res, next) => {
     if (req.query.gameId) {
         var game = await dataProvider.findGame(req.query.gameId);
-        res.json(game);
+        res.status(200).json(game);
     }
 });
 
-app.get('/api/gamemetadata', async function(req, res, next) {
+app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
     res.json(await igdbProvider.searchGame(req.query.gameName));
 });
 
-app.get('/api/companies', async function(req, res, next) {
+app.get('/api/companies', verifyToken, async(req, res, next) => {
     res.json(await dataProvider.listCompanies());
 });
 
-app.get('/api/searchCompanies', async function(req, res, next) {
+app.get('/api/searchCompanies', verifyAdminToken, async(req, res, next) => {
     res.json(await dataProvider.searchCompanies(req.query.search));
 });
 
-app.get('/api/company', async function(req, res, next) {
+app.get('/api/company', verifyToken, async(req, res, next) => {
     res.json(await dataProvider.findCompany(req.query.companyId));
 });
 
-app.get('/api/genres', async function(req, res, next) {
+app.get('/api/genres', verifyToken, async(req, res, next) => {
     res.json(await dataProvider.listGenres());
 });
 
-
-app.post('/api/create', async function(req, res, next) {
+app.post('/api/create', verifyAdminToken, async(req, res, next) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
@@ -135,10 +192,10 @@ app.post('/api/create', async function(req, res, next) {
     logger.debug(`Generating game path`);
     game.path = stringSanitizer.sanitize.keepNumber(game.name);
     dataProvider.saveNewGame(games_library, req.files.file, game);
-    res.redirect('/settings.html?action=created');
+    res.status(200).redirect('/settings.html?action=created');
 });
 
-app.post('/api/update', (req, res, next) => {
+app.post('/api/update', verifyAdminToken, (req, res, next) => {
     var game = getGameFromBody(req.body);
     // these props comes as arrays per form select
     game.developers = req.body.developers;
@@ -147,12 +204,81 @@ app.post('/api/update', (req, res, next) => {
     game.id = req.body.id;
     
     dataProvider.updateGame(game);
-    res.redirect('/settings.html?action=updated');
+    res.status(200).redirect('/settings.html?action=updated');
 });
 
-app.delete('/api/delete', (req, res) => {
+app.delete('/api/delete', verifyAdminToken, (req, res) => {
     dataProvider.deleteGame(games_library, req.query.gameId);
-    res.json({"success": true});
+    res.status(200).json({"success": true});
+});
+
+app.post('/api/login', async(req, res, next) => {
+    try {
+        const user = await dataProvider.findUser(req.body.email);
+        if (!user) {
+            return res.status(401).json({
+                status: "failed",
+                data: [],
+                message: "Invalid email or password. Please try again with the correct credentials.",
+            });
+        }
+        const isPasswordValid = await bcrypt.compare(`${req.body.password}`, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                status: "failed",
+                data: [],
+                message: "Invalid email or password. Please try again with the correct credentials.",
+            });
+        }
+
+        let options = {
+            expiresIn: 120 * 60 * 1000 // would expire in 120 minutes
+        };
+        const token = jwt.sign({ email: user.email }, 'secret', options);
+        const isAdmin = { isAdmin: (user && user.role == 'admin') };
+    
+        res.status(200).json({
+            status: "success",
+            data: {token: token, isAdmin: isAdmin},
+            message: "You have successfully logged in.",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            data: [],
+            message: `Internal Server Error. ${err}`,
+        });
+    }
+});
+
+async function isAdmin(email) {
+    const user = await dataProvider.findUser(req.body.email);
+    const isAdmin = { isAdmin: (user && user.role == 'admin') };
+    return isAdmin;
+}
+
+function getAuthToken(req) {
+    const cookieStr = req.headers.cookie;
+    if (cookieStr) {
+        let cookies = cookieStr.split("; ");
+        for (let i = 0; i < cookies.length; i++) {
+            const element = cookies[i];
+            if (element.startsWith('auth-token=')) {
+                return element.split("=")[1];
+            }
+        }
+    }
+    return;
+}
+
+app.get('/api/logout', async(req, res, next) => {
+    await dataProvider.blacklistToken(getAuthToken(req));
+    res.status(201).redirect("/login.html");
+});
+
+app.get("/home", verifyToken, (req, res, next) => {
+    res.status(201).redirect("/index.html");
 });
 
 const getGameFromBody = (body) => {

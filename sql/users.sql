@@ -1,0 +1,1 @@
+INSERT INTO users(email, role, password) VALUES ('wdosg@wdosg.com', 'admin', '$2b$10$5IOJugt1I6nyfyT1hM98AeQ1RHCBpTryuq1JFEhcVg34KTlQFWgoW');

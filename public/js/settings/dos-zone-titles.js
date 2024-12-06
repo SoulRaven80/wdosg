@@ -61,7 +61,7 @@ const openListDOSZone = (page, filter) => {
             var wrapper = `<table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th>Game Title</th><th>Release year</th><th>Genres</th><th></th>
+                            <th>Game Title</th><th>Release year</th><th>Genres</th><th>Import</th>
                         </tr>
                     </thead>
                 <tbody>`;
@@ -95,13 +95,6 @@ function downloadAndAdd(gameId) {
         fetch(result.url)
             .then((response) => response.blob())
             .then(blob => {
-            // response.body: ReadableStream 
-            // response.ok: boolean
-            // response.redirected: boolean
-            // response.status: int
-            // response.type: string ("cors" ?)
-            // response.url: string
-            
                 const bundleFile = new Blob([blob]);
                 const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
                 const container = new DataTransfer();

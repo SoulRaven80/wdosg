@@ -10,6 +10,7 @@ const __dirname = config.getRootPath();
 const genresInserts = __dirname + 'sql/genres.sql';
 const companiesInserts = __dirname + 'sql/companies.sql';
 const dosGamesInserts = __dirname + 'sql/dos-zone-titles.sql';
+const usersInserts = __dirname + 'sql/users.sql';
 
 const ensurePathExists = () => {
   logger.debug("DB setup: Checking DB path");
@@ -76,6 +77,14 @@ const createTables = async() => {
       genre text null,
       url text null
     );`);
+    await execute(`CREATE TABLE IF NOT EXISTS users (
+      email text primary key not null,
+      password text not null,
+      role text not null
+    );`);
+    await execute(`CREATE TABLE IF NOT EXISTS tokens_blacklist (
+      token text primary key not null
+    );`);
   await populateTablesIfEmpty();
 }
 
@@ -101,6 +110,16 @@ const populateTablesIfEmpty = async() => {
     const dosGames = fs.readFileSync(dosGamesInserts).toString().split(os.EOL);
     runTransaction(dosGames);
   }
+
+  var countUsers = await fetch(`SELECT count(1) as c FROM users`);
+  if (countUsers.c == 0) {
+    logger.info("DB setup: Populating users");
+    const users = fs.readFileSync(usersInserts).toString().split(os.EOL);
+    runTransaction(users);
+  }
+
+  logger.info("DB setup: Clearing expired authentication tokens");
+  await execute(`DELETE FROM tokens_blacklist`);
 }
 
 const runTransaction = (data) => {

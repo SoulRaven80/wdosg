@@ -102,7 +102,7 @@ $("#gamesListLink").on("click", function(e) {
             appendAlert('An error has occurred while reading the games information');
         }
     }).fail(function(jqXHR, status, error) {
-        appendAlert('An error has occurred while getting the game list information');
+        appendAlert(`An error has occurred while getting the game list information: ${error}`);
     });
 });
 

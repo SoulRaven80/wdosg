@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web DOS Games</title>
+
+  <!-- Bootstrap -->
+  <link href="/css/css3.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/docs.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <link href="/css/login.css" rel="stylesheet">
+  <link href="/img/favicon.png" rel="icon" type="image/png">
+</head>
+
+<body>
+
+<!-- MAIN -->
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div id="alertPlaceholder"></div>
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-md-5 mt-md-4">
+                            <form action="#" id="loginForm" method="post" class="needs-validation" novalidate>
+                                <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                <p class="text-white-50 mb-5">Please enter your email and password</p>
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    <label class="form-label" for="loginEmail">Email</label>
+                                    <input type="email" name="email" id="loginEmail" class="form-control form-control-lg" required>
+                                    <div class="invalid-feedback">
+                                        Please add a valid email.
+                                    </div>
+                                </div>
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    <label class="form-label" for="loginPassword">Password</label>
+                                    <input type="password" name="password" id="loginPassword" class="form-control form-control-lg" required>
+                                    <div class="invalid-feedback">
+                                        Please add a password.
+                                    </div>
+                                </div>
+                                <!-- <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p> -->
+                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5"
+                                    type="button" id="loginButton">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+  <!-- MAIN -->
+
+
+<!--  Scripts-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/w3.js"></script>
+<script src="/js/color-modes.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/login.js"></script>
+<script>
+    setTheme(getPreferredTheme());
+    initValidation();
+    initInfoMessages();
+</script>
+  
+</body>
+</html>

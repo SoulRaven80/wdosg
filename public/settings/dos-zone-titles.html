@@ -1,0 +1,23 @@
+<div class="d-none" id="dosZonePanel">
+    <div class="row pb-3">
+        <div class="col">
+            <div class="input-group position-relative d-inline-flex align-items-center">
+                <input class="form-control" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterDosZoneGames">
+                <i class="bi-x-lg position-absolute" onclick="($('#filterDosZoneGames').val(''))" style="right: 10px; cursor: pointer; z-index: 100;"></i>
+            </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+            <i class="bi-search" id="dosZoneSearch"></i>
+        </div>
+    </div>
+    <nav aria-label="Page navigation" id="dosZonePageNavigation"></nav>
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Game Title</th><th>Release year</th><th>Genres</th><th>Import</th>
+            </tr>
+        </thead>
+        <tbody id="dosZoneTbody">
+        </tbody>
+    </table>
+</div>

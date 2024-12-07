@@ -73,7 +73,6 @@ export async function findCompany(id) {
   }
 }
 
-
 export async function listGenres() {
   logger.debug(`Getting list of genres`);
   try {
@@ -245,6 +244,55 @@ export async function deleteGame(gamesLibrary, gameId) {
     fs.rmSync(`${gamesLibrary}/${game.path}`, { recursive: true, force: true });
   } catch (err) {
     logger.error(err, `Error while deleting game with id: ${game.id}`);
+  }
+}
+
+export async function listUsers() {
+  logger.debug(`Getting list of users`);
+  try {
+    return await sqlite.fetchAll(`SELECT * FROM users`);
+  } catch (err) {
+    logger.error(err, `Error while getting list of users`);
+  }
+}
+
+export async function addUser(user) {
+  logger.info(`Creating new user: ${user.username}`,);
+  await ensureUniqueUser(user);
+  try {
+      await sqlite.execute(`INSERT INTO users (username,email,role,password) VALUES (?, ?, ?, ?)`, [user.username, user.email, user.role, user.password]);
+  } catch (err) {
+    logger.error(err, `Error while saving user`);
+    throw err;
+  }
+}
+
+export async function deleteUser(username) {
+  logger.info(`Deleting user with username: ${username}`);
+  try {
+    await sqlite.execute(`DELETE FROM users WHERE username = ?`, [username]);
+  } catch (err) {
+    logger.error(err, `Error while deleting user with username: ${username}`);
+    throw err;
+  }
+}
+
+export async function updateUserPassword(email, password) {
+  logger.info(`Updating password for user with email: ${email}`);
+  try {
+    await sqlite.execute(`UPDATE users SET password = ? WHERE email = ?`, [password, email]);
+  } catch (err) {
+    logger.error(err, `Error while updating user with email: ${email}`);
+    throw err;
+  }
+}
+
+async function ensureUniqueUser(user) {
+  logger.debug(`Ensuring user does not exist with username: ${user.username} and email: ${user.email}`);
+  const dbUser = await sqlite.fetch(`SELECT * FROM users where username = ? OR email = ?`, [user.username, user.email]);
+  if (dbUser) {
+    logger.error(`User already exists`);
+    throw new Error(`User already exists`);
   }
 }
 

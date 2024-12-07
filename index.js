@@ -5,10 +5,10 @@ import cors from 'cors';
 import shortuuid from 'short-uuid';
 import stringSanitizer from "string-sanitizer";
 import cookieParser from "cookie-parser";
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as dataProvider from './providers/dataProvider.js';
 import * as igdbProvider from './providers/igdbProvider.js';
+import * as crypto from "./crypto/crypto.js"
 import * as config from './config.js';
 import httpLogger from "pino-http";
 import { logger } from './logger/logger.js';
@@ -20,9 +20,67 @@ if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
 }
 
 const games_library = config.getGamesLibraryLocation();
+const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
+
+// Middleware for JWT validation
+const verifyToken = async (req, res, next) => {
+    if (['/login.html', '/', '/api/login', '/css/css3.css', '/css/bootstrap.min.css',
+            '/css/docs.css', '/css/login.css', '/img/favicon.png', '/js/jquery.min.js',
+            '/js/bootstrap.bundle.min.js', '/js/w3.js', '/js/color-modes.js', '/js/common.js',
+            '/js/login.js'].includes(req.originalUrl)) {
+        next();
+        return;
+    }
+    
+    var token = getAuthToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // check db blacklist
+    var result = await dataProvider.findBlacklistedToken(token);
+    if (result) {
+        return res.status(401).json({ error: 'Session expired' });
+    }
+
+    jwt.verify(token, jwtSecretKey, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        req.user = decoded;
+        next();
+    });
+};
+
+const verifyAdminToken = async (req, res, next) => {
+    var token = getAuthToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // check db blacklist
+    var result = await dataProvider.findBlacklistedToken(token);
+    if (result) {
+        return res.status(401).json({ error: 'Session expired' });
+    }
+
+    jwt.verify(token, jwtSecretKey, async(err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        req.user = decoded;
+        const user = await dataProvider.findUser(req.user.email);
+        const isAdmin = { isAdmin: (user && user.role == 'admin') };
+        if (!isAdmin) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        next();
+    });
+};
 
 var app = express();
-app.use('/', express.static(path.join(config.getRootPath(), 'public')));
+app.use('/', verifyToken);
+app.use('/', express.static(path.join(config.getRootPath(), 'public'), { index: 'login.html'}));
 app.use('/library', express.static(games_library));
 app.disable("x-powered-by");
 app.use(cors());
@@ -39,58 +97,15 @@ app.use(httpLogger({
     useLevel: 'debug', 
     logger: logger, 
     autoLogging: {
-        ignore: (req) => { return req.url.includes('bootstrap') } 
+        ignore: (req) => { 
+            return (req.url.includes('/css/')
+                || req.url.includes('/js/')
+                || req.url.includes('/js-dos/'))
+        } 
     }
 }));
 
 app.set('port', process.env.PORT || 3001);
-
-// Middleware for JWT validation
-const verifyToken = async (req, res, next) => {
-    var token = getAuthToken(req);
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    // check db blacklist
-    var result = await dataProvider.findBlacklistedToken();
-    if (result) {
-        return res.status(401).json({ error: 'Session expired' });
-    }
-
-    jwt.verify(token, 'secret', (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        req.user = decoded;
-        next();
-    });
-};
-
-const verifyAdminToken = async (req, res, next) => {
-    var token = getAuthToken(req);
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    // check db blacklist
-    var result = await dataProvider.findBlacklistedToken();
-    if (result) {
-        return res.status(401).json({ error: 'Session expired' });
-    }
-
-    jwt.verify(token, 'secret', async(err, decoded) => {
-        if (err) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        req.user = decoded;
-        var isAdmin = await isAdmin(req.user.email);
-        if (!isAdmin) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        next();
-    });
-};
 
 app.get('/api/games', verifyToken, async(req, res, next) => {
 	var list = await dataProvider.listGames();
@@ -134,12 +149,10 @@ app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {
 
 app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res, next) => {
     const itemsPerPage = 20;
-    var gameId = parseInt(req.query.id);
-    if (!gameId) {
-        // TODO
-        res.json("ERROR");
-        return;
+    if (!req.query.id || !parseInt(req.query.id)) {
+        return res.status(422).send('Empty or invalid game id');
     }
+    var gameId = parseInt(req.query.id);
     var game = await dataProvider.findDosZoneGame(gameId);
 
     res.status(200).json({
@@ -150,30 +163,30 @@ app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res, next) => {
 });
 
 app.get('/api/game', verifyToken, async(req, res, next) => {
-    if (req.query.gameId) {
-        var game = await dataProvider.findGame(req.query.gameId);
-        res.status(200).json(game);
+    if (!req.query.gameId) {
+        return res.status(422).send('Empty game id');
     }
+    res.status(200).json(await dataProvider.findGame(req.query.gameId));
 });
 
 app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
-    res.json(await igdbProvider.searchGame(req.query.gameName));
+    res.status(200).json(await igdbProvider.searchGame(req.query.gameName));
 });
 
 app.get('/api/companies', verifyToken, async(req, res, next) => {
-    res.json(await dataProvider.listCompanies());
+    res.status(200).json(await dataProvider.listCompanies());
 });
 
 app.get('/api/searchCompanies', verifyAdminToken, async(req, res, next) => {
-    res.json(await dataProvider.searchCompanies(req.query.search));
+    res.status(200).json(await dataProvider.searchCompanies(req.query.search));
 });
 
 app.get('/api/company', verifyToken, async(req, res, next) => {
-    res.json(await dataProvider.findCompany(req.query.companyId));
+    res.status(200).json(await dataProvider.findCompany(req.query.companyId));
 });
 
 app.get('/api/genres', verifyToken, async(req, res, next) => {
-    res.json(await dataProvider.listGenres());
+    res.status(200).json(await dataProvider.listGenres());
 });
 
 app.post('/api/create', verifyAdminToken, async(req, res, next) => {
@@ -191,11 +204,11 @@ app.post('/api/create', verifyAdminToken, async(req, res, next) => {
     game.id = shortuuid.generate();
     logger.debug(`Generating game path`);
     game.path = stringSanitizer.sanitize.keepNumber(game.name);
-    dataProvider.saveNewGame(games_library, req.files.file, game);
+    await dataProvider.saveNewGame(games_library, req.files.file, game);
     res.status(200).redirect('/settings.html?action=created');
 });
 
-app.post('/api/update', verifyAdminToken, (req, res, next) => {
+app.post('/api/update', verifyAdminToken, async(req, res, next) => {
     var game = getGameFromBody(req.body);
     // these props comes as arrays per form select
     game.developers = req.body.developers;
@@ -203,12 +216,71 @@ app.post('/api/update', verifyAdminToken, (req, res, next) => {
     game.genres = req.body.genres;
     game.id = req.body.id;
     
-    dataProvider.updateGame(game);
+    await dataProvider.updateGame(game);
     res.status(200).redirect('/settings.html?action=updated');
 });
 
-app.delete('/api/delete', verifyAdminToken, (req, res) => {
-    dataProvider.deleteGame(games_library, req.query.gameId);
+app.delete('/api/deleteGame', verifyAdminToken, async(req, res) => {
+    await dataProvider.deleteGame(games_library, req.body.gameId);
+    res.status(200).json({"success": true});
+});
+
+app.get('/api/users', verifyAdminToken, async(req, res, next) => {
+    res.status(200).json(await dataProvider.listUsers());
+});
+
+app.post('/api/addUser', verifyAdminToken, async(req, res, next) => {
+    var user = {};
+    user.username = req.body.username;
+    user.email = req.body.email;
+    user.role = req.body.role;
+    user.password = await crypto.encrypt(req.body.password);
+    try {
+        await dataProvider.addUser(user);
+        res.status(200).json({"success": true});
+    }
+    catch(err) {
+        res.status(500).json({
+            status: "failed",
+            data: [],
+            message: err.message,
+        });
+    }
+});
+
+app.post('/api/changePassword', verifyToken, async(req, res, next) => {
+    try {
+        const user = await dataProvider.findUser(req.body.email);
+        if (!user) {
+            return res.status(401).json({
+                status: "failed",
+                data: [],
+                message: "Invalid email.",
+            });
+        }
+        const isPasswordValid = await crypto.compare(`${req.body.currentPassword}`, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                status: "failed",
+                data: [],
+                message: "Incorrect password. Please try again with the correct password.",
+            });
+        }
+        var password = await crypto.encrypt(req.body.newPassword);
+        await dataProvider.updateUserPassword(req.body.email, password);
+        res.status(200).json({"success": true});
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            data: [],
+            message: `Internal Server Error. ${err}`,
+        });
+    }
+});
+
+app.delete('/api/deleteUser', verifyAdminToken, async(req, res, next) => {
+    await dataProvider.deleteUser(req.body.username);
     res.status(200).json({"success": true});
 });
 
@@ -222,7 +294,7 @@ app.post('/api/login', async(req, res, next) => {
                 message: "Invalid email or password. Please try again with the correct credentials.",
             });
         }
-        const isPasswordValid = await bcrypt.compare(`${req.body.password}`, user.password);
+        const isPasswordValid = await crypto.compare(`${req.body.password}`, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({
                 status: "failed",
@@ -234,12 +306,16 @@ app.post('/api/login', async(req, res, next) => {
         let options = {
             expiresIn: 120 * 60 * 1000 // would expire in 120 minutes
         };
-        const token = jwt.sign({ email: user.email }, 'secret', options);
+        const token = jwt.sign({ email: user.email }, jwtSecretKey, options);
         const isAdmin = { isAdmin: (user && user.role == 'admin') };
     
         res.status(200).json({
             status: "success",
-            data: {token: token, isAdmin: isAdmin},
+            data: { token: token, 
+                username: user.username, 
+                email: user.email,
+                isAdmin: isAdmin
+            },
             message: "You have successfully logged in.",
         });
     } catch (err) {
@@ -251,12 +327,6 @@ app.post('/api/login', async(req, res, next) => {
         });
     }
 });
-
-async function isAdmin(email) {
-    const user = await dataProvider.findUser(req.body.email);
-    const isAdmin = { isAdmin: (user && user.role == 'admin') };
-    return isAdmin;
-}
 
 function getAuthToken(req) {
     const cookieStr = req.headers.cookie;

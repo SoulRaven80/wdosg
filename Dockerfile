@@ -4,6 +4,7 @@ FROM node:23-alpine3.19
 WORKDIR /app
 COPY . .
 
+RUN npm install bcrypt
 RUN npm install
 EXPOSE 3001
 CMD [ "node", "index" ]

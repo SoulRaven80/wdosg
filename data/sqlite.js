@@ -78,7 +78,8 @@ const createTables = async() => {
       url text null
     );`);
     await execute(`CREATE TABLE IF NOT EXISTS users (
-      email text primary key not null,
+      username text primary key not null,
+      email text not null,
       password text not null,
       role text not null
     );`);
@@ -196,7 +197,9 @@ export const init = async() => {
       ensurePathExists();
       db = await connectDb();
       db.on('trace', function(query) {
-        logger.debug(query);
+        if (!query.includes('token') && !query.includes('password')) {
+          logger.debug(query);
+        }
       });
       await createTables();
       resolve();

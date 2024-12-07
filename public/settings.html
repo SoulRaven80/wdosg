@@ -38,7 +38,7 @@
             <div class="d-flex w-100 justify-content-between">
               <a class="bi-card-list nav-link primary" aria-current="page" id="gamesListLink" style="cursor: pointer;">
                 <svg class="bi pe-none" width="16" height="16"></svg>
-                Games list
+                Games
               </a>
             </div>
           </div>
@@ -62,15 +62,27 @@
             <div class="d-flex w-100 justify-content-between">
               <a class="bi-cloud-download nav-link primary" aria-current="page" onclick="openListDOSZone(1, '')" style="cursor: pointer;">
                 <svg class="bi pe-none" width="16" height="16"></svg>
-                Import from DOS-Zone
+                Import game from DOS-Zone
+              </a>
+            </div>
+          </div>
+          <div class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <a class="bi-people nav-link primary" aria-current="page" id="usersAdminLink" onclick="openUsersAdmin()" style="cursor: pointer;">
+                <svg class="bi pe-none" width="16" height="16"></svg>
+                Users
               </a>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-9 p-3" id="content_div">
 
+      <div class="col-9 p-3" id="content_div">
+        <div w3-include-html="/settings/games-list.html"></div>
+        <div w3-include-html="/settings/users-admin.html"></div>
+        <div w3-include-html="/settings/dos-zone-titles.html"></div>
       </div>
+
       <form action="/api/createBundle" id="bundleStudioForm" method="post" enctype="multipart/form-data">
         <div w3-include-html="/game-studio/step-1.html"></div>
         <div w3-include-html="/game-studio/step-2.html"></div>
@@ -84,6 +96,7 @@
 <div w3-include-html="/settings/create-manually.html"></div>
 <div w3-include-html="/settings/edit.html"></div>
 <div w3-include-html="/settings/confirm-remove.html"></div>
+<div w3-include-html="/settings/add-user.html"></div>
 
 <!-- FOOTER -->
 <div class="fixed-bottom" w3-include-html="/footer.html"></div>
@@ -108,7 +121,11 @@
 <script src="/js/settings/create.js"></script>
 <script src="/js/settings/create-manually.js"></script>
 <script src="/js/settings/edit.js"></script>
-<script src="/js/settings/confirm-remove.js"></script>
+<script src="/js/settings/confirm-remove-game.js"></script>
+<script src="/js/settings/confirm-remove-user.js"></script>
 <script src="/js/settings/dos-zone-titles.js"></script>
+<script src="/js/settings/games-list.js"></script>
+<script src="/js/settings/users-admin.js"></script>
+<script src="/js/settings/add-user.js"></script>
 </body>
 </html>

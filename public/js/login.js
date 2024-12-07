@@ -35,7 +35,8 @@ $('#loginButton').on('click', event => {
             data: $('#loginForm').serialize(), 
             success: (result, statusMessage, response) => {
                 document.cookie = `auth-token=${response.responseJSON.data.token}; Path=/;`;
-                sessionStorage.setItem('userName', $('#loginEmail').val());
+                sessionStorage.setItem('userName', response.responseJSON.data.username);
+                sessionStorage.setItem('email', response.responseJSON.data.email);
                 sessionStorage.setItem('isAdmin', response.responseJSON.data.isAdmin);
                 window.location.replace('/home');
             },

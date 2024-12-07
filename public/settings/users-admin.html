@@ -1,0 +1,24 @@
+<div class="d-none" id="usersAdminPanel">
+    <div class="container">
+        <div class="row header">
+            <div class="col">
+                <h4 class="pb-2" id="title">Users List</h4>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-primary" id="addNewUser" onclick="openAddUserModal()">Add new user</button>
+            </div>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTbody">
+            </tbody>
+        </table>
+    </div>
+</div>

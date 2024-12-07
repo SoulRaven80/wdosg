@@ -1,5 +1,7 @@
 const openCreateManuallyModal = () => {
     $('#createManuallyModal').trigger("reset");
+    $('#createManuallyFile')[0].files = $('#createFile')[0].files;
+
     $('#createModal').modal("hide");
     const uploadModal = new bootstrap.Modal('#createManuallyModal', {});
     uploadModal.show();

@@ -1,12 +1,12 @@
 const appendAlert = (message) => {
     const alertPlaceholder = document.getElementById('alertPlaceholder');
     const wrapper = document.createElement('div');
+    $(wrapper).addClass("alert alert-danger d-flex align-items-center alert-dismissible fade show");
+    $(wrapper).attr("role", "alert");
     wrapper.innerHTML = [
-        '<div class="alert alert-danger d-flex align-items-center alert-dismissible" role="alert">',
         '   <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>',
         `   <div>${message}</div>`,
-        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-        '</div>'
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
     ].join('');
     alertPlaceholder.append(wrapper);
 };
@@ -14,12 +14,125 @@ const appendAlert = (message) => {
 const appendInfo = (message) => {
     const alertPlaceholder = document.getElementById('alertPlaceholder');
     const wrapper = document.createElement('div');
+    $(wrapper).addClass("alert alert-info d-flex align-items-center alert-dismissible fade show");
+    $(wrapper).attr("role", "alert");
     wrapper.innerHTML = [
-        '<div class="alert alert-info d-flex align-items-center alert-dismissible" role="alert">',
         '   <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>',
         `   <div>${message}</div>`,
-        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-        '</div>'
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
     ].join('');
     alertPlaceholder.append(wrapper);
 };
+
+const initHeader = () => {
+    setUserName();
+    if (sessionStorage.getItem('isAdmin')) {
+        $('#settingsDiv').removeClass('d-none');
+    }
+    includeHTMLPage('/change-password.html');
+    if (document.location.pathname.startsWith('/library/')) {
+        var divElem = document.createElement("div");
+        divElem.setAttribute('id', 'alertPlaceholder');
+        var iframeElem = document.getElementsByTagName('iframe')[0];
+        iframeElem.parentNode.insertBefore(divElem, iframeElem);
+    }
+}
+
+const includeHTMLPage = function(file, cb) {
+    var elmnt, xhttp;
+    elmnt = document.createElement("div");
+
+    if (file) {
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status == 200) {
+                elmnt.innerHTML = this.responseText;
+                document.body.appendChild(elmnt);
+            }
+            if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          }
+        }
+        xhttp.open("GET", file, true);
+        xhttp.send();
+        return;
+    }
+    if (cb) cb();
+};
+
+const setUserName = () => {
+    $('#userName').text(sessionStorage.getItem('userName'));
+}
+
+const logout = () => {
+    sessionStorage.setItem('userName', '');
+    document.cookie = 'auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    window.location.replace('/login.html');
+}
+
+const openChangePassword = () => {
+    $('#changePasswordForm').trigger("reset");
+    $('#currentPassword').removeClass('is-valid is-invalid');
+    $('#newPassword').removeClass('is-valid is-invalid');
+    $('#newPassword2').removeClass('is-valid is-invalid');
+    $('#changePasswordEmail').val(sessionStorage.getItem('email'));
+    const confirmDeleteModal = new bootstrap.Modal('#changePasswordModal', {});
+    confirmDeleteModal.show();
+}
+
+const confirmChangePassword = () => {
+    var validCurrentPassword = $('#currentPassword')[0].checkValidity();
+    $('#currentPassword').removeClass('is-valid is-invalid')
+        .addClass(validCurrentPassword ? 'is-valid' : 'is-invalid');
+
+    var validNewPassword = $('#newPassword')[0].checkValidity();
+    $('#newPassword').removeClass('is-valid is-invalid')
+        .addClass(validNewPassword ? 'is-valid' : 'is-invalid');
+    var validNewPassword2 = $('#newPassword2')[0].checkValidity();
+    $('#newPassword2').removeClass('is-valid is-invalid')
+        .addClass(validNewPassword2 ? 'is-valid' : 'is-invalid');
+
+    var passMatches = false;
+    if (validNewPassword2) {
+        passMatches = ($('#newPassword').val() === $('#newPassword2').val());
+        if (!passMatches) {
+            $('#newPassword2').removeClass('is-valid is-invalid').addClass('is-invalid');
+            $('#newPassword2').next().text('Passwords do not match');
+        }
+    }
+    else {
+        $('#newPassword2').next().text('Please confirm the new password');
+    }
+    if (validCurrentPassword && validNewPassword && passMatches) {
+        $('#changePasswordModalSave').addClass('d-none');
+        $('#changePasswordModalSpinner').removeClass('d-none');
+        $.ajax({
+            type: "POST",
+            url: "/api/changePassword",
+            data: $('#changePasswordForm').serialize(), 
+            success: (result, statusMessage, response) => {
+                appendInfo('Password Updated');
+            },
+            error: (error) => {
+                appendAlert(error.message);
+            },
+            complete: (xhr, status) => {
+                $('#changePasswordModalSave').removeClass('d-none');
+                $('#changePasswordModalSpinner').addClass('d-none');
+                $('#changePasswordModal').modal('hide');
+            }
+        });
+    }
+}
+
+// Redirect all 401 ajax call responses into login page
+$.ajaxSetup({
+    error: function(xhr, status, err) {
+        if (xhr.status == 401) {
+            window.location.replace('/login.html');
+        }
+        if (xhr.status == 500) {
+            appendAlert(err);
+        }
+    }
+});

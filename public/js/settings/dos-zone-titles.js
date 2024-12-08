@@ -1,25 +1,21 @@
 const openListDOSZone = (page, filter) => {
-    const contentDiv = document.getElementById('content_div');
-    contentDiv.innerHTML = '';
+    $('#emptyGamesListDiv').removeClass('d-none').addClass('d-none');
+    $('#gamesListPanel').removeClass('d-none').addClass('d-none');
+    $('#usersAdminPanel').removeClass('d-none').addClass('d-none');
+    $('#dosZonePanel').removeClass('d-none').addClass('d-none');
+    $('#dosZoneTbody').empty();
+    const contentDiv = document.getElementById('dosZonePanel');
     $.getJSON(`/api/dosZoneGames?page=${page}&filter=${filter}`, function(result) {
         try {
-            $(contentDiv).prepend(`<div class="row py-3">
-                <div class="col">
-                    <div class="input-group position-relative d-inline-flex align-items-center">
-                        <input class="form-control" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterDosZoneGames" value="${filter}">
-                        <i class="bi-x-lg position-absolute" onclick="($('#filterDosZoneGames').val(''))" style="right: 10px; cursor: pointer; z-index: 100;"></i>
-                    </div>
-                </div>
-                <div class="col-auto d-flex align-items-center">
-                  <i class="bi-search" id="dosZoneSearch" onclick="openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val())"></i>
-                </div>
-              </div>`);
-      
-            var navigation = `<nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center" style="margin-bottom: unset">
+            $('#filterDosZoneGames').val(filter);
+            $('#dosZonePageNavigation').empty();
+
+            $('#dosZoneSearch').attr("onclick",`openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val())`);
+
+            var navigation = `<ul class="pagination justify-content-center" style="margin-bottom: unset">
                                 <li class="page-item ${result.currentPage > 1 ? '' : 'disabled'}">
                                     <a class="page-link" href="#" onclick="openListDOSZone(${result.currentPage - 1}, '${filter}')" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
+                                        <span>&laquo;</span>
                                     </a>
                                 </li>`;
             if (result.startPage > 1) {
@@ -55,16 +51,9 @@ const openListDOSZone = (page, filter) => {
                         <a class="page-link" href="#">&raquo;</a>
                     </li>`;
             }
-            navigation += `</ul>
-                        </nav>`;
-            $(contentDiv).append(navigation);
-            var wrapper = `<table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Game Title</th><th>Release year</th><th>Genres</th><th></th>
-                        </tr>
-                    </thead>
-                <tbody>`;
+            navigation += `</ul>`;
+            $('#dosZonePageNavigation').append(navigation);
+            var wrapper = '';
             for (let i = 0; i < result.items.length; i++) {
                 const game = result.items[i];
                 wrapper += `<tr><td>${game.title}</td><td>${game.release}</td><td>${game.genre}</td>
@@ -73,14 +62,14 @@ const openListDOSZone = (page, filter) => {
                     </td>
                 </tr>`;
             }
-            wrapper += `</tbody></table>`
-            $(contentDiv).append(wrapper);
+            $('#dosZoneTbody').append(wrapper);
 
             $("#filterDosZoneGames").keyup(function(event) {
                 if (event.keyCode === 13) {
                     $("#dosZoneSearch").click();
                 }
             });
+            $('#dosZonePanel').removeClass('d-none');
         }
         catch (error) {
             appendAlert(`An error has occurred while reading the games list: ${error}`);
@@ -95,13 +84,6 @@ function downloadAndAdd(gameId) {
         fetch(result.url)
             .then((response) => response.blob())
             .then(blob => {
-            // response.body: ReadableStream 
-            // response.ok: boolean
-            // response.redirected: boolean
-            // response.status: int
-            // response.type: string ("cors" ?)
-            // response.url: string
-            
                 const bundleFile = new Blob([blob]);
                 const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
                 const container = new DataTransfer();

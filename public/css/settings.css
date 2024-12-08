@@ -56,3 +56,8 @@
     max-width: none !important;
     text-align: left !important;
 }
+
+#usersTbody button.bi-trash {
+    padding-top: unset !important;
+    padding-bottom: unset !important;
+}

@@ -53,59 +53,6 @@ function uniq(array) {
     return unique;
 }
  
-$("#gamesListLink").on("click", function(e) {
-    const contentDiv = document.getElementById('content_div');
-    contentDiv.innerHTML = '';
-
-    $.getJSON("/api/gamesShallowInfo", function(data) {
-        try {
-            if (data.length == 0) {
-                contentDiv.append("Empty games library");
-                return;
-            }
-            var wrapper = [
-                '<table class="table">',
-                '  <thead>',
-                '    <tr>',
-                '      <th scope="col">#</th>',
-                '      <th scope="col">Name</th>',
-                '      <th scope="col">Actions</th>',
-                '    </tr>',
-                '  </thead>',
-                '  <tbody>'
-            ].join('');
-            var sortedData = data.sort((a, b) => {
-                if (a.name < b.name) {
-                  return -1;
-                }
-            });
-            for (let i = 0; i < sortedData.length; i++) {
-                const game = sortedData[i];
-                wrapper += [
-                    '<tr>',
-                    `  <th scope="row">${i+1}</th>`,
-                    `  <td>${game.name}</td>`,
-                    '  <td>',
-                    `    <button type="button" class="btn bi-pencil" aria-label="Edit" onclick="openEditModal('${game.id}')"></button>`,
-                    `    <button type="button" class="btn bi-trash" aria-label="Delete" onclick="openDeleteConfirmation('${game.id}')"></button>`,
-                    '  </td>',
-                    '</tr>',
-                ].join('');
-            }
-            wrapper += [
-                '  </tbody>',
-                '</table>'
-            ].join('');
-            contentDiv.innerHTML = wrapper;
-        }
-        catch (error) {
-            appendAlert('An error has occurred while reading the games information');
-        }
-    }).fail(function(jqXHR, status, error) {
-        appendAlert('An error has occurred while getting the game list information');
-    });
-});
-
 const afterLoadingPage = () => {
     // Load alert after update / create
     var urlParams = new URLSearchParams(window.location.search);

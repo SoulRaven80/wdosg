@@ -66,6 +66,34 @@ export async function deleteGame(gamesLibrary, gameId) {
   return await dbManager.deleteGame(gamesLibrary, gameId);
 }
 
+export async function listUsers() {
+  return await dbManager.listUsers();
+}
+
+export async function addUser(user) {
+  return await dbManager.addUser(user);
+}
+
+export async function deleteUser(username) {
+  return await dbManager.deleteUser(username);
+}
+
+export async function updateUserPassword(email, password) {
+  return await dbManager.updateUserPassword(email, password);
+}
+
+export async function findUser(email) {
+  return await dbManager.findUser(email);
+}
+
+export async function blacklistToken(token) {
+  return await dbManager.blacklistToken(token);
+}
+
+export async function findBlacklistedToken(token) {
+  return await dbManager.findBlacklistedToken(token);
+}
+
 export async function init() {
   return dbManager.init();
 }

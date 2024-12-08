@@ -21,13 +21,13 @@
     <nav class="navbar shadow-sm bg-body-tertiary">
         <div class="container justify-content-between align-items-center">
             <div>
-                <a href="/" class="navbar-brand d-flex align-items-center">
+                <a href="/index.html" class="navbar-brand d-flex align-items-center">
                     <img src="/img/logo-transparent.png" height="40" />
                     <strong>&nbsp; Web DOS Games</strong>
                 </a>
             </div>
             <div class="d-flex align-content-center justify-content-end">
-                <div class="align-content-center">
+                <div class="align-content-center d-none" id="settingsDiv">
                     <a href="/settings.html" class="bi-sliders btn btn-outline-secondary"> Settings</a>
                 </div>
                 <div class="vr mx-2"></div>
@@ -63,6 +63,19 @@
                         <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
                         </button>
                     </li>
+                    </ul>
+                </div>
+                <div class="vr mx-2"></div>
+
+                <div class="dropdown-center">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 42px;">
+                      <i class="bi bi-person-circle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end text-end">
+                      <li><h6 class="dropdown-header" id="userName"></h6></li>
+                      <li><button class="dropdown-item" type="button" onclick="openChangePassword()">Change Password</button></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><button class="dropdown-item" type="button" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button></li>
                     </ul>
                 </div>
             </div>

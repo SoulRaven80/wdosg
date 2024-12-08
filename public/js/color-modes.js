@@ -75,6 +75,8 @@ function initializeColorMode() {
   })
 
   onLoadEvent();
+  // hack for backward compatibility
+  initHeader();
 }
 
 function onLoadEvent() {

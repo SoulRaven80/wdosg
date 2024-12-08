@@ -58,17 +58,20 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [x] Download IGDB metadata
   - [x] Local save games / states
   - [x] Dark / Light themes
-  - [ ] User authentication
+  - [x] User authentication (local)
+  - [x] User administration
 - [ ] Desired features
   - [ ] Cloud saving (enabled through _js-dos_)
   - [x] _js-dos_ per-game configuration
   - [ ] Create entry from game folder - as opposed to a _jsdos bundle_ file
   - [ ] Support for _js-dos_ v8 (currently v7)
   - [ ] Ability to scan library folder (bulk import)
+  - [ ] Send registering invites via email
+  - [ ] Password recovery
 
 > [!CAUTION]
-> wDOSg has been imagined as a _convenient_ way to run DOS games. It has not been designed to be exposed to the open 
-> internet. **Make sure** your instance is **NOT** exposed. 
+> wDOSg has been imagined as a _convenient_ way to run DOS games. Although it requires user authentication, it has not been 
+> designed to be exposed to the open internet. **Make sure** your instance is **NOT** exposed. 
 
 # Installation
 
@@ -110,9 +113,10 @@ curl -X POST https://id.twitch.tv/oauth2/token \
 | --- | --- | --- |
 |`TWITCH_CLIENT_ID`|Your personal Twitch Client ID|Empty|
 |`TWITCH_APP_ACCESS_TOKEN`|Your Twitch Access Token|Empty|
-|`LOG_LEVEL`|info, debug, trace|info|
-|`GAMES_LIBRARY` (*) |Path to your games library (If using docker this variable references its internal location, so make sure the appropriate path gets reflected as a mapped volume)|/app/wdosglibrary|
-|`DB_PATH` (*)|Path to the sqlite database|/app/database/
+|`LOG_LEVEL`|info, debug, trace|`info`|
+|`TOKEN_SECRET`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
+|`GAMES_LIBRARY` (*) |Path to your games library (If using docker this variable references its internal location, so make sure the appropriate path gets reflected as a mapped volume)|`'/app/wdosglibrary'`|
+|`DB_PATH` (*)|Path to the sqlite database|`'/app/database/'`|
 
 (*): _If using docker, it's recommended to leave them as-is, and instead map the corresponding folder to the default value_
 
@@ -133,7 +137,8 @@ services:
     environment:
       - TWITCH_CLIENT_ID=xxxx # Your IGDB (Twitch) client ID
       - TWITCH_APP_ACCESS_TOKEN=xxxx # Your IGDB (Twitch) Token - **NOT your secret**
-      - LOG_LEVEL=info # Your IGDB (Twitch) Token - **NOT your secret**
+      - LOG_LEVEL=info # Level of logging to be reflected on console
+      - TOKEN_SECRET=secret # Your key to encrypt the session tokens
       # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this, make sure mapped volumes are consistent with this value
       # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this, make sure mapped volumes are consistent with this value
     volumes:

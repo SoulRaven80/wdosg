@@ -139,8 +139,10 @@ services:
       - TWITCH_APP_ACCESS_TOKEN=xxxx # Your IGDB (Twitch) Token - **NOT your secret**
       - LOG_LEVEL=info # Level of logging to be reflected on console
       - TOKEN_SECRET=secret # Your key to encrypt the session tokens
-      # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this, make sure mapped volumes are consistent with this value
-      # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this, make sure mapped volumes are consistent with this value
+      # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this variable, 
+                                               # make sure mapped volumes are consistent with this value
+      # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this variable, 
+                                          # make sure mapped volumes are consistent with this value
     volumes:
       - your_library_location:/app/wdosglibrary # directory containing your library
       - your_db_location:/app/database # directory containing your database
@@ -155,3 +157,9 @@ networks:
 Run `docker-compose up -d` in the directory containing your `docker-compose.yml` file to start the service.
 
 Open http://localhost:3001 (or the port configured on your docker compose file) and enjoy!
+
+----
+Default admin user: 
+```
+wdosg@wdosg.com / wdosg
+```

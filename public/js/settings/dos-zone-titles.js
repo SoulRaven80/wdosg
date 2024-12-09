@@ -63,12 +63,6 @@ const openListDOSZone = (page, filter) => {
                 </tr>`;
             }
             $('#dosZoneTbody').append(wrapper);
-
-            $("#filterDosZoneGames").keyup(function(event) {
-                if (event.keyCode === 13) {
-                    $("#dosZoneSearch").click();
-                }
-            });
             $('#dosZonePanel').removeClass('d-none');
         }
         catch (error) {
@@ -76,6 +70,14 @@ const openListDOSZone = (page, filter) => {
         }
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the games list: ${error}`);
+    });
+}
+
+function prepareImportFromDosZone() {
+    $("#filterDosZoneGames").keyup(function(event) {
+        if (event.keyCode === 13) {
+            $("#dosZoneSearch").click();
+        }
     });
 }
 

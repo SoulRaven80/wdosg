@@ -102,6 +102,10 @@ app.use(httpLogger({
                 || req.url.includes('/js/')
                 || req.url.includes('/js-dos/'))
         } 
+    },
+    redact: {
+        paths: ['req.headers.cookie'],
+        remove: true
     }
 }));
 

@@ -80,20 +80,12 @@ const afterLoadingPage = () => {
         }, false);
     });
 
-    $("#createManuallyForm").get(0).addEventListener('submit', event => {
-        onCreateManuallySubmit();
-    });
-
-    $("#createForm").get(0).addEventListener('submit', event => {
-        onCreateSubmit();
-    });
-    
     createManuallyDevelopersSelectizes();
     createManuallyPublishersSelectizes();
 
     createDevelopersSelectizes();
     createPublishersSelectizes();
-    
+
     editDevelopersSelectizes();
     editPublishersSelectizes();
 
@@ -102,4 +94,7 @@ const afterLoadingPage = () => {
         createGenresSelectizes(result);
         editGenresSelectizes(result);
     });
+
+    prepareCreateSave();
+    prepareCreateManuallySave();
 };

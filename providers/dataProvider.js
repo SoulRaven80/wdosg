@@ -49,7 +49,7 @@ export async function saveNewGame(gamesLibrary, file, game) {
   // TODO Validate if exists, then throw an error
   logger.debug(`Creating ${gamesLibrary}/${game.path} directory`);
   fs.mkdirSync(`${gamesLibrary}/${game.path}`, { recursive: true });
-  logger.debug(`Moving ${file} to ${gamesLibrary}/${game.path}/bundle.jsdos`);
+  logger.debug(`Moving ${file.name} to ${gamesLibrary}/${game.path}/bundle.jsdos`);
   file.mv(`${gamesLibrary}/${game.path}/bundle.jsdos`);
   logger.debug(`Copying templates to ${gamesLibrary}/${game.path}`);
   fs.copyFileSync(`${template_path}/index.html`, `${gamesLibrary}/${game.path}/index.html`);

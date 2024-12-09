@@ -1,16 +1,54 @@
 const openCreateManuallyModal = () => {
     $('#createManuallyModal').trigger("reset");
     $('#createManuallyFile')[0].files = $('#createFile')[0].files;
+    $('#createManuallyFile').removeClass('is-valid is-invalid');
+    $('#createManuallyName').removeClass('is-valid is-invalid');
 
     $('#createModal').modal("hide");
     const uploadModal = new bootstrap.Modal('#createManuallyModal', {});
     uploadModal.show();
 }
 
-function onCreateManuallySubmit() {
-    $('#createManuallyModalSave').addClass('d-none');
-    $('#createManuallyModalSpinner').removeClass('d-none');
-    $('#createManuallyModalClose').prop("disabled", true);
+function prepareCreateManuallySave() {
+    $('#createManuallyModalSave').on('click', event => {
+        var validCreateFile = $('#createManuallyFile')[0].checkValidity();
+        $('#createManuallyFile').removeClass('is-valid is-invalid')
+            .addClass(validCreateFile ? 'is-valid' : 'is-invalid');
+        var validCreateName = $('#createManuallyName')[0].checkValidity();
+        $('#createManuallyName').removeClass('is-valid is-invalid')
+            .addClass(validCreateName ? 'is-valid' : 'is-invalid');
+        if (validCreateFile && validCreateName) {
+            $('#createManuallyModalSave').addClass('d-none');
+            $('#createManuallyModalSpinner').removeClass('d-none');
+            $('#createManuallyModalClose').prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                url: "/api/create",
+                data: new FormData( $('#createManuallyForm')[0] ),
+                processData: false,
+                contentType: false,
+                success: (result, statusMessage, response) => {
+                    appendInfo('Game created');
+                },
+                error: (error) => {
+                    if (error.responseJSON && error.responseJSON.message) {
+                        appendAlert(error.responseJSON.message);
+                    }
+                    else {
+                        appendAlert(error.message);
+                    }
+                },
+                complete: (xhr, status) => {
+                    $('#createManuallyModal').modal('hide');
+
+                    $('#createManuallyModalSave').removeClass('d-none');
+                    $('#createManuallyModalSpinner').addClass('d-none');
+                    $('#createManuallyModalClose').prop("disabled", false);
+                }
+            });
+        }
+    });
 }
 
 function createManuallyDevelopersSelectizes() {

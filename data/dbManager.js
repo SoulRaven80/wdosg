@@ -97,6 +97,7 @@ export async function fetchGame(gameId) {
       logger.error(err, `Error while retrieving game with id: ${gameId}`);
     }
 }
+
 export async function fetchDosZoneGame(gameId) {
   logger.debug(`Retrieving game from DOS-Zone with id: ${gameId}`);
   try {

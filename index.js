@@ -6,6 +6,7 @@ import shortuuid from 'short-uuid';
 import stringSanitizer from "string-sanitizer";
 import cookieParser from "cookie-parser";
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
 import * as dataProvider from './providers/dataProvider.js';
 import * as igdbProvider from './providers/igdbProvider.js';
 import * as crypto from "./crypto/crypto.js"
@@ -193,11 +194,31 @@ app.get('/api/genres', verifyToken, async(req, res, next) => {
     res.status(200).json(await dataProvider.listGenres());
 });
 
+const getDirectories = (source) => {
+    return fs.readdirSync(source, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+}
+
 app.post('/api/create', verifyAdminToken, async(req, res, next) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
 
+    var gamePath = stringSanitizer.sanitize.keepNumber(req.body.name);
+    logger.debug(`Ensure game does not exist for path ${gamePath}`);
+    var dirs = getDirectories(games_library);
+    var pathExists = dirs.filter(dir => {
+        return dir.toUpperCase() == gamePath.toUpperCase()
+    });
+    if (pathExists.length > 0) {
+        return res.status(403).json({
+            status: "failed",
+            data: [],
+            message: 'Game already exists on library',
+        });
+    }
+    
     var game = getGameFromBody(req.body);
     // these props comes as arrays per form select
     game.developers = req.body.developers;
@@ -209,7 +230,7 @@ app.post('/api/create', verifyAdminToken, async(req, res, next) => {
     logger.debug(`Generating game path`);
     game.path = stringSanitizer.sanitize.keepNumber(game.name);
     await dataProvider.saveNewGame(games_library, req.files.file, game);
-    res.status(200).redirect('/settings.html?action=created');
+    res.status(200).json({ "success": true });
 });
 
 app.post('/api/update', verifyAdminToken, async(req, res, next) => {

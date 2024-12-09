@@ -102,52 +102,90 @@ const getCover = (igdb_id, parentElement) => {
     }
 }
 
-function onCreateSubmit() {
-    if (sessionStorage.searchResults) {
-        $('#createModalSave').addClass('d-none');
-        $('#createModalSpinner').removeClass('d-none');
-        $('#createModalClose').prop("disabled", true);
-        $('#createButtonFind').prop("disabled", true);
+function prepareCreateSave() {
+    $('#createModalSave').on('click', event => {
+        var validCreateFile = $('#createFile')[0].checkValidity();
+        $('#createFile').removeClass('is-valid is-invalid')
+            .addClass(validCreateFile ? 'is-valid' : 'is-invalid');
+        var validCreateName = $('#createName')[0].checkValidity();
+        $('#createName').removeClass('is-valid is-invalid')
+            .addClass(validCreateName ? 'is-valid' : 'is-invalid');
+        if (validCreateFile && validCreateName) {
+    
+            if (sessionStorage.searchResults) {
+                $('#createModalSave').addClass('d-none');
+                $('#createModalSpinner').removeClass('d-none');
+                $('#createModalClose').prop("disabled", true);
+                $('#createButtonFind').prop("disabled", true);
+    
+                var searchResults = JSON.parse(sessionStorage.searchResults);
+                var igdb_id = $('input[name=igdb_id]:checked', '#createForm').val();
+                var result = searchResults.filter(function(i) {
+                    return i.id == igdb_id;
+                })[0];
+                if (result.cover && result.cover.image_id) {
+                    $("#createImageUrl").val(`https://images.igdb.com/igdb/image/upload/t_cover_big/${result.cover.image_id}.jpg`);
+                }
+                $("#createDescription").val(`${(result.summary ? result.summary : '')}`);
+    
+                if (Array.isArray(result.involved_companies)) {
+                    setCreateMultiValues('createDevelopers', result.involved_companies.filter(function (i) {
+                        return i.developer;
+                    }));
+                    setCreateMultiValues('createPublishers', result.involved_companies.filter(function (i) {
+                        return i.publisher;
+                    }));
+                }
+                else if (result.involved_companies) {
+                    if (result.involved_companies.developer) {
+                        setCreateMultiValues('createDevelopers', result.involved_companies);
+                    }
+                    if (result.involved_companies.publisher) {
+                        setCreateMultiValues('createPublishers', result.involved_companies);
+                    }
+                }
+                if (result.genres) {
+                    setGenresValues('createGenres', result.genres);
+                }
+    
+                $("#createYear").val(`${new Date(result.first_release_date * 1000).getFullYear()}`);
+                if (result.videos && result.videos.length > 0) {
+                    $("#createTrailerUrl").val(`https://www.youtube.com/embed/${result.videos[0].video_id}`);
+                }
+                else if (result.screenshots && result.screenshots.length > 0) {
+                    $("#createTrailerUrl").val(`https://images.igdb.com/igdb/image/upload/t_720p/${result.screenshots[0].image_id}.jpg`);
+                }
+                $("#createName").val(`${result.name}`);
+    
+                $.ajax({
+                    type: "POST",
+                    url: "/api/create",
+                    data: new FormData( $('#createForm')[0] ), 
+                    processData: false,
+                    contentType: false,
+                    success: (result, statusMessage, response) => {
+                        appendInfo('Game created');
+                    },
+                    error: (error) => {
+                        if (error.responseJSON && error.responseJSON.message) {
+                            appendAlert(error.responseJSON.message);
+                        }
+                        else {
+                            appendAlert(error.message);
+                        }
+                    },
+                    complete: (xhr, status) => {
+                        $('#createModal').modal('hide');
 
-        var searchResults = JSON.parse(sessionStorage.searchResults);
-        var igdb_id = $('input[name=igdb_id]:checked', '#createForm').val();
-        var result = searchResults.filter(function(i) {
-            return i.id == igdb_id;
-        })[0];
-        if (result.cover && result.cover.image_id) {
-            $("#createImageUrl").val(`https://images.igdb.com/igdb/image/upload/t_cover_big/${result.cover.image_id}.jpg`);
-        }
-        $("#createDescription").val(`${(result.summary ? result.summary : '')}`);
-
-        if (Array.isArray(result.involved_companies)) {
-            setCreateMultiValues('createDevelopers', result.involved_companies.filter(function (i) {
-                return i.developer;
-            }));
-            setCreateMultiValues('createPublishers', result.involved_companies.filter(function (i) {
-                return i.publisher;
-            }));
-        }
-        else if (result.involved_companies) {
-            if (result.involved_companies.developer) {
-                setCreateMultiValues('createDevelopers', result.involved_companies);
+                        $('#createModalSave').removeClass('d-none');
+                        $('#createModalSpinner').addClass('d-none');
+                        $('#createModalClose').prop("disabled", false);
+                        $('#createButtonFind').prop("disabled", false);
+                    }
+                });
             }
-            if (result.involved_companies.publisher) {
-                setCreateMultiValues('createPublishers', result.involved_companies);
-            }
         }
-        if (result.genres) {
-            setGenresValues('createGenres', result.genres);
-        }
-
-        $("#createYear").val(`${new Date(result.first_release_date * 1000).getFullYear()}`);
-        if (result.videos && result.videos.length > 0) {
-            $("#createTrailerUrl").val(`https://www.youtube.com/embed/${result.videos[0].video_id}`);
-        }
-        else if (result.screenshots && result.screenshots.length > 0) {
-            $("#createTrailerUrl").val(`https://images.igdb.com/igdb/image/upload/t_720p/${result.screenshots[0].image_id}.jpg`);
-        }
-        $("#createName").val(`${result.name}`);
-    }
+    });
 }
 
 function createDevelopersSelectizes() {

@@ -313,7 +313,6 @@ export async function blacklistToken(token) {
 }
 
 export async function findBlacklistedToken(token) {
-  logger.debug(`Retrieving blacklisted token`);
   return await sqlite.fetch(`SELECT * FROM tokens_blacklist WHERE token = ?`, [token]);
 }
 

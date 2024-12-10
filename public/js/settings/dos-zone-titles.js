@@ -64,6 +64,7 @@ const openListDOSZone = (page, filter) => {
             }
             $('#dosZoneTbody').append(wrapper);
             $('#dosZonePanel').removeClass('d-none');
+            window.history.replaceState("", "", `/settings.html?action=import&page=${page}&filter=${filter}`);
         }
         catch (error) {
             appendAlert(`An error has occurred while reading the games list: ${error}`);
@@ -79,10 +80,22 @@ function prepareImportFromDosZone() {
             $("#dosZoneSearch").click();
         }
     });
+
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'import' && urlParams.has('page')) {
+        if (urlParams.has('filter')) {
+            openListDOSZone(urlParams.get('page'), urlParams.get('filter'));
+        }
+        else {
+            openListDOSZone(urlParams.get('page'), $('#filterDosZoneGames').val());
+        }
+    }
 }
 
 function downloadAndAdd(gameId) {
     $.getJSON(`/api/getDosZoneGame?id=${gameId}`, function(result) {
+        const workingModal = new bootstrap.Modal($('#waitingModal'));
+        workingModal.show();
         fetch(result.url)
             .then((response) => response.blob())
             .then(blob => {
@@ -91,6 +104,7 @@ function downloadAndAdd(gameId) {
                 const container = new DataTransfer();
                 container.items.add(file);
             
+                workingModal.hide();
                 openCreateModal(true);
                 $("#createFile")[0].files = container.files;
                 $('#createName').val(result.title);
@@ -98,6 +112,7 @@ function downloadAndAdd(gameId) {
 
         }).catch (error => {
             appendAlert(`An error has occurred while importing the game: ${error}`);
+            workingModal.hide();
         });
     });
 }

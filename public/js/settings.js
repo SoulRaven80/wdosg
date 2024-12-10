@@ -61,7 +61,7 @@ const afterLoadingPage = () => {
             // game was updated
             appendInfo('Game updated');
         }
-        else {
+        else if (urlParams.get('action') === 'created') {
             // game was created
             appendInfo('Game created');
         }

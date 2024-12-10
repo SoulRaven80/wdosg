@@ -5,7 +5,7 @@ const openListDOSZone = (page, filter) => {
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
     $('#dosZoneTbody').empty();
     const contentDiv = document.getElementById('dosZonePanel');
-    $.getJSON(`/api/dosZoneGames?page=${page}&filter=${filter}`, function(result) {
+    $.getJSON(`/api/dosZoneGames?page=${page}&filter=${encodeURIComponent(filter)}`, function(result) {
         try {
             $('#filterDosZoneGames').val(filter);
             $('#dosZonePageNavigation').empty();
@@ -64,7 +64,7 @@ const openListDOSZone = (page, filter) => {
             }
             $('#dosZoneTbody').append(wrapper);
             $('#dosZonePanel').removeClass('d-none');
-            window.history.replaceState("", "", `/settings.html?action=import&page=${page}&filter=${filter}`);
+            window.history.replaceState("", "", `/settings.html?action=import&page=${page}&filter=${encodeURIComponent(filter)}`);
         }
         catch (error) {
             appendAlert(`An error has occurred while reading the games list: ${error}`);
@@ -96,21 +96,26 @@ function downloadAndAdd(gameId) {
     $.getJSON(`/api/getDosZoneGame?id=${gameId}`, function(result) {
         const workingModal = new bootstrap.Modal($('#waitingModal'));
         workingModal.show();
-        fetch(result.url)
-            .then((response) => response.blob())
-            .then(blob => {
-                const bundleFile = new Blob([blob]);
-                const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
-                const container = new DataTransfer();
-                container.items.add(file);
-            
-                workingModal.hide();
-                openCreateModal(true);
-                $("#createFile")[0].files = container.files;
-                $('#createName').val(result.title);
-                $('#createButtonFind').click();
-
-        }).catch (error => {
+        fetch(result.url).then(response => {
+            if (!response.ok) {
+                throw Error(response.status);
+            } else {
+                return response.blob();
+            }
+        })
+        .then(blob => {
+            const bundleFile = new Blob([blob]);
+            const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
+            const container = new DataTransfer();
+            container.items.add(file);
+        
+            workingModal.hide();
+            openCreateModal(true);
+            $("#createFile")[0].files = container.files;
+            $('#createName').val(result.title);
+            $('#createButtonFind').click();
+        })
+        .catch(error => {
             appendAlert(`An error has occurred while importing the game: ${error}`);
             workingModal.hide();
         });

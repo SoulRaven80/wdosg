@@ -19,7 +19,7 @@ const findMetadata = () => {
         return;
     }
     $('#createName').removeClass('is-valid is-invalid').addClass('is-valid');
-    $.getJSON(`/api/gamemetadata?gameName=${gameName}`, function(result) {
+    $.getJSON(`/api/gamemetadata?gameName=${encodeURIComponent(gameName)}`, function(result) {
         if (result.length > 0) {
             sessionStorage.setItem('searchResults', JSON.stringify(result));
             var wrapper = '<ul class="list-group">';

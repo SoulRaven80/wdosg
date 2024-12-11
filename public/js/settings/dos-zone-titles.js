@@ -94,7 +94,7 @@ function prepareImportFromDosZone() {
 
 function downloadAndAdd(gameId) {
     $.getJSON(`/api/getDosZoneGame?id=${gameId}`, function(result) {
-        const workingModal = new bootstrap.Modal($('#waitingModal'));
+        const workingModal = new bootstrap.Modal('#waitingModal', {});
         workingModal.show();
         fetch(result.url).then(response => {
             if (!response.ok) {
@@ -104,12 +104,12 @@ function downloadAndAdd(gameId) {
             }
         })
         .then(blob => {
+            workingModal.hide();
             const bundleFile = new Blob([blob]);
             const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
             const container = new DataTransfer();
             container.items.add(file);
         
-            workingModal.hide();
             openCreateModal(true);
             $("#createFile")[0].files = container.files;
             $('#createName').val(result.title);

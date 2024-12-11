@@ -1,4 +1,5 @@
 const openUsersAdmin = () => {
+    window.history.replaceState("", "", `/settings.html`);
     $('#emptyGamesListDiv').removeClass('d-none').addClass('d-none');
     $('#gamesListPanel').removeClass('d-none').addClass('d-none');
     $('#usersAdminPanel').removeClass('d-none').addClass('d-none');

@@ -70,7 +70,7 @@ const createTables = async() => {
         game_id text not null,
         company_id text not null
     );`);
-  await execute(`DROP TABLE dos_zone_games;`);
+  await execute(`DROP TABLE IF EXISTS dos_zone_games;`);
   await execute(`CREATE TABLE IF NOT EXISTS dos_zone_games (
       id int primary key not null,
       title text not null,

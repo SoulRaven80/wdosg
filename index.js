@@ -7,6 +7,7 @@ import stringSanitizer from "string-sanitizer";
 import cookieParser from "cookie-parser";
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
+import querystring from 'querystring';
 import * as dataProvider from './providers/dataProvider.js';
 import * as igdbProvider from './providers/igdbProvider.js';
 import * as crypto from "./crypto/crypto.js"
@@ -125,14 +126,15 @@ app.get('/api/gamesShallowInfo', verifyToken, async(req, res, next) => {
 app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {
     const itemsPerPage = 20;
     var page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
-    const filter = req.query.filter || ''; // Filter keyword from query params
+    const filter = querystring.unescape(req.query.filter) || ''; // Filter keyword from query params
+    const genre = querystring.unescape(req.query.genre) || ''; // Filter keyword from query params
 
-    var count = await dataProvider.countDosZoneGames(filter);
+    var count = await dataProvider.countDosZoneGames(filter, genre);
     const totalPages = Math.ceil(count / itemsPerPage);
     page = Math.min(page, totalPages);
     const offset = (page - 1) * itemsPerPage;
 
-    var list = await dataProvider.listDosZoneGames(itemsPerPage, offset, filter);
+    var list = await dataProvider.listDosZoneGames(itemsPerPage, offset, filter, genre);
 
     // Calculate the range of pages to display (limit to 10 page links)
     const rangeSize = 10;
@@ -150,6 +152,22 @@ app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {
       endPage: endPage,
       items: list
     });
+});
+
+app.get('/api/dosZoneGenres', verifyAdminToken, async(req, res, next) => {
+    var genres = await dataProvider.listDosZoneGenres();
+    genres = genres.map(g => g.genre);
+    // Some games had multiple genre in the same value. Splitting and filtering
+    var filteredGenres = [];
+    for (let i = 0; i < genres.length; i++) {
+        const genre = genres[i];
+        filteredGenres = filteredGenres.concat(genre.split(','));
+    }
+    res.status(200).json(
+        filteredGenres.map(g => g.trim()).sort().filter(function(item, pos, ary) {
+            return !pos || item != ary[pos - 1];
+        })
+    );
 });
 
 app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res, next) => {

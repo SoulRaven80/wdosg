@@ -1,13 +1,16 @@
 <div class="d-none" id="dosZonePanel">
     <div class="row pb-3">
-        <div class="col">
+        <div class="col-6">
             <div class="input-group position-relative d-inline-flex align-items-center">
                 <input class="form-control" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterDosZoneGames">
                 <i class="bi-x-lg position-absolute" onclick="($('#filterDosZoneGames').val(''))" style="right: 10px; cursor: pointer; z-index: 100;"></i>
             </div>
         </div>
-        <div class="col-auto d-flex align-items-center">
-            <i class="bi-search" id="dosZoneSearch"></i>
+        <div class="col-1">
+            <button type="button" class="btn bi-search" aria-label="Search" id="dosZoneSearch"></button>
+        </div>
+        <div class="col-5">
+            <select class="form-select" aria-label="Genre filter" id="filterDosZoneGenre"><option value="" selected>Filter by genre</option></select>
         </div>
     </div>
     <nav aria-label="Page navigation" id="dosZonePageNavigation"></nav>

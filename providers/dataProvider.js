@@ -33,12 +33,16 @@ export async function findGame(gameId) {
   return await dbManager.fetchGame(gameId);
 }
 
-export async function listDosZoneGames(itemsPerPage, offset, searchTerm) {
-  return await dbManager.listDosZoneGames(itemsPerPage, offset, searchTerm);
+export async function listDosZoneGames(itemsPerPage, offset, searchTerm, genre) {
+  return await dbManager.listDosZoneGames(itemsPerPage, offset, searchTerm, genre);
 }
 
-export async function countDosZoneGames(searchTerm) {
-  return await dbManager.countDosZoneGames(searchTerm);
+export async function listDosZoneGenres() {
+  return await dbManager.listDosZoneGenres();
+}
+
+export async function countDosZoneGames(searchTerm, genre) {
+  return await dbManager.countDosZoneGames(searchTerm, genre);
 }
 
 export async function findDosZoneGame(gameId) {

@@ -1,26 +1,44 @@
-const openListDOSZone = (page, filter) => {
+const openListDOSZone = (page, filter, genre) => {
     $('#emptyGamesListDiv').removeClass('d-none').addClass('d-none');
     $('#gamesListPanel').removeClass('d-none').addClass('d-none');
     $('#usersAdminPanel').removeClass('d-none').addClass('d-none');
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
     $('#dosZoneTbody').empty();
     const contentDiv = document.getElementById('dosZonePanel');
-    $.getJSON(`/api/dosZoneGames?page=${page}&filter=${encodeURIComponent(filter)}`, function(result) {
+    $.getJSON(`/api/dosZoneGenres`, function(result) {
+        var sortedGenres = result.sort((a, b) => {
+            if (a < b) {
+                return -1;
+            }
+        });
+
+        $("#filterDosZoneGenre").empty();
+        $("#filterDosZoneGenre").append(`<option value="">Filter by genre</option>`)
+        sortedGenres.forEach(genre => {
+            $("#filterDosZoneGenre").append(`<option value="${genre}">${genre}</option>`);
+        });
+        $(`#filterDosZoneGenre option[value="${genre}"]`).attr("selected", "selected");
+    });
+    $.getJSON(`/api/dosZoneGames`, {
+            page: page,
+            filter: encodeURIComponent(filter),
+            genre: encodeURIComponent(genre)
+        }, function(result) {
         try {
             $('#filterDosZoneGames').val(filter);
             $('#dosZonePageNavigation').empty();
 
-            $('#dosZoneSearch').attr("onclick",`openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val())`);
+            $('#dosZoneSearch').attr("onclick",`openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val(), $('#filterDosZoneGenre').find(":selected").val())`);
 
             var navigation = `<ul class="pagination justify-content-center" style="margin-bottom: unset">
                                 <li class="page-item ${result.currentPage > 1 ? '' : 'disabled'}">
-                                    <a class="page-link" href="#" onclick="openListDOSZone(${result.currentPage - 1}, '${filter}')" aria-label="Previous">
+                                    <a class="page-link" href="#" onclick="openListDOSZone(${result.currentPage - 1}, '${filter}', '${genre}')" aria-label="Previous">
                                         <span>&laquo;</span>
                                     </a>
                                 </li>`;
             if (result.startPage > 1) {
                 navigation += ` <li class="page-item">
-                                    <a class="page-link" href="#" onclick="openListDOSZone(1, '${filter}')">1</a>
+                                    <a class="page-link" href="#" onclick="openListDOSZone(1, '${filter}', '${genre}')">1</a>
                                 </li>`;
                 if (result.startPage > 2) {
                     navigation += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
@@ -29,7 +47,7 @@ const openListDOSZone = (page, filter) => {
             
             for (let i = result.startPage; i <= result.endPage; i++) {
                 navigation += ` <li class="page-item ${result.currentPage === i ? 'active' : ''}">
-                                    <a class="page-link" href="#" onclick="openListDOSZone(${i}, '${filter}')">${i}</a>
+                                    <a class="page-link" href="#" onclick="openListDOSZone(${i}, '${filter}', '${genre}')">${i}</a>
                                 </li>`;
             }
 
@@ -38,12 +56,12 @@ const openListDOSZone = (page, filter) => {
                     navigation += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
                 }
                 navigation += ` <li class="page-item">
-                                    <a class="page-link" href="#" onclick="openListDOSZone(${result.totalPages}, '${filter}')">${result.totalPages}</a>
+                                    <a class="page-link" href="#" onclick="openListDOSZone(${result.totalPages}, '${filter}', '${genre}')">${result.totalPages}</a>
                                 </li>`;
             }
             if (result.currentPage < result.totalPages) {
                 navigation += `<li class="page-item">
-                        <a class="page-link" href="#" onclick="openListDOSZone(${result.currentPage + 1}, '${filter}')">&raquo;</a>
+                        <a class="page-link" href="#" onclick="openListDOSZone(${result.currentPage + 1}, '${filter}', '${genre}')">&raquo;</a>
                     </li>`;
             }
             else {
@@ -64,7 +82,7 @@ const openListDOSZone = (page, filter) => {
             }
             $('#dosZoneTbody').append(wrapper);
             $('#dosZonePanel').removeClass('d-none');
-            window.history.replaceState("", "", `/settings.html?action=import&page=${page}&filter=${encodeURIComponent(filter)}`);
+            window.history.replaceState("", "", `/settings.html?action=import&page=${page}&filter=${encodeURIComponent(filter)}&genre=${encodeURIComponent(genre)}`);
         }
         catch (error) {
             appendAlert(`An error has occurred while reading the games list: ${error}`);
@@ -81,13 +99,27 @@ function prepareImportFromDosZone() {
         }
     });
 
+    $("#filterDosZoneGenre").on("change", event => {
+        openListDOSZone(1, $("#filterDosZoneGames").val(), event.target.value);
+    });
+
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('action') === 'import' && urlParams.has('page')) {
         if (urlParams.has('filter')) {
-            openListDOSZone(urlParams.get('page'), urlParams.get('filter'));
+            if (urlParams.has('genre')) {
+                openListDOSZone(urlParams.get('page'), urlParams.get('filter'), urlParams.get('genre'));
+            }
+            else {
+                openListDOSZone(urlParams.get('page'), urlParams.get('filter'), '');
+            }
         }
         else {
-            openListDOSZone(urlParams.get('page'), $('#filterDosZoneGames').val());
+            if (urlParams.has('genre')) {
+                openListDOSZone(urlParams.get('page'), $('#filterDosZoneGames').val(), urlParams.get('genre'));
+            }
+            else {
+                openListDOSZone(urlParams.get('page'), $('#filterDosZoneGames').val(), '');
+            }
         }
     }
 }

@@ -26,20 +26,29 @@ export async function listGamesShallow() {
   }
 }
 
-export async function listDosZoneGames(itemsPerPage, offset, searchTerm) {
+export async function listDosZoneGames(itemsPerPage, offset, searchTerm, genre) {
   logger.debug(`Getting list of games from DOS-Zone`);
   try {
-    var games = await sqlite.fetchAll(`SELECT * FROM dos_zone_games WHERE title LIKE '%${searchTerm}%' LIMIT ${itemsPerPage} OFFSET ${offset}`);
+    var sql = `SELECT * FROM dos_zone_games WHERE title LIKE '%${searchTerm}%'`;
+    if (genre) {
+      sql += ` AND genre LIKE '%${genre.replaceAll("'", "''")}%'`;
+    }
+    sql += ` LIMIT ${itemsPerPage} OFFSET ${offset}`;
+    var games = await sqlite.fetchAll(sql);
     return games;
   } catch (err) {
     logger.error(err, `Error while getting list of games from DOS-Zone. LIMIT ${itemsPerPage} OFFSET ${offset}`);
   }
 }
 
-export async function countDosZoneGames(searchTerm) {
+export async function countDosZoneGames(searchTerm, genre) {
   logger.debug(`Getting count of games from DOS-Zone`);
   try {
-    var count = await sqlite.fetch(`SELECT count(1) as c FROM dos_zone_games WHERE title LIKE '%${searchTerm}%'`);
+    var sql = `SELECT count(1) as c FROM dos_zone_games WHERE title LIKE '%${searchTerm}%'`;
+    if (genre) {
+      sql += ` AND genre LIKE '%${genre.replaceAll("'", "''")}%'`;
+    }
+    var count = await sqlite.fetch(sql);
     return count.c;
   } catch (err) {
     logger.error(err, `Error while getting count of games from DOS-Zone`);
@@ -79,6 +88,15 @@ export async function listGenres() {
       return await sqlite.fetchAll(`SELECT * FROM genres`);
   } catch (err) {
     logger.error(err, `Error while getting list of genres`);
+  }
+}
+
+export async function listDosZoneGenres() {
+  logger.debug(`Getting list of DOS-Zone genres`);
+  try {
+      return await sqlite.fetchAll(`SELECT DISTINCT genre FROM dos_zone_games;`);
+  } catch (err) {
+    logger.error(err, `Error while getting list of DOS-Zone genres`);
   }
 }
 

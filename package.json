@@ -20,6 +20,7 @@
     "pino": "^9.5.0",
     "pino-http": "^10.3.0",
     "pino-pretty": "^13.0.0",
+    "querystring": "^0.2.1",
     "short-uuid": "^5.2.0",
     "sqlite3": "^5.1.7",
     "string-sanitizer": "^2.0.2"

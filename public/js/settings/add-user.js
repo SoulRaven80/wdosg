@@ -43,6 +43,7 @@ const confirmAddUser = () => {
             data: $('#addUserForm').serialize(), 
             success: (result, statusMessage, response) => {
                 appendInfo('User created');
+                openUsersAdmin();
             },
             error: (error) => {
                 appendAlert(error.responseJSON.message);

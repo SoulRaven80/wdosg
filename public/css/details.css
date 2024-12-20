@@ -1,0 +1,11 @@
+.file-drag-handle {
+    display: none !important;
+}
+
+.kv-file-remove {
+    display: none !important;
+}
+
+.kv-file-rotate {
+    display: none !important;
+}

@@ -29,6 +29,30 @@ export async function findCompany(id) {
   return await dbManager.findCompany(id);
 }
 
+export async function listAttachments(gameId) {
+  var attachments = [];
+  var attachmentNames = await dbManager.fetchAttachments(gameId);
+  for (let i = 0; i < attachmentNames.length; i++) {
+    attachments.push({ name: attachmentNames[i].file_name });
+  }
+  return attachments;
+}
+
+export async function findGamePath(gameId) {
+  return await dbManager.fetchGamePath(gameId);
+}
+
+export async function addAttachment(gamesLibrary, gamePath, gameId, file) {
+  fs.mkdirSync(`${gamesLibrary}/${gamePath}/attachments`, { recursive: true });
+  file.mv(`${gamesLibrary}/${gamePath}/attachments/${file.name}`);
+  return await dbManager.addAttachment(gameId, file.name);
+}
+
+export async function deleteAttachment(gamesLibrary, gamePath, gameId, attachmentName) {
+  fs.unlinkSync(`${gamesLibrary}/${gamePath}/attachments/${attachmentName}`);
+  return await dbManager.deleteAttachment(gameId, attachmentName);
+}
+
 export async function findGame(gameId) {
   return await dbManager.fetchGame(gameId);
 }

@@ -61,3 +61,11 @@
     padding-top: unset !important;
     padding-bottom: unset !important;
 }
+
+.file-drag-handle {
+    display: none !important;
+}
+
+.kv-file-rotate {
+    display: none !important;
+}

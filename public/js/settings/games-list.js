@@ -25,8 +25,11 @@ $("#gamesListLink").on("click", function(e) {
                     `  <th scope="row">${i+1}</th>`,
                     `  <td>${game.name}</td>`,
                     '  <td>',
-                    `    <button type="button" class="btn bi-pencil" aria-label="Edit" alt="Edit" onclick="openEditModal('${game.id}')"></button>`,
-                    `    <button type="button" class="btn bi-trash" aria-label="Delete" alt="Delete" onclick="openDeleteGameConfirmation('${game.id}')"></button>`,
+                    '    <div class="d-flex justify-content-end">',
+                    `      <button type="button" class="btn bi-pencil" aria-label="Edit" alt="Edit" title="Edit" onclick="openEditModal('${game.id}')"></button>`,
+                    `      <button type="button" class="btn bi-paperclip" aria-label="Attachments" alt="Attachments" title="Attachments" onclick="openAttachModal('${game.id}', '${game.path}', '${game.name}')"></button>`,
+                    `      <button type="button" class="btn bi-trash" aria-label="Delete" alt="Delete" title="Delete" onclick="openDeleteGameConfirmation('${game.id}')"></button>`,
+                    '    </div>',
                     '  </td>',
                 ].join('');
                 $('#gamesListTbody').append(wrapper);

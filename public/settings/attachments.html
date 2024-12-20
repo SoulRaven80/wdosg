@@ -1,0 +1,27 @@
+<div class="modal fade" id="attachmentsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Attachments for</h5>&nbsp;<h5 class="modal-title"><span id="attachmentGameName"></span></h5>
+            </div>
+            <form action="/api/updateAttachments" id="attachmentsForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <input type="hidden" id="attachmentsGameId" name="gameId">
+                <input type="hidden" id="attachmentsGamePath" name="gamePath">
+                <!-- Container for dynamically loaded file inputs -->
+                <div id="dynamic-files-container" class="d-none"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Game attachments / Manuals</label>
+                        <input class="form-control" type="file" id="gameAttachments" name="attachments" multiple required>
+                        <div class="invalid-feedback">
+                            Please add file(s).
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="attachmentsModalClose">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

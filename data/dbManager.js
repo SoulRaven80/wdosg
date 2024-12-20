@@ -116,6 +116,46 @@ export async function fetchGame(gameId) {
     }
 }
 
+export async function fetchGamePath(gameId) {
+  logger.debug(`Retrieving game path with id: ${gameId}`);
+  try {
+    return await sqlite.fetch(`SELECT path FROM games WHERE id = ?`, [gameId]);
+  } catch (err) {
+    logger.error(err, `Error while retrieving game path with id: ${gameId}`);
+  }
+}
+
+export async function fetchAttachments(gameId) {
+  logger.debug(`Retrieving attachments for game with id: ${gameId}`);
+  try {
+    const attachments = await sqlite.fetchAll(`SELECT * FROM game_attachments WHERE game_id = ?`, [gameId]);
+    return attachments;
+  } catch (err) {
+    logger.error(err, `Error while retrieving attachments for game with id: ${gameId}`);
+  }
+}
+
+export async function addAttachment(gameId, attachmentName) {
+  logger.debug(`Adding attachment ${attachmentName} for game with id: ${gameId}`);
+  try {
+    await sqlite.execute(`INSERT INTO game_attachments(game_id, file_name) VALUES (?, ?)`,
+      [gameId, attachmentName]);
+  } catch (err) {
+    logger.error(err, `Error while adding attachment for game with id: ${gameId}`);
+    throw err;
+  }
+}
+
+export async function deleteAttachment(gameId, attachmentName) {
+  logger.debug(`Deleting attachment ${attachmentName} for game with id: ${gameId}`);
+  try {
+    await sqlite.execute(`DELETE FROM game_attachments WHERE game_id = ? AND file_name = ?`, [gameId, attachmentName]);
+  } catch (err) {
+    logger.error(err, `Error while deleting attachment for game with id: ${gameId}`);
+    throw err;
+  }
+}
+
 export async function fetchDosZoneGame(gameId) {
   logger.debug(`Retrieving game from DOS-Zone with id: ${gameId}`);
   try {

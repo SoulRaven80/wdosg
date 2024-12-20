@@ -24,6 +24,15 @@ if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
 const games_library = config.getGamesLibraryLocation();
 const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
 
+const fileTypes = {
+    'jpg': 'image',
+    'jpeg': 'image',
+    'png': 'image',
+    'gif': 'image',
+    'pdf': 'pdf',
+    'txt': 'text'
+};
+
 // Middleware for JWT validation
 const verifyToken = async (req, res, next) => {
     if (['/login.html', '/', '/api/login', '/css/css3.css', '/css/bootstrap.min.css',
@@ -33,7 +42,7 @@ const verifyToken = async (req, res, next) => {
         next();
         return;
     }
-    
+
     var token = getAuthToken(req);
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -121,6 +130,36 @@ app.get('/api/games', verifyToken, async(req, res, next) => {
 app.get('/api/gamesShallowInfo', verifyToken, async(req, res, next) => {
 	var list = await dataProvider.listGamesShallow();
     res.status(200).json(list);
+});
+
+app.get('/api/attachments', verifyAdminToken, async(req, res, next) => {
+    var list = await dataProvider.listAttachments(req.query.gameId);
+    res.status(200).json(list);
+});
+
+app.post('/api/addAttachment', verifyAdminToken, async(req, res, next) => {
+    if (!req.files || !req.files.attachments) {
+        return res.status(422).send('No files were uploaded');
+    }
+    await dataProvider.addAttachment(games_library, req.body.gamePath, req.body.gameId, req.files.attachments);
+    res.status(200).json({
+        'initialPreview': [`/library/${req.body.gamePath}/attachments/${req.files.attachments.name}`],
+        'initialPreviewConfig': [{
+            caption: req.files.attachments.name,
+            filename: req.files.attachments.name,
+            type: fileTypes[req.files.attachments.name.substring(req.files.attachments.name.lastIndexOf('.') +1).toLowerCase()],
+            url: `/api/deleteAttachment/${req.body.gameId}`,
+            key: req.files.attachments.name
+        }],
+        'initialPreviewAsData': true
+    });
+});
+
+app.post('/api/deleteAttachment/:gameId', verifyAdminToken, async(req, res, next) => {
+    var gameId = req.params.gameId;
+    var gamePath = await dataProvider.findGamePath(gameId)
+    await dataProvider.deleteAttachment(games_library, gamePath.path, gameId, req.body.key);
+    res.status(200).json({ "success": true });
 });
 
 app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {

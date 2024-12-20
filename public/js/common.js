@@ -125,6 +125,15 @@ const confirmChangePassword = () => {
     }
 }
 
+const fileTypes = {
+    'jpg': 'image',
+    'jpeg': 'image',
+    'png': 'image',
+    'gif': 'image',
+    'pdf': 'pdf',
+    'txt': 'text'
+};
+
 // Redirect all 401 ajax call responses into login page
 $.ajaxSetup({
     error: function(xhr, status, err) {

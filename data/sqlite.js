@@ -87,6 +87,10 @@ const createTables = async() => {
     await execute(`CREATE TABLE IF NOT EXISTS tokens_blacklist (
       token text primary key not null
     );`);
+    await execute(`CREATE TABLE IF NOT EXISTS game_attachments (
+        game_id text not null,
+        file_name text not null
+    );`);
   await populateTablesIfEmpty();
 }
 

@@ -28,6 +28,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 - Centralized repository to host your DOS games
 - Automatically fetches game metadata and artworks from _IGDB_ (requires authentication information)
 - Ability to edit information for games
+- Include manuals / attachments for each game
 - Web access: access your library from anywhere
 - Supports games saving capabilities through _js-dos_ (single browser / device)
 - Dark and light themes
@@ -60,6 +61,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [x] Dark / Light themes
   - [x] User authentication (local)
   - [x] User administration
+  - [x] Add Manuals / Attachments to each game
 - [ ] Desired features
   - [ ] Cloud saving (enabled through _js-dos_)
   - [x] _js-dos_ per-game configuration

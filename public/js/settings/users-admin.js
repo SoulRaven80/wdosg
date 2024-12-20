@@ -8,16 +8,26 @@ const openUsersAdmin = () => {
     $.getJSON("/api/users", function(data) {
         for (let i = 0; i < data.length; i++) {
             const user = data[i];
-            var wrapper = document.createElement('tr');
-            wrapper.innerHTML = [
-                `<td>${user.username}</td>`,
-                `<td>${user.email}</td>`,
-                `<td>${user.role}</td>`,
-                `<td><div class="d-flex">`,
-                `${user.role == 'admin' ? '' : '<button type="button" class="btn bi-trash ms-auto" aria-label="Delete" alt="Delete" onclick="openDeleteUserConfirmation(\'' + user.username + '\')"></button>'}`,
-                `</div></td>`
-            ].join('');
-            $('#usersTbody').append(wrapper);
+            var trElement = document.createElement('tr');
+            trElement.appendChild(document.createElement('td')).textContent = user.username;
+            trElement.appendChild(document.createElement('td')).textContent = user.email;
+            trElement.appendChild(document.createElement('td')).textContent = user.role;
+            var divActions = trElement.appendChild(document.createElement('td'))
+                .appendChild(document.createElement('div'));
+            divActions.classList.add('d-flex');
+            if (user.role != 'admin' || user.email != sessionStorage.getItem('email', '')) {
+                var button = document.createElement('button');
+                button.classList.add('btn');
+                button.classList.add('bi-trash');
+                button.classList.add('ms-auto');
+                button.setAttribute('type', 'button');
+                button.setAttribute('aria-label', 'Delete');
+                button.setAttribute('alt', 'Delete');
+                button.setAttribute('onclick', `openDeleteUserConfirmation('${user.username}')`);
+                divActions.appendChild(button);
+            }
+            // wrapper.innerHTML = [
+            $('#usersTbody').append(trElement);
         }
         $('#usersAdminPanel').removeClass('d-none');
 

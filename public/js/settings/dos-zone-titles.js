@@ -127,6 +127,7 @@ function prepareImportFromDosZone() {
 function downloadAndAdd(gameId) {
     $.getJSON(`/api/getDosZoneGame?id=${gameId}`, function(result) {
         const workingModal = new bootstrap.Modal('#waitingModal', {});
+        $('#waitingModalTitle').text('Downloading game');
         workingModal.show();
         fetch(result.url).then(response => {
             if (!response.ok) {

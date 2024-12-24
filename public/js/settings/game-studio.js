@@ -68,9 +68,9 @@ function getExecutableFiles(files) {
     reader.addEventListener("load", async (e) => {
         zipFile = new Uint8Array(reader.result);
         try {
-            const jsdosZipData = await getZipData(zipFile);
-            for (let i = 0; i < jsdosZipData.executables.length; i++) {
-                const exec = jsdosZipData.executables[i];
+            const executables = await getZipExecutables(zipFile);
+            for (let i = 0; i < executables.length; i++) {
+                const exec = executables[i];
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = [
                     '<div class="form-check">',
@@ -96,39 +96,30 @@ function getExecutableFiles(files) {
     reader.readAsArrayBuffer(file);
 }
 
-async function getZipData(data) {
-    const zipData = {
-        executables: [],
-    };
+function ensureNoRootFolder(entries) {
+    var starts = entries.filter(str => str.filename.startsWith(entries[0].filename));
+    if (entries.length == starts.length) {
+        throw Error('Zip files should not contain a root directory');
+    }
+}
+
+async function getZipExecutables(data) {
+    const executables = [];
     const zipReader = new zip.ZipReader(new zip.Uint8ArrayReader(data), {
         Workers: false,
     });
     try {
         const entries = await zipReader.getEntries();
+        ensureNoRootFolder(entries);
         for (const entry of entries) {
             const filename = entry.filename;
             if (filename.toLocaleLowerCase().endsWith(".com") ||
                 filename.toLocaleLowerCase().endsWith(".exe") ||
                 filename.toLocaleLowerCase().endsWith(".bat")) {
-                zipData.executables.push(filename);
-            }
-
-            if (filename === ".jsdos/jsdos.json") {
-                const config = await entry.getData(new zip.TextWriter(), { useWebWorkers: false });
-                if (config.length > 0) {
-                    zipData.config = JSON.parse(config);
-                }
-            }
-
-            if (filename === ".jsdos/dosbox.conf") {
-                const dosboxConf = await entry.getData(new zip.TextWriter(), { useWebWorkers: false });
-                if (dosboxConf.length > 0) {
-                    zipData.dosboxConf = dosboxConf;
-                }
+                executables.push(filename);
             }
         }
-
-        return zipData;
+        return executables;
     } finally {
         zipReader.close();
     }
@@ -140,7 +131,7 @@ function populateConfig(config) {
         return obj;
     }, {});
     // add checkboxes
-    $("form input:checkbox").each(function() {
+    $("#bundleStudioForm input:checkbox").each(function() {
         formValues[this.name] = this.checked;
     });
 

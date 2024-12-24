@@ -231,6 +231,19 @@ app.get('/api/game', verifyToken, async(req, res, next) => {
     res.status(200).json(await dataProvider.findGame(req.query.gameId));
 });
 
+app.post('/api/bundle', verifyAdminToken, async(req, res, next) => {
+    if (!req.files || !req.files.file) {
+        return res.status(422).send('No files were uploaded');
+    }
+    if (!req.body.gamePath) {
+        return res.status(422).send('Empty game path');
+    }
+    logger.fatal(req.files.file);
+    logger.fatal(req.body.gamePath);
+    dataProvider.saveGameBundle(games_library, req.body.gamePath, req.files.file);
+    res.status(200).json({ "success": true });
+});
+
 app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
     res.status(200).json(await igdbProvider.searchGame(req.query.gameName));
 });

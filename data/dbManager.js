@@ -302,7 +302,7 @@ export async function deleteGame(gamesLibrary, gameId) {
     logger.debug(`Deleting library entry path: ${gamesLibrary}/${game.path}`);
     fs.rmSync(`${gamesLibrary}/${game.path}`, { recursive: true, force: true });
   } catch (err) {
-    logger.error(err, `Error while deleting game with id: ${game.id}`);
+    logger.error(err, `Error while deleting game with id: ${gameId}`);
   }
 }
 

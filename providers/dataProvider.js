@@ -57,6 +57,11 @@ export async function findGame(gameId) {
   return await dbManager.fetchGame(gameId);
 }
 
+export function saveGameBundle(gamesLibrary, gamePath, file) {
+  logger.debug(`Saving ${gamesLibrary}/${gamePath} bundle file`);
+  file.mv(`${gamesLibrary}/${gamePath}/bundle.jsdos`);
+}
+
 export async function listDosZoneGames(itemsPerPage, offset, searchTerm, genre) {
   return await dbManager.listDosZoneGames(itemsPerPage, offset, searchTerm, genre);
 }

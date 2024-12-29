@@ -101,9 +101,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+const temporaryDir = './tmp/';
+
 app.use(fileUpload({
     useTempFiles : true,
-    tempFileDir : './tmp/'
+    tempFileDir : temporaryDir
 }));
 
 app.use(httpLogger({ 
@@ -544,6 +546,8 @@ const getGameFromBody = (body) => {
 };
 
 dataProvider.init().then(() => {
+    logger.debug(`Clearing up TEMP folder`);
+    fs.rmSync(temporaryDir, { recursive: true, force: true });
     app.listen(app.get('port'), function(err) {
         if (err) {
             logger.fatal(err, "Error in server setup");

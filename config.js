@@ -1,6 +1,6 @@
 import * as url from 'url';
 import path from 'path';
-import { logger } from './logger/logger.js';
+import { logger } from './backend/logger/logger.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const dbPath = process.env.DB_PATH || path.join(__dirname, '/database');

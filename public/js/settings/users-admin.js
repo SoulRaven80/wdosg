@@ -26,7 +26,6 @@ const openUsersAdmin = () => {
                 button.setAttribute('onclick', `openDeleteUserConfirmation('${user.username}')`);
                 divActions.appendChild(button);
             }
-            // wrapper.innerHTML = [
             $('#usersTbody').append(trElement);
         }
         $('#usersAdminPanel').removeClass('d-none');

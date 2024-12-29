@@ -1,0 +1,36 @@
+<div class="modal fade" id="inviteUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Invite new user</h5>
+            </div>
+            <form action="#" id="inviteUserForm" method="post" enctype="multipart/form-data"
+                class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="inviteUserEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inviteUserEmail" name="email" required>
+                        <div class="invalid-feedback">
+                            Please add a valid email.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inviteUserRole" class="form-label">Role</label>
+                        <select class="form-select" aria-label="Role" id="inviteUserRole" name="role">
+                            <option value="admin">Admin</option>
+                            <option value="user" selected>User</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="inviteUserModalClose">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="inviteUserModalSave" onclick="confirmInviteUser()">Save changes</button>
+                    <button class="btn btn-secondary d-none" type="button" id="inviteUserModalSpinner" disabled>
+                        <span class="spinner-border spinner-border-sm"></span>
+                        <span role="status">Saving...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

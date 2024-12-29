@@ -1,6 +1,6 @@
 import fs from 'fs';
 import * as dbManager from '../data/dbManager.js';
-import * as config from '../config.js';
+import * as config from '../../config.js';
 import { logger } from '../logger/logger.js';
 
 const template_path = config.getBundleTemplatePath();
@@ -125,6 +125,18 @@ export async function blacklistToken(token) {
 
 export async function findBlacklistedToken(token) {
   return await dbManager.findBlacklistedToken(token);
+}
+
+export async function addInvitationToken(email, role, token) {
+  return await dbManager.addInvitationToken(email, role, token);
+}
+
+export async function findRegistrationToken(email, token) {
+  return await dbManager.findRegistrationToken(email, token);
+}
+
+export async function deleteRegistrationToken(email, token) {
+  return await dbManager.deleteRegistrationToken(email, token);
 }
 
 export async function init() {

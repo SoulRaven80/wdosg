@@ -26,7 +26,7 @@ const appendInfo = (message) => {
 
 const initHeader = () => {
     setUserName();
-    if (sessionStorage.getItem('isAdmin')) {
+    if (sessionStorage.getItem('isAdmin') === 'true') {
         $('#settingsDiv').removeClass('d-none');
     }
     includeHTMLPage('/change-password.html');
@@ -35,6 +35,10 @@ const initHeader = () => {
         divElem.setAttribute('id', 'alertPlaceholder');
         var iframeElem = document.getElementsByTagName('iframe')[0];
         iframeElem.parentNode.insertBefore(divElem, iframeElem);
+    }
+    if (sessionStorage.getItem('message')) {
+        appendInfo(sessionStorage.getItem('message'));
+        sessionStorage.setItem('message', '');
     }
 }
 
@@ -68,6 +72,7 @@ const logout = () => {
     sessionStorage.setItem('userName', '');
     sessionStorage.setItem('email', '');
     sessionStorage.setItem('isAdmin', '');
+    sessionStorage.setItem('gamesList', '');
     document.cookie = 'auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     window.location.replace('/login.html');
 }
@@ -136,14 +141,25 @@ const fileTypes = {
     'txt': 'text'
 };
 
-// Redirect all 401 ajax call responses into login page
 $.ajaxSetup({
     error: function(xhr, status, err) {
         if (xhr.status == 401) {
             window.location.replace('/login.html');
         }
-        if (xhr.status == 500) {
-            appendAlert(err);
+        if (xhr.status == 500 || xhr.status == 404 || xhr.status == 422) {
+            appendErrorToPlaceholder(xhr, err);
         }
     }
 });
+
+function appendErrorToPlaceholder(xhr, err) {
+    if (xhr.responseJSON && xhr.responseJSON.message) {
+        appendAlert(xhr.responseJSON.message);
+    }
+    else if (xhr.responseText) {
+        appendAlert(xhr.responseText);
+    }
+    else {
+        appendAlert(err);
+    }
+}

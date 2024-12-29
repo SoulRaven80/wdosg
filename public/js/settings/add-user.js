@@ -35,7 +35,7 @@ const confirmAddUser = () => {
     else {
         $('#addUserPassword2').next().text('Please add a password confirmation');
     }
-    if (validEmail && validPassword && validPassword && passMatches) {
+    if (validEmail && validUsername && validPassword && validPassword2 && passMatches) {
         $('#addUserModal').modal('hide');
         $.ajax({
             type: "POST",

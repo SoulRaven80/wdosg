@@ -1,7 +1,7 @@
 import fs from 'fs';
 import sqlite from "sqlite3";
 import os from 'os';
-import * as config from '../config.js';
+import * as config from '../../config.js';
 import { logger } from '../logger/logger.js';
 
 const sqlite3 = sqlite.verbose();
@@ -78,18 +78,24 @@ const createTables = async() => {
       genre text null,
       url text null
     );`);
-    await execute(`CREATE TABLE IF NOT EXISTS users (
+  await execute(`CREATE TABLE IF NOT EXISTS users (
       username text primary key not null,
       email text not null,
       password text not null,
       role text not null
     );`);
-    await execute(`CREATE TABLE IF NOT EXISTS tokens_blacklist (
+  await execute(`CREATE TABLE IF NOT EXISTS tokens_blacklist (
       token text primary key not null
     );`);
-    await execute(`CREATE TABLE IF NOT EXISTS game_attachments (
-        game_id text not null,
-        file_name text not null
+  await execute(`CREATE TABLE IF NOT EXISTS game_attachments (
+      game_id text not null,
+      file_name text not null
+    );`);
+  await execute(`CREATE TABLE IF NOT EXISTS invitation_tokens (
+      email text not null,
+      role text not null,
+      expiration text not null,
+      token text not null
     );`);
   await populateTablesIfEmpty();
 }

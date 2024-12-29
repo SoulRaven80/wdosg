@@ -3,17 +3,18 @@ import fileUpload from 'express-fileupload';
 import path from 'path';
 import cors from 'cors';
 import shortuuid from 'short-uuid';
-import stringSanitizer from "string-sanitizer";
-import cookieParser from "cookie-parser";
+import stringSanitizer from 'string-sanitizer';
+import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import querystring from 'querystring';
-import * as dataProvider from './providers/dataProvider.js';
-import * as igdbProvider from './providers/igdbProvider.js';
-import * as crypto from "./crypto/crypto.js"
+import * as dataProvider from './backend/providers/dataProvider.js';
+import * as igdbProvider from './backend/providers/igdbProvider.js';
+import * as crypto from './backend/crypto/crypto.js';
 import * as config from './config.js';
-import httpLogger from "pino-http";
-import { logger } from './logger/logger.js';
+import httpLogger from 'pino-http';
+import { logger } from './backend/logger/logger.js';
+import * as mailSender from './backend/email/mailSender.js';
 
 if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
     logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_APP_ACCESS_TOKEN as environment variables");
@@ -35,14 +36,15 @@ const fileTypes = {
 
 // Middleware for JWT validation
 const verifyToken = async (req, res, next) => {
-    if (['/login.html', '/', '/api/login', '/css/css3.css', '/css/bootstrap.min.css',
-            '/css/docs.css', '/css/login.css', '/img/favicon.png', '/js/jquery.min.js',
-            '/js/bootstrap.bundle.min.js', '/js/w3.js', '/js/color-modes.js', '/js/common.js',
-            '/js/login.js'].includes(req.originalUrl)) {
+    var comesFrom = req.originalUrl && ['/login.html', '/', '/api/login', '/finish-registration.html']
+        .some(url => req.originalUrl.includes(url));
+    var refererFrom = req.headers.referer &&
+        ['/login.html', '/', '/api/login', '/finish-registration.html']
+        .some(url => req.headers.referer.includes(url));
+    if (comesFrom || refererFrom) {
         next();
         return;
     }
-
     var token = getAuthToken(req);
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -99,9 +101,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+const temporaryDir = './tmp/';
+
 app.use(fileUpload({
     useTempFiles : true,
-    tempFileDir : './tmp/'
+    tempFileDir : temporaryDir
 }));
 
 app.use(httpLogger({ 
@@ -120,7 +124,10 @@ app.use(httpLogger({
     }
 }));
 
-app.set('port', process.env.PORT || 3001);
+const appPort = process.env.PORT || 3001;
+app.set('port', appPort);
+
+await mailSender.init(appPort);
 
 app.get('/api/games', verifyToken, async(req, res, next) => {
 	var list = await dataProvider.listGames();
@@ -238,8 +245,6 @@ app.post('/api/bundle', verifyAdminToken, async(req, res, next) => {
     if (!req.body.gamePath) {
         return res.status(422).send('Empty game path');
     }
-    logger.fatal(req.files.file);
-    logger.fatal(req.body.gamePath);
     dataProvider.saveGameBundle(games_library, req.body.gamePath, req.files.file);
     res.status(200).json({ "success": true });
 });
@@ -324,6 +329,23 @@ app.get('/api/users', verifyAdminToken, async(req, res, next) => {
     res.status(200).json(await dataProvider.listUsers());
 });
 
+async function addUser(username, email, role, password) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            var user = {};
+            user.username = username;
+            user.email = email;
+            user.role = role;
+            user.password = await crypto.encrypt(password);
+            await dataProvider.addUser(user);
+            resolve();
+        }
+        catch(err) {
+            reject(err);
+        }
+    });
+}
+
 app.post('/api/addUser', verifyAdminToken, async(req, res, next) => {
     var user = {};
     user.username = req.body.username;
@@ -402,7 +424,7 @@ app.post('/api/login', async(req, res, next) => {
             expiresIn: 120 * 60 * 1000 // would expire in 120 minutes
         };
         const token = jwt.sign({ email: user.email }, jwtSecretKey, options);
-        const isAdmin = { isAdmin: (user && user.role == 'admin') };
+        const isAdmin = (user && user.role == 'admin');
     
         res.status(200).json({
             status: "success",
@@ -446,6 +468,70 @@ app.get("/home", verifyToken, (req, res, next) => {
     res.status(201).redirect("/index.html");
 });
 
+app.post('/api/sendUserInvitation', verifyAdminToken, async(req, res, next) => {
+    if (!req.body.email || !req.body.role) {
+        return res.status(422).send('Invalid invitation information');
+    }
+    try {
+        // validate user already exists
+        var user = await dataProvider.findUser(req.body.email);
+        if (user) {
+            return res.status(422).send('User already exists');
+        }
+        const token = crypto.randomToken();
+        await dataProvider.addInvitationToken(req.body.email, req.body.role, token);
+        mailSender.sendInviteEmail(req.body.email, token).then(() => {
+            res.status(200).json({ success: true });
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            data: [],
+            message: `Internal Server Error while sending email. ${err}`,
+        });
+    }
+});
+
+app.post('/api/confirmRegistration', async(req, res, next) => {
+    if (!req.body.token || !req.body.email || !req.body.username || !req.body.password) {
+        return res.status(422).send('Invalid registration information');
+    }
+    const userData = await dataProvider.findRegistrationToken(req.body.email, req.body.token);
+    if (!userData) {
+        return res.status(422).send('Invalid invitation link');
+    }
+    if (Date.parse(userData.expiration) < new Date()) {
+        await dataProvider.deleteRegistrationToken(req.body.email, req.body.token);
+        return res.status(422).send('Expired invitation link, please request a new invitation');
+    }
+    addUser(req.body.username, userData.email, userData.role, req.body.password).then(async () => {
+        await dataProvider.deleteRegistrationToken(req.body.email, req.body.token);
+        let options = {
+            expiresIn: 120 * 60 * 1000 // would expire in 120 minutes
+        };
+        const token = jwt.sign({ email: userData.email }, jwtSecretKey, options);
+        const isAdmin = (userData.role == 'admin');
+    
+        res.status(200).json({
+            status: "success",
+            data: { token: token, 
+                username: req.body.username, 
+                email: userData.email,
+                isAdmin: isAdmin
+            },
+            message: `Welcome ${req.body.username} to wDOSg! You have successfully logged in.`,
+        });
+    }).catch((err) => {
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            data: [],
+            message: `Error registering user. ${err}`,
+        });
+    });
+});
+
 const getGameFromBody = (body) => {
     logger.debug(`Parsing request body to build game: ${JSON.stringify(body, null, 2)}`);
     var game = {};
@@ -460,11 +546,13 @@ const getGameFromBody = (body) => {
 };
 
 dataProvider.init().then(() => {
-    app.listen(app.get('port'), function(err){
+    logger.debug(`Clearing up TEMP folder`);
+    fs.rmSync(temporaryDir, { recursive: true, force: true });
+    app.listen(app.get('port'), function(err) {
         if (err) {
             logger.fatal(err, "Error in server setup");
             process.exit(1);
         }
         logger.info(`Application ready. Server listening on port ${app.get('port')}`);
-    })
+    });
 });

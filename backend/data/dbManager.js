@@ -374,6 +374,23 @@ export async function findBlacklistedToken(token) {
   return await sqlite.fetch(`SELECT * FROM tokens_blacklist WHERE token = ?`, [token]);
 }
 
+export async function addInvitationToken(email, role, token) {
+  logger.info(`Adding invite token for user ${email}`);
+  var expDate = new Date()
+  expDate.setDate(expDate.getUTCDate() + 1);
+  var formattedDate = expDate.toISOString();
+  formattedDate = formattedDate.substring(0, formattedDate.indexOf('.'));
+  return await sqlite.execute(`INSERT INTO invitation_tokens(email, role, expiration, token) VALUES (?, ?, ?, ?)`, [email, role, formattedDate, token]);
+}
+
+export async function findRegistrationToken(email, token) {
+  return await sqlite.fetch(`SELECT * FROM invitation_tokens WHERE email = ? AND token = ?`, [email, token]);
+}
+
+export async function deleteRegistrationToken(email, token) {
+  await sqlite.execute(`DELETE FROM invitation_tokens WHERE email = ? AND token = ?`, [email, token]);
+}
+
 export async function init() {
   return sqlite.init();
 }

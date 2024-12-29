@@ -119,6 +119,10 @@ curl -X POST https://id.twitch.tv/oauth2/token \
 |`TOKEN_SECRET`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
 |`GAMES_LIBRARY` (*) |Path to your games library (If using docker this variable references its internal location, so make sure the appropriate path gets reflected as a mapped volume)|`'/app/wdosglibrary'`|
 |`DB_PATH` (*)|Path to the sqlite database|`'/app/database/'`|
+|`EMAIL_SERVICE`|Email service wDOSg will use to send invitation emails from|Empty|
+|`EMAIL_USER`|Email account user from which wDOSg will send invitation emails from|Empty|
+|`EMAIL_PASS`|Email account password from which wDOSg will send invitation emails from|Empty|
+|`SERVER_FRIENDLY_URL`|wDOSg hosting site (where users will be redirected for authentication)|Empty|
 
 (*): _If using docker, it's recommended to leave them as-is, and instead map the corresponding folder to the default value_
 
@@ -145,6 +149,10 @@ services:
                                                # make sure mapped volumes are consistent with this value
       # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this variable, 
                                           # make sure mapped volumes are consistent with this value
+      - EMAIL_SERVICE=mymail # Your email service
+      - EMAIL_USER=wdosg@mymail.com # Email user that wDOSg will use
+      - EMAIL_PASS=wodsgpassword # Email user that wDOSg will use
+      - SERVER_FRIENDLY_URL=https://wdosg.com # Your site where wDOSg is hosted
     volumes:
       - your_library_location:/app/wdosglibrary # directory containing your library
       - your_db_location:/app/database # directory containing your database

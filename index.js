@@ -493,6 +493,14 @@ app.post('/api/sendUserInvitation', verifyAdminToken, async(req, res, next) => {
     }
 });
 
+app.post('/api/uploadSaveGame', async(req, res, next) => {
+    if (!req.files || !req.files.file) {
+        return res.status(422).send('No files were uploaded');
+    }
+    dataProvider.appendSavegame(games_library, req.body.gamePath, req.files.file);
+    res.status(200).json({ success: true });
+});
+
 app.post('/api/confirmRegistration', async(req, res, next) => {
     if (!req.body.token || !req.body.email || !req.body.username || !req.body.password) {
         return res.status(422).send('Invalid registration information');
@@ -545,14 +553,16 @@ const getGameFromBody = (body) => {
     return game;
 };
 
-dataProvider.init().then(() => {
+dataProvider.init().then(async() => {
     logger.debug(`Clearing up TEMP folder`);
     fs.rmSync(temporaryDir, { recursive: true, force: true });
-    app.listen(app.get('port'), function(err) {
-        if (err) {
-            logger.fatal(err, "Error in server setup");
-            process.exit(1);
-        }
-        logger.info(`Application ready. Server listening on port ${app.get('port')}`);
+    dataProvider.runMigrate(games_library).then(() => {
+        app.listen(app.get('port'), function(err) {
+            if (err) {
+                logger.fatal(err, "Error in server setup");
+                process.exit(1);
+            }
+            logger.info(`Application ready. Server listening on port ${app.get('port')}`);
+        });
     });
 });

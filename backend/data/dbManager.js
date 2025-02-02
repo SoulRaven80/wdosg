@@ -391,6 +391,22 @@ export async function deleteRegistrationToken(email, token) {
   await sqlite.execute(`DELETE FROM invitation_tokens WHERE email = ? AND token = ?`, [email, token]);
 }
 
+export async function fetchMigrateVersion() {
+  return await sqlite.fetch(`SELECT * FROM migrate_version`);
+}
+
+export async function updateMigrateVersion(version) {
+  await sqlite.execute(`DELETE FROM migrate_version`);
+  await sqlite.execute(`INSERT INTO migrate_version(version_number) VALUES (?)`, [version]);
+}
+
+export async function setupDosZoneGamesTable() {
+  const res = await sqlite.fetch(`SELECT count(1) as count FROM sqlite_master WHERE type = 'table' AND name = ?`, ['dos_zone_games']);
+  if (res.count == 0) {
+    await sqlite.setupDosZoneGamesTable();
+  }
+}
+
 export async function init() {
   return sqlite.init();
 }

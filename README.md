@@ -64,11 +64,12 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [x] Add Manuals / Attachments to each game
 - [ ] Desired features
   - [ ] Cloud saving (enabled through _js-dos_)
+  - [x] Cross-device local saving
   - [x] _js-dos_ per-game configuration
   - [ ] Create entry from game folder - as opposed to a _jsdos bundle_ file
   - [ ] Support for _js-dos_ v8 (currently v7)
   - [ ] Ability to scan library folder (bulk import)
-  - [ ] Send registering invites via email
+  - [x] Send registering invites via email
   - [ ] Password recovery
 
 > [!CAUTION]

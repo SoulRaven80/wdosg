@@ -250,7 +250,13 @@ app.post('/api/bundle', verifyAdminToken, async(req, res, next) => {
 });
 
 app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
-    res.status(200).json(await igdbProvider.searchGame(req.query.gameName));
+    var response;
+    try {
+        response = await igdbProvider.searchGame(req.query.gameName);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+    res.status(200).json(response);
 });
 
 app.get('/api/companies', verifyToken, async(req, res, next) => {

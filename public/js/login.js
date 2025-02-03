@@ -21,7 +21,17 @@ const initInfoMessages = () => {
     }
 }
 
+$('#loginForm').find('input').keypress(function(e) {
+    if(e.which == 10 || e.which == 13) {
+        doLogin();
+    }
+});
+
 $('#loginButton').on('click', event => {
+    doLogin();
+});
+
+function doLogin() {
     var validEmail = $('#loginEmail')[0].checkValidity();
     $('#loginEmail').removeClass('is-valid is-invalid')
         .addClass(validEmail ? 'is-valid' : 'is-invalid');
@@ -45,4 +55,4 @@ $('#loginButton').on('click', event => {
             }
         });
     }
-});
+}

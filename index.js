@@ -16,6 +16,12 @@ import httpLogger from 'pino-http';
 import { logger } from './backend/logger/logger.js';
 import * as mailSender from './backend/email/mailSender.js';
 
+if (process.env.TWITCH_CLIENT_ID_FILE) {
+    process.env.TWITCH_CLIENT_ID = fs.readFileSync(process.env.TWITCH_CLIENT_ID_FILE, 'utf8').trim();
+}
+if (process.env.TWITCH_APP_ACCESS_TOKEN_FILE) {
+    process.env.TWITCH_APP_ACCESS_TOKEN = fs.readFileSync(process.env.TWITCH_APP_ACCESS_TOKEN_FILE, 'utf8').trim();
+}
 if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
     logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_APP_ACCESS_TOKEN as environment variables");
     logger.fatal("following the instructions located at https://api-docs.igdb.com/#account-creation");
@@ -23,6 +29,9 @@ if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
 }
 
 const games_library = config.getGamesLibraryLocation();
+if (process.env.TOKEN_SECRET_FILE) {
+    process.env.TOKEN_SECRET = fs.readFileSync(process.env.TOKEN_SECRET_FILE, 'utf8').trim();
+}
 const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
 
 const fileTypes = {

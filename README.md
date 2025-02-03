@@ -127,6 +127,16 @@ curl -X POST https://id.twitch.tv/oauth2/token \
 
 (*): _If using docker, it's recommended to leave them as-is, and instead map the corresponding folder to the default value_
 
+#### Docker secrets support:
+Some environment variables are supported to be included as docker secrets instead of plain environment variables, as follows
+
+| Variable | Description | Default value |
+| --- | --- | --- |
+|`TWITCH_CLIENT_ID_FILE`|Your personal Twitch Client ID|Empty|
+|`TWITCH_APP_ACCESS_TOKEN_FILE`|Your Twitch Access Token|Empty|
+|`TOKEN_SECRET_FILE`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
+|`EMAIL_PASS_FILE`|Email account password from which wDOSg will send invitation emails from|Empty|
+
 #### Docker compose example
 
 The currently recommended way to run the server is via Docker.
@@ -143,7 +153,8 @@ services:
       - 3001:3001 # to access the web client
     environment:
       - TWITCH_CLIENT_ID=xxxx # Your IGDB (Twitch) client ID
-      - TWITCH_APP_ACCESS_TOKEN=xxxx # Your IGDB (Twitch) Token - **NOT your secret**
+      - TWITCH_APP_ACCESS_TOKEN=xxxx # Your IGDB (Twitch) Token
+                                     # **NOT your secret**
       - LOG_LEVEL=info # Level of logging to be reflected on console
       - TOKEN_SECRET=secret # Your key to encrypt the session tokens
       # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this variable, 
@@ -163,6 +174,55 @@ services:
 networks:
   proxy:
     external: true
+```
+
+#### Docker compose example with docker secrets
+```yaml
+services:
+  wdosg:
+    image: soulraven1980/wdosg:latest
+    container_name: wdosg
+    restart: unless-stopped
+    ports:
+      - 3001:3001 # to access the web client
+    environment:
+      - TWITCH_CLIENT_ID_FILE=/run/secrets/TWITCH_CLIENT_ID # Secret file with your IGDB (Twitch) client ID
+      - TWITCH_APP_ACCESS_TOKEN_FILE=/run/secrets/TWITCH_APP_ACCESS_TOKEN # Secret file with your IGDB (Twitch) Token
+                                                                          # **NOT your secret**
+      - LOG_LEVEL=info # Level of logging to be reflected on console
+      - TOKEN_SECRET_FILE=/run/secrets/TOKEN_SECRET # Secret file with your key to encrypt the session tokens
+      # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this variable, 
+                                               # make sure mapped volumes are consistent with this value
+      # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this variable, 
+                                          # make sure mapped volumes are consistent with this value
+      - EMAIL_SERVICE=mymail # Your email service
+      - EMAIL_USER=wdosg@mymail.com # Email user that wDOSg will use
+      - EMAIL_PASS_FILE=/run/secrets/EMAIL_PASS # Secret file with the password for the email that wDOSg will use
+      - SERVER_FRIENDLY_URL=https://wdosg.com # Your site where wDOSg is hosted
+    volumes:
+      - your_library_location:/app/wdosglibrary # directory containing your library
+      - your_db_location:/app/database # directory containing your database
+    networks:
+      - proxy # assuming "proxy" is the network for the reverse proxy (i.e. Traefik)
+    secrets:
+      - TWITCH_CLIENT_ID
+      - TWITCH_APP_ACCESS_TOKEN
+      - TOKEN_SECRET
+      - EMAIL_PASS
+
+networks:
+  proxy:
+    external: true
+
+secrets:
+   TWITCH_CLIENT_ID:
+     file: secrets/TWITCH_CLIENT_ID
+   TWITCH_APP_ACCESS_TOKEN:
+     file: secrets/TWITCH_APP_ACCESS_TOKEN
+   TOKEN_SECRET:
+     file: secrets/TOKEN_SECRET
+   EMAIL_PASS:
+     file: secrets/EMAIL_PASS
 ```
 
 Run `docker-compose up -d` in the directory containing your `docker-compose.yml` file to start the service.

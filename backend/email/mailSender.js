@@ -5,6 +5,9 @@ import { logger } from '../logger/logger.js';
 import * as config from '../../config.js';
 import { publicIpv4 } from 'public-ip';
 
+if (process.env.EMAIL_PASS_FILE) {
+    process.env.EMAIL_PASS = fs.readFileSync(process.env.EMAIL_PASS_FILE, 'utf8').trim();
+}
 const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE,
     auth: {

@@ -16,6 +16,12 @@ import httpLogger from 'pino-http';
 import { logger } from './backend/logger/logger.js';
 import * as mailSender from './backend/email/mailSender.js';
 
+if (process.env.TWITCH_CLIENT_ID_FILE) {
+    process.env.TWITCH_CLIENT_ID = fs.readFileSync(process.env.TWITCH_CLIENT_ID_FILE, 'utf8').trim();
+}
+if (process.env.TWITCH_APP_ACCESS_TOKEN_FILE) {
+    process.env.TWITCH_APP_ACCESS_TOKEN = fs.readFileSync(process.env.TWITCH_APP_ACCESS_TOKEN_FILE, 'utf8').trim();
+}
 if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
     logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_APP_ACCESS_TOKEN as environment variables");
     logger.fatal("following the instructions located at https://api-docs.igdb.com/#account-creation");
@@ -23,6 +29,9 @@ if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
 }
 
 const games_library = config.getGamesLibraryLocation();
+if (process.env.TOKEN_SECRET_FILE) {
+    process.env.TOKEN_SECRET = fs.readFileSync(process.env.TOKEN_SECRET_FILE, 'utf8').trim();
+}
 const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
 
 const fileTypes = {
@@ -250,7 +259,13 @@ app.post('/api/bundle', verifyAdminToken, async(req, res, next) => {
 });
 
 app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
-    res.status(200).json(await igdbProvider.searchGame(req.query.gameName));
+    var response;
+    try {
+        response = await igdbProvider.searchGame(req.query.gameName);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+    res.status(200).json(response);
 });
 
 app.get('/api/companies', verifyToken, async(req, res, next) => {
@@ -493,6 +508,18 @@ app.post('/api/sendUserInvitation', verifyAdminToken, async(req, res, next) => {
     }
 });
 
+app.post('/api/uploadSaveGame', verifyToken, async(req, res, next) => {
+    if (!req.files || !req.files.file) {
+        return res.status(422).send('No files were uploaded');
+    }
+    try {
+        dataProvider.appendSavegame(games_library, req.body.gamePath, req.files.file);
+    } catch (error) {
+        logger.error(`Error trying to store savegames for ${req.body.gamePath}`);
+    }
+    res.status(200).json({ success: true });
+});
+
 app.post('/api/confirmRegistration', async(req, res, next) => {
     if (!req.body.token || !req.body.email || !req.body.username || !req.body.password) {
         return res.status(422).send('Invalid registration information');
@@ -532,6 +559,38 @@ app.post('/api/confirmRegistration', async(req, res, next) => {
     });
 });
 
+app.post('/api/sendResetPasswordLink', async(req, res, next) => {
+    if (!await dataProvider.findUser(req.body.email)) {
+        logger.debug(`No user found under '${req.body.email}' to send Reset Password email`);
+    }
+    else {
+        const token = crypto.randomToken();
+        await dataProvider.addResetPasswordToken(req.body.email, token);
+        mailSender.sendResetPasswordEmail(req.body.email, token).then(() => {
+            logger.debug(`Reset Password email sent to user ${req.body.email}`);
+        });
+    }
+    res.status(200).json({ success: true });
+});
+
+app.get('/api/startResetPassword', async(req, res, next) => {
+    const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.query.email, req.query.token)
+    if (!resetPasswordRequest) {
+        return res.status(422).send('Invalid reset password link');
+    }
+    res.status(201).redirect(`/reset-password.html?email=${req.query.email}&token=${req.query.token}`);
+});
+
+app.post('/api/resetPassword', async(req, res, next) => {
+    const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.body.email, req.body.token)
+    if (!resetPasswordRequest) {
+        return res.status(422).send('Invalid reset password link');
+    }
+    await dataProvider.deleteResetPasswordToken(req.body.email, req.body.token);
+    await dataProvider.updateUserPassword(req.body.email, req.body.password);
+    res.status(200).json({ success: true });
+});
+
 const getGameFromBody = (body) => {
     logger.debug(`Parsing request body to build game: ${JSON.stringify(body, null, 2)}`);
     var game = {};
@@ -545,14 +604,16 @@ const getGameFromBody = (body) => {
     return game;
 };
 
-dataProvider.init().then(() => {
+dataProvider.init().then(async() => {
     logger.debug(`Clearing up TEMP folder`);
     fs.rmSync(temporaryDir, { recursive: true, force: true });
-    app.listen(app.get('port'), function(err) {
-        if (err) {
-            logger.fatal(err, "Error in server setup");
-            process.exit(1);
-        }
-        logger.info(`Application ready. Server listening on port ${app.get('port')}`);
+    dataProvider.runMigrate(games_library).then(() => {
+        app.listen(app.get('port'), function(err) {
+            if (err) {
+                logger.fatal(err, "Error in server setup");
+                process.exit(1);
+            }
+            logger.info(`Application ready. Server listening on port ${app.get('port')}`);
+        });
     });
 });

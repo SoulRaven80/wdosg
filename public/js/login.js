@@ -19,9 +19,22 @@ const initInfoMessages = () => {
     if (urlParams.has('error')) {
         appendAlert(urlParams.get('error'));
     }
+    if (urlParams.has('info')) {
+        appendInfo(urlParams.get('info'));
+    }
 }
 
+$('#loginForm').find('input').keypress(function(e) {
+    if(e.which == 10 || e.which == 13) {
+        doLogin();
+    }
+});
+
 $('#loginButton').on('click', event => {
+    doLogin();
+});
+
+const doLogin = () => {
     var validEmail = $('#loginEmail')[0].checkValidity();
     $('#loginEmail').removeClass('is-valid is-invalid')
         .addClass(validEmail ? 'is-valid' : 'is-invalid');
@@ -45,4 +58,33 @@ $('#loginButton').on('click', event => {
             }
         });
     }
+}
+
+$('#forgotPwdLink').on('click', event => {
+    $('#forgotPasswordForm').trigger("reset");
+    $('#forgotPasswordEmail').removeClass('is-valid is-invalid');
+    const uploadModal = new bootstrap.Modal('#forgotPasswordModal', {});
+    uploadModal.show();
 });
+
+const resetPassword = () => {
+    var validEmail = $('#forgotPasswordEmail')[0].checkValidity();
+    $('#forgotPasswordEmail').removeClass('is-valid is-invalid')
+        .addClass(validEmail ? 'is-valid' : 'is-invalid');
+    if (validEmail) {
+        $.ajax({
+            type: "POST",
+            url: "/api/sendResetPasswordLink",
+            data: $('#forgotPasswordForm').serialize(),
+            success: (result, statusMessage, response) => {
+                appendInfo(`Email sent`);
+            },
+            error: (error) => {
+                appendAlert(error.responseJSON.message);
+            },
+            complete: (xhr, status) => {
+                $('#forgotPasswordModal').modal('hide');
+            }
+        });
+    }
+}

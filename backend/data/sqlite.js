@@ -36,6 +36,19 @@ const connectDb = async() => {
   });
 }
 
+export const setupDosZoneGamesTable = async() => {
+  await execute(`CREATE TABLE IF NOT EXISTS dos_zone_games (
+      id int primary key not null,
+      title text not null,
+      release int null,
+      genre text null,
+      url text null
+    );`);
+  logger.info("DB setup: Populating dos_zone_games");
+  const dosGames = fs.readFileSync(dosGamesInserts).toString().split(os.EOL);
+  runTransaction(dosGames);
+}
+
 const createTables = async() => {
   logger.info("DB setup: Creating tables");
   await execute(`CREATE TABLE IF NOT EXISTS genres (
@@ -70,14 +83,6 @@ const createTables = async() => {
         game_id text not null,
         company_id text not null
     );`);
-  await execute(`DROP TABLE IF EXISTS dos_zone_games;`);
-  await execute(`CREATE TABLE IF NOT EXISTS dos_zone_games (
-      id int primary key not null,
-      title text not null,
-      release int null,
-      genre text null,
-      url text null
-    );`);
   await execute(`CREATE TABLE IF NOT EXISTS users (
       username text primary key not null,
       email text not null,
@@ -97,6 +102,13 @@ const createTables = async() => {
       expiration text not null,
       token text not null
     );`);
+  await execute(`CREATE TABLE IF NOT EXISTS migrate_version (
+      version_number int primary key not null
+    );`);
+  await execute(`CREATE TABLE IF NOT EXISTS reset_password_tokens (
+      email text not null,
+      token text not null
+    );`);
   await populateTablesIfEmpty();
 }
 
@@ -114,13 +126,6 @@ const populateTablesIfEmpty = async() => {
     logger.info("DB setup: Populating companies");
     const companies = fs.readFileSync(companiesInserts).toString().split(os.EOL);
     runTransaction(companies);
-  }
-
-  var countDosGames = await fetch(`SELECT count(1) as c FROM dos_zone_games`);
-  if (countDosGames.c == 0) {
-    logger.info("DB setup: Populating dos_games");
-    const dosGames = fs.readFileSync(dosGamesInserts).toString().split(os.EOL);
-    runTransaction(dosGames);
   }
 
   var countUsers = await fetch(`SELECT count(1) as c FROM users`);

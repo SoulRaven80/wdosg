@@ -17,6 +17,8 @@
 
 <body>
 
+<div w3-include-html="/forgot-password.html"></div>
+
 <!-- MAIN -->
 <section class="vh-100 gradient-custom">
     <div class="container py-5 h-100">
@@ -28,7 +30,7 @@
                         <div class="mb-md-5 mt-md-4">
                             <form action="#" id="loginForm" method="post" class="needs-validation" novalidate>
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-                                <p class="text-white-50 mb-5">Please enter your email and password</p>
+                                <p class="text-white-50 mb-4">Please enter your email and password</p>
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="loginEmail">Email</label>
                                     <input type="email" name="email" id="loginEmail" class="form-control form-control-lg" required>
@@ -36,14 +38,14 @@
                                         Please add a valid email.
                                     </div>
                                 </div>
-                                <div class="form-outline mb-4">
+                                <div class="form-outline mb-2">
                                     <label class="form-label" for="loginPassword">Password</label>
                                     <input type="password" name="password" id="loginPassword" class="form-control form-control-lg" required>
                                     <div class="invalid-feedback">
                                         Please add a password.
                                     </div>
                                 </div>
-                                <!-- <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p> -->
+                                <p class="small mb-3 pb-1"><a class="text-white-50" href="#" id="forgotPwdLink">Forgot password?</a></p>
                                 <button class="btn btn-outline-light btn-lg px-5" type="button" id="loginButton">Login</button>
                             </form>
                         </div>
@@ -55,8 +57,7 @@
 </section>
   <!-- MAIN -->
 
-
-<!--  Scripts-->
+<!-- Scripts -->
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/w3.js"></script>
@@ -64,9 +65,11 @@
 <script src="/js/common.js"></script>
 <script src="/js/login.js"></script>
 <script>
-    setTheme(getPreferredTheme());
-    initValidation();
-    initInfoMessages();
+    w3.includeHTML(() => {
+        setTheme(getPreferredTheme());
+        initValidation();
+        initInfoMessages();
+    });
 </script>
   
 </body>

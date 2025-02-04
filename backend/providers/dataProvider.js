@@ -2,6 +2,8 @@ import fs from 'fs';
 import * as dbManager from '../data/dbManager.js';
 import * as config from '../../config.js';
 import { logger } from '../logger/logger.js';
+import admZip from 'adm-zip';
+import * as migrationProvider from './migrationProvider.js';
 
 const template_path = config.getBundleTemplatePath();
 
@@ -87,6 +89,7 @@ export async function saveNewGame(gamesLibrary, file, game) {
   logger.debug(`Copying templates to ${gamesLibrary}/${game.path}`);
   fs.copyFileSync(`${template_path}/index.html`, `${gamesLibrary}/${game.path}/index.html`);
   fs.copyFileSync(`${template_path}/game.html`, `${gamesLibrary}/${game.path}/game.html`);
+  fs.copyFileSync(`${template_path}/info.json`, `${gamesLibrary}/${game.path}/info.json`);
   logger.debug(`Saving ${game.name} to DB`);
   return await dbManager.saveNewGame(game);
 }
@@ -137,6 +140,37 @@ export async function findRegistrationToken(email, token) {
 
 export async function deleteRegistrationToken(email, token) {
   return await dbManager.deleteRegistrationToken(email, token);
+}
+
+export async function addResetPasswordToken(email, token) {
+  return await dbManager.addResetPasswordToken(email, token);
+}
+
+export async function findResetPasswordToken(email, token) {
+  return await dbManager.findResetPasswordToken(email, token);
+}
+
+export async function deleteResetPasswordToken(email, token) {
+  return await dbManager.deleteResetPasswordToken(email, token);
+}
+
+export function appendSavegame(gamesLibrary, gamePath, file) {
+  logger.debug(`Appending save games in ${gamesLibrary}/${gamePath} bundle`);
+  const zip = new admZip(file.tempFilePath);
+  const bundle = new admZip(`${gamesLibrary}/${gamePath}/bundle.jsdos`);
+  for (const zipEntry of zip.getEntries()) {
+    // unzip to a tmp folder everything but .jsdos
+    if (zipEntry.entryName != '.jsdos/') {
+      var entryName = zipEntry.entryName;
+      var decompressedData = zip.readFile(zipEntry);
+      bundle.addFile(zipEntry.entryName, decompressedData);
+    }
+  }
+  bundle.writeZip(`${gamesLibrary}/${gamePath}/bundle.jsdos`);
+}
+
+export async function runMigrate(gamesLibrary) {
+  await migrationProvider.runMigrate(gamesLibrary);
 }
 
 export async function init() {

@@ -512,7 +512,11 @@ app.post('/api/uploadSaveGame', verifyToken, async(req, res, next) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
-    dataProvider.appendSavegame(games_library, req.body.gamePath, req.files.file);
+    try {
+        dataProvider.appendSavegame(games_library, req.body.gamePath, req.files.file);
+    } catch (error) {
+        logger.error(`Error trying to store savegames for ${req.body.gamePath}`);
+    }
     res.status(200).json({ success: true });
 });
 

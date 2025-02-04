@@ -142,6 +142,18 @@ export async function deleteRegistrationToken(email, token) {
   return await dbManager.deleteRegistrationToken(email, token);
 }
 
+export async function addResetPasswordToken(email, token) {
+  return await dbManager.addResetPasswordToken(email, token);
+}
+
+export async function findResetPasswordToken(email, token) {
+  return await dbManager.findResetPasswordToken(email, token);
+}
+
+export async function deleteResetPasswordToken(email, token) {
+  return await dbManager.deleteResetPasswordToken(email, token);
+}
+
 export function appendSavegame(gamesLibrary, gamePath, file) {
   logger.debug(`Appending save games in ${gamesLibrary}/${gamePath} bundle`);
   const zip = new admZip(file.tempFilePath);

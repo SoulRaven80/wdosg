@@ -70,7 +70,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [ ] Support for _js-dos_ v8 (currently v7)
   - [ ] Ability to scan library folder (bulk import)
   - [x] Send registering invites via email
-  - [ ] Password recovery
+  - [x] Password recovery
 
 > [!CAUTION]
 > wDOSg has been imagined as a _convenient_ way to run DOS games. Although it requires user authentication, it has not been 

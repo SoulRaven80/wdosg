@@ -391,6 +391,19 @@ export async function deleteRegistrationToken(email, token) {
   await sqlite.execute(`DELETE FROM invitation_tokens WHERE email = ? AND token = ?`, [email, token]);
 }
 
+export async function addResetPasswordToken(email, token) {
+  logger.info(`Adding Reset Password token for user ${email}`);
+  return await sqlite.execute(`INSERT INTO reset_password_tokens(email, token) VALUES (?, ?)`, [email, token]);
+}
+
+export async function findResetPasswordToken(email, token) {
+  return await sqlite.fetch(`SELECT * FROM reset_password_tokens WHERE email = ? AND token = ?`, [email, token]);
+}
+
+export async function deleteResetPasswordToken(email, token) {
+  await sqlite.execute(`DELETE FROM reset_password_tokens WHERE email = ? AND token = ?`, [email, token]);
+}
+
 export async function fetchMigrateVersion() {
   return await sqlite.fetch(`SELECT * FROM migrate_version`);
 }

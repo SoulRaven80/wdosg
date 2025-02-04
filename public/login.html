@@ -17,6 +17,8 @@
 
 <body>
 
+<div w3-include-html="/forgot-password.html"></div>
+
 <!-- MAIN -->
 <section class="vh-100 gradient-custom">
     <div class="container py-5 h-100">
@@ -43,7 +45,7 @@
                                         Please add a password.
                                     </div>
                                 </div>
-                                <!-- <p class="small mb-3 pb-1"><a class="text-white-50" href="#!">Forgot password?</a></p> -->
+                                <p class="small mb-3 pb-1"><a class="text-white-50" href="#" id="forgotPwdLink">Forgot password?</a></p>
                                 <button class="btn btn-outline-light btn-lg px-5" type="button" id="loginButton">Login</button>
                             </form>
                         </div>
@@ -55,8 +57,7 @@
 </section>
   <!-- MAIN -->
 
-
-<!--  Scripts-->
+<!-- Scripts -->
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/w3.js"></script>
@@ -64,9 +65,11 @@
 <script src="/js/common.js"></script>
 <script src="/js/login.js"></script>
 <script>
-    setTheme(getPreferredTheme());
-    initValidation();
-    initInfoMessages();
+    w3.includeHTML(() => {
+        setTheme(getPreferredTheme());
+        initValidation();
+        initInfoMessages();
+    });
 </script>
   
 </body>

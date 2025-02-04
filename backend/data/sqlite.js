@@ -105,6 +105,10 @@ const createTables = async() => {
   await execute(`CREATE TABLE IF NOT EXISTS migrate_version (
       version_number int primary key not null
     );`);
+  await execute(`CREATE TABLE IF NOT EXISTS reset_password_tokens (
+      email text not null,
+      token text not null
+    );`);
   await populateTablesIfEmpty();
 }
 

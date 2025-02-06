@@ -11,6 +11,7 @@ const genresInserts = __dirname + 'sql/genres.sql';
 const companiesInserts = __dirname + 'sql/companies.sql';
 const dosGamesInserts = __dirname + 'sql/dos-zone-titles.sql';
 const usersInserts = __dirname + 'sql/users.sql';
+let db;
 
 const ensurePathExists = () => {
   logger.debug("DB setup: Checking DB path");
@@ -24,15 +25,16 @@ const ensurePathExists = () => {
   }
 }
 
-const connectDb = async() => {
-  return new Promise((resolve, reject) => {
-    logger.debug("DB setup: Opening database");
-    let db = new sqlite3.Database(config.getDbPath() + '/database.db', (err) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(db);
-    });
+const connectDb = () => {
+  logger.debug("DB setup: Opening database");
+  return new sqlite3.Database(config.getDbPath() + '/database.db', (err) => {
+    if (err) {
+      throw err;
+    }
+  }).on('trace', function(query) {
+    if (!query.includes('token') && !query.includes('password')) {
+      logger.debug(query);
+    }
   });
 }
 
@@ -204,21 +206,15 @@ export const execute = async(sql, params = []) => {
     });
 };
 
-let db;
-
 export const init = async() => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       logger.debug(`Initializing DB`);
       ensurePathExists();
-      db = await connectDb();
-      db.on('trace', function(query) {
-        if (!query.includes('token') && !query.includes('password')) {
-          logger.debug(query);
-        }
+      db = connectDb();
+      createTables().then(() => {
+        resolve();
       });
-      await createTables();
-      resolve();
     } catch (error) {
       logger.error(error, 'Error while initializing DB');
       reject(error);

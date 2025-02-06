@@ -1,3 +1,6 @@
+![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=Plastic&logo=eslint&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=Plastic&logo=docker&logoColor=white)
+
 # wDOSg
 
 A Simple web server to manage and run DOS based games on your browser.

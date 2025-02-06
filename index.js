@@ -138,22 +138,22 @@ app.set('port', appPort);
 
 await mailSender.init(appPort);
 
-app.get('/api/games', verifyToken, async(req, res, next) => {
+app.get('/api/games', verifyToken, async(req, res) => {
 	var list = await dataProvider.listGames();
     res.status(200).json(list);
 });
 
-app.get('/api/gamesShallowInfo', verifyToken, async(req, res, next) => {
+app.get('/api/gamesShallowInfo', verifyToken, async(req, res) => {
 	var list = await dataProvider.listGamesShallow();
     res.status(200).json(list);
 });
 
-app.get('/api/attachments', verifyAdminToken, async(req, res, next) => {
+app.get('/api/attachments', verifyAdminToken, async(req, res) => {
     var list = await dataProvider.listAttachments(req.query.gameId);
     res.status(200).json(list);
 });
 
-app.post('/api/addAttachment', verifyAdminToken, async(req, res, next) => {
+app.post('/api/addAttachment', verifyAdminToken, async(req, res) => {
     if (!req.files || !req.files.attachments) {
         return res.status(422).send('No files were uploaded');
     }
@@ -171,14 +171,14 @@ app.post('/api/addAttachment', verifyAdminToken, async(req, res, next) => {
     });
 });
 
-app.post('/api/deleteAttachment/:gameId', verifyAdminToken, async(req, res, next) => {
+app.post('/api/deleteAttachment/:gameId', verifyAdminToken, async(req, res) => {
     var gameId = req.params.gameId;
     var gamePath = await dataProvider.findGamePath(gameId)
     await dataProvider.deleteAttachment(games_library, gamePath.path, gameId, req.body.key);
     res.status(200).json({ "success": true });
 });
 
-app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {
+app.get('/api/dosZoneGames', verifyAdminToken, async(req, res) => {
     const itemsPerPage = 20;
     var page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
     const filter = querystring.unescape(req.query.filter) || ''; // Filter keyword from query params
@@ -209,7 +209,7 @@ app.get('/api/dosZoneGames', verifyAdminToken, async(req, res, next) => {
     });
 });
 
-app.get('/api/dosZoneGenres', verifyAdminToken, async(req, res, next) => {
+app.get('/api/dosZoneGenres', verifyAdminToken, async(req, res) => {
     var genres = await dataProvider.listDosZoneGenres();
     genres = genres.map(g => g.genre);
     // Some games had multiple genre in the same value. Splitting and filtering
@@ -225,8 +225,7 @@ app.get('/api/dosZoneGenres', verifyAdminToken, async(req, res, next) => {
     );
 });
 
-app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res, next) => {
-    const itemsPerPage = 20;
+app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res) => {
     if (!req.query.id || !parseInt(req.query.id)) {
         return res.status(422).send('Empty or invalid game id');
     }
@@ -240,14 +239,14 @@ app.get('/api/getDosZoneGame', verifyAdminToken, async(req, res, next) => {
     });
 });
 
-app.get('/api/game', verifyToken, async(req, res, next) => {
+app.get('/api/game', verifyToken, async(req, res) => {
     if (!req.query.gameId) {
         return res.status(422).send('Empty game id');
     }
     res.status(200).json(await dataProvider.findGame(req.query.gameId));
 });
 
-app.post('/api/bundle', verifyAdminToken, async(req, res, next) => {
+app.post('/api/bundle', verifyAdminToken, async(req, res) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
@@ -258,7 +257,7 @@ app.post('/api/bundle', verifyAdminToken, async(req, res, next) => {
     res.status(200).json({ "success": true });
 });
 
-app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
+app.get('/api/gamemetadata', verifyAdminToken, async(req, res) => {
     var response;
     try {
         response = await igdbProvider.searchGame(req.query.gameName);
@@ -268,19 +267,19 @@ app.get('/api/gamemetadata', verifyAdminToken, async(req, res, next) => {
     res.status(200).json(response);
 });
 
-app.get('/api/companies', verifyToken, async(req, res, next) => {
+app.get('/api/companies', verifyToken, async(req, res) => {
     res.status(200).json(await dataProvider.listCompanies());
 });
 
-app.get('/api/searchCompanies', verifyAdminToken, async(req, res, next) => {
+app.get('/api/searchCompanies', verifyAdminToken, async(req, res) => {
     res.status(200).json(await dataProvider.searchCompanies(req.query.search));
 });
 
-app.get('/api/company', verifyToken, async(req, res, next) => {
+app.get('/api/company', verifyToken, async(req, res) => {
     res.status(200).json(await dataProvider.findCompany(req.query.companyId));
 });
 
-app.get('/api/genres', verifyToken, async(req, res, next) => {
+app.get('/api/genres', verifyToken, async(req, res) => {
     res.status(200).json(await dataProvider.listGenres());
 });
 
@@ -290,7 +289,7 @@ const getDirectories = (source) => {
         .map(dirent => dirent.name);
 }
 
-app.post('/api/create', verifyAdminToken, async(req, res, next) => {
+app.post('/api/create', verifyAdminToken, async(req, res) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
@@ -323,7 +322,7 @@ app.post('/api/create', verifyAdminToken, async(req, res, next) => {
     res.status(200).json({ "success": true });
 });
 
-app.post('/api/update', verifyAdminToken, async(req, res, next) => {
+app.post('/api/update', verifyAdminToken, async(req, res) => {
     var game = getGameFromBody(req.body);
     // these props comes as arrays per form select
     game.developers = req.body.developers;
@@ -340,28 +339,11 @@ app.delete('/api/deleteGame', verifyAdminToken, async(req, res) => {
     res.status(200).json({"success": true});
 });
 
-app.get('/api/users', verifyAdminToken, async(req, res, next) => {
+app.get('/api/users', verifyAdminToken, async(req, res) => {
     res.status(200).json(await dataProvider.listUsers());
 });
 
-async function addUser(username, email, role, password) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            var user = {};
-            user.username = username;
-            user.email = email;
-            user.role = role;
-            user.password = await crypto.encrypt(password);
-            await dataProvider.addUser(user);
-            resolve();
-        }
-        catch(err) {
-            reject(err);
-        }
-    });
-}
-
-app.post('/api/addUser', verifyAdminToken, async(req, res, next) => {
+app.post('/api/addUser', verifyAdminToken, async(req, res) => {
     var user = {};
     user.username = req.body.username;
     user.email = req.body.email;
@@ -380,7 +362,7 @@ app.post('/api/addUser', verifyAdminToken, async(req, res, next) => {
     }
 });
 
-app.post('/api/changePassword', verifyToken, async(req, res, next) => {
+app.post('/api/changePassword', verifyToken, async(req, res) => {
     try {
         const user = await dataProvider.findUser(req.body.email);
         if (!user) {
@@ -411,12 +393,12 @@ app.post('/api/changePassword', verifyToken, async(req, res, next) => {
     }
 });
 
-app.delete('/api/deleteUser', verifyAdminToken, async(req, res, next) => {
+app.delete('/api/deleteUser', verifyAdminToken, async(req, res) => {
     await dataProvider.deleteUser(req.body.username);
     res.status(200).json({"success": true});
 });
 
-app.post('/api/login', async(req, res, next) => {
+app.post('/api/login', async(req, res) => {
     try {
         const user = await dataProvider.findUser(req.body.email);
         if (!user) {
@@ -474,16 +456,16 @@ function getAuthToken(req) {
     return;
 }
 
-app.get('/api/logout', async(req, res, next) => {
+app.get('/api/logout', async(req, res) => {
     await dataProvider.blacklistToken(getAuthToken(req));
     res.status(201).redirect("/login.html");
 });
 
-app.get("/home", verifyToken, (req, res, next) => {
+app.get("/home", verifyToken, (req, res) => {
     res.status(201).redirect("/index.html");
 });
 
-app.post('/api/sendUserInvitation', verifyAdminToken, async(req, res, next) => {
+app.post('/api/sendUserInvitation', verifyAdminToken, async(req, res) => {
     if (!req.body.email || !req.body.role) {
         return res.status(422).send('Invalid invitation information');
     }
@@ -508,19 +490,33 @@ app.post('/api/sendUserInvitation', verifyAdminToken, async(req, res, next) => {
     }
 });
 
-app.post('/api/uploadSaveGame', verifyToken, async(req, res, next) => {
+app.post('/api/uploadSaveGame', verifyToken, async(req, res) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
     try {
         dataProvider.appendSavegame(games_library, req.body.gamePath, req.files.file);
-    } catch (error) {
+    } catch {
         logger.error(`Error trying to store savegames for ${req.body.gamePath}`);
     }
     res.status(200).json({ success: true });
 });
 
-app.post('/api/confirmRegistration', async(req, res, next) => {
+async function addUser(username, email, role, password) {
+    try {
+        var user = {};
+        user.username = username;
+        user.email = email;
+        user.role = role;
+        user.password = await crypto.encrypt(password);
+        await dataProvider.addUser(user);
+    } catch (error) {
+        logger.error(`Error while saving new user: ${error}`)
+        throw error;
+    }
+}
+
+app.post('/api/confirmRegistration', async(req, res) => {
     if (!req.body.token || !req.body.email || !req.body.username || !req.body.password) {
         return res.status(422).send('Invalid registration information');
     }
@@ -559,7 +555,7 @@ app.post('/api/confirmRegistration', async(req, res, next) => {
     });
 });
 
-app.post('/api/sendResetPasswordLink', async(req, res, next) => {
+app.post('/api/sendResetPasswordLink', async(req, res) => {
     if (!await dataProvider.findUser(req.body.email)) {
         logger.debug(`No user found under '${req.body.email}' to send Reset Password email`);
     }
@@ -573,7 +569,7 @@ app.post('/api/sendResetPasswordLink', async(req, res, next) => {
     res.status(200).json({ success: true });
 });
 
-app.get('/api/startResetPassword', async(req, res, next) => {
+app.get('/api/startResetPassword', async(req, res) => {
     const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.query.email, req.query.token)
     if (!resetPasswordRequest) {
         return res.status(422).send('Invalid reset password link');
@@ -581,7 +577,7 @@ app.get('/api/startResetPassword', async(req, res, next) => {
     res.status(201).redirect(`/reset-password.html?email=${req.query.email}&token=${req.query.token}`);
 });
 
-app.post('/api/resetPassword', async(req, res, next) => {
+app.post('/api/resetPassword', async(req, res) => {
     const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.body.email, req.body.token)
     if (!resetPasswordRequest) {
         return res.status(422).send('Invalid reset password link');
@@ -604,7 +600,7 @@ const getGameFromBody = (body) => {
     return game;
 };
 
-dataProvider.init().then(async() => {
+dataProvider.init().then(() => {
     logger.debug(`Clearing up TEMP folder`);
     fs.rmSync(temporaryDir, { recursive: true, force: true });
     dataProvider.runMigrate(games_library).then(() => {

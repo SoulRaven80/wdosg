@@ -161,7 +161,6 @@ export function appendSavegame(gamesLibrary, gamePath, file) {
   for (const zipEntry of zip.getEntries()) {
     // unzip to a tmp folder everything but .jsdos
     if (zipEntry.entryName != '.jsdos/') {
-      var entryName = zipEntry.entryName;
       var decompressedData = zip.readFile(zipEntry);
       bundle.addFile(zipEntry.entryName, decompressedData);
     }

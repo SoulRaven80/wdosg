@@ -29,11 +29,6 @@
 </head>
 
 <body>
-  <div id="save_to_server" class="absolute left-0 bottom-0 rounded-r-md z-50 w-8 h-8 flex items-center 
-      justify-center filter transition-opacity duration-1000 bg-gray-200 cursor-pointer">
-    <input type="image" title="Sync saves to server" src="/img/sync-cloud.png" 
-      style="padding-left: 2px; padding-bottom: 4px; width: 22px;" onclick="syncToServer()">
-  </div>
   <div id="jsdos"></div>
   <script>
     emulators.pathPrefix = "/js-dos/";
@@ -46,30 +41,34 @@
     (async () => {
       dos = await Dos(document.getElementById("jsdos"))
       ci = await dos.run("bundle.jsdos");
+
+      const old_onSaveEnded = dos.layers.onSaveEnded;
+      dos.layers.onSaveEnded = async () => {
+        const changes = await ci?.persist();
+        if (changes) {
+          downloadFile(changes, "saves.zip", "application/zip", dos);
+        }
+        old_onSaveEnded.call(dos.layers);
+      };
     })();
 
-    async function syncToServer() {
-      const changes = await ci.persist();
-      downloadFile(changes, "saves.zip", "application/zip");
-    };
-
-    function downloadFile(data, fileName, mimeType) {
+    function downloadFile(data, fileName, mimeType, dos) {
       const blob = new Blob([data], {
         type: mimeType,
       });
       let formData = new FormData();
       formData.append("file", blob, fileName);
       formData.append("gamePath", window.location.pathname.split('/')[2]);
-      ajaxCall(formData);
+      ajaxCall(formData, dos);
     }
 
-    function ajaxCall(formData) {
+    function ajaxCall(formData, dos) {
       let xhr = new XMLHttpRequest();
 
       xhr.open('POST', '/api/uploadSaveGame', true);
       xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-          dos.layers.notyf.success('Sync completed');
+          dos.layers.notyf.success('Savegame synched to server');
         } else if (this.readyState == 2 && this.status == 422) {
           dos.layers.notyf.error('Error while synching to server');
         }

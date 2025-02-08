@@ -1,10 +1,12 @@
+// eslint-disable-next-line no-unused-vars
 const openInviteUserModal = () => {
     $('#inviteUserForm').trigger("reset");
     $('#inviteUserEmail').removeClass('is-valid is-invalid');
     const uploadModal = new bootstrap.Modal('#inviteUserModal', {});
     uploadModal.show();
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const confirmInviteUser = () => {
     var validEmail = $('#inviteUserEmail')[0].checkValidity();
     $('#inviteUserEmail').removeClass('is-valid is-invalid')
@@ -19,8 +21,9 @@ const confirmInviteUser = () => {
             data: formData,
             success: () => {
                 appendInfo('Invitation sent');
+                // eslint-disable-next-line no-undef
                 openUsersAdmin();
             }
         });
     }
-}
+};

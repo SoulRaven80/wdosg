@@ -39,7 +39,7 @@ router.post('/add', verifyAdminToken, async(req, res) => {
 
 router.post('/delete/:gameId', verifyAdminToken, async(req, res) => {
     var gameId = req.params.gameId;
-    var gamePath = await dataProvider.findGamePath(gameId)
+    var gamePath = await dataProvider.findGamePath(gameId);
     await dataProvider.deleteAttachment(games_library, gamePath.path, gameId, req.body.key);
     res.status(200).json({ "success": true });
 });

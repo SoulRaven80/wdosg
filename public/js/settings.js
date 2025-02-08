@@ -1,13 +1,16 @@
+/* eslint-disable no-undef */
+// eslint-disable-next-line no-unused-vars
 function setGenresValues(elementId, prop) {
     var selectize = document.getElementById(elementId).selectize;
     if (typeof prop === "string") {
         selectize.setValue(selectize.search(prop).items[0]);
     }
     else if (prop.length > 0) {
-        selectize.setValue(prop.map(function (i) { return i.id }));
+        selectize.setValue(prop.map(function (i) { return i.id; }));
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function setMultiValues(elementId, prop) {
     var selectize = document.getElementById(elementId).selectize;
     if (typeof prop === "string") {
@@ -18,10 +21,11 @@ function setMultiValues(elementId, prop) {
         uniques.forEach(function(i) {
             selectize.addOption(i);
         });
-        selectize.setValue(uniques.map(function (i) { return i.id }));
+        selectize.setValue(uniques.map(function (i) { return i.id; }));
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function setCreateMultiValues(elementId, prop) {
     var selectize = document.getElementById(elementId).selectize;
     if (typeof prop === "string") {
@@ -53,6 +57,7 @@ function uniq(array) {
     return unique;
 }
  
+// eslint-disable-next-line no-unused-vars
 const afterLoadingPage = () => {
     // Load alert after update / create
     var urlParams = new URLSearchParams(window.location.search);
@@ -76,7 +81,7 @@ const afterLoadingPage = () => {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            form.classList.add('was-validated')
+            form.classList.add('was-validated');
         }, false);
     });
 

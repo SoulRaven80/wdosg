@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const confirmDeleteGame = () => {
     var gameId = $("#idToDelete").val();
     $("#idToDelete").val("");
@@ -11,11 +12,12 @@ const confirmDeleteGame = () => {
             appendInfo('Game removed');
         }
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const openDeleteGameConfirmation = (gameId) => {
     $("#idToDelete").val(gameId);
-    $("#confirmDeleteButton").attr("onclick","confirmDeleteGame()");
+    $("#confirmDeleteButton").attr("onclick", "confirmDeleteGame()");
     const confirmDeleteModal = new bootstrap.Modal('#confirmDeleteModal', {});
     confirmDeleteModal.show();
-}
+};

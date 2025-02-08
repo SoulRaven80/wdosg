@@ -11,8 +11,7 @@ const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
 export const verifyToken = async (req, res, next) => {
     var comesFrom = req.originalUrl && ['/login.html', '/', '/api/login', '/finish-registration.html']
         .some(url => req.originalUrl.includes(url));
-    var refererFrom = req.headers.referer &&
-        ['/login.html', '/', '/api/login', '/finish-registration.html']
+    var refererFrom = req.headers.referer && ['/login.html', '/', '/api/login', '/finish-registration.html']
         .some(url => req.headers.referer.includes(url));
     if (comesFrom || refererFrom) {
         next();
@@ -76,8 +75,8 @@ export const getAuthToken = (req) => {
         }
     }
     return;
-}
+};
 
 export const getJWTSecretKey = () => {
     return jwtSecretKey;
-}
+};

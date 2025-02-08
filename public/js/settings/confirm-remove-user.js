@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const confirmDeleteUser = () => {
     var userName = $("#idToDelete").val();
     $("#idToDelete").val("");
@@ -14,11 +15,12 @@ const confirmDeleteUser = () => {
             appendAlert(error.message);
         }
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const openDeleteUserConfirmation = (username) => {
     $("#idToDelete").val(username);
     $("#confirmDeleteButton").attr("onclick","confirmDeleteUser()");
     const confirmDeleteModal = new bootstrap.Modal('#confirmDeleteModal', {});
     confirmDeleteModal.show();
-}
+};

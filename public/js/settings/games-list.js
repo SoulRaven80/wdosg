@@ -14,7 +14,7 @@ $("#gamesListLink").on("click", function() {
             }
             var sortedData = data.sort((a, b) => {
                 if (a.name.toLowerCase() < b.name.toLowerCase()) {
-                  return -1;
+                    return -1;
                 }
             });
             for (let i = 0; i < sortedData.length; i++) {

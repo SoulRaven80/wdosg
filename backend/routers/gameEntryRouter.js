@@ -14,7 +14,7 @@ const getDirectories = (source) => {
     return fs.readdirSync(source, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name);
-}
+};
 
 const getGameFromBody = (body) => {
     logger.debug(`Parsing request body to build game: ${JSON.stringify(body, null, 2)}`);
@@ -38,7 +38,7 @@ router.post('/create', verifyAdminToken, async(req, res) => {
     logger.debug(`Ensure game does not exist for path ${gamePath}`);
     var dirs = getDirectories(games_library);
     var pathExists = dirs.filter(dir => {
-        return dir.toUpperCase() == gamePath.toUpperCase()
+        return dir.toUpperCase() == gamePath.toUpperCase();
     });
     if (pathExists.length > 0) {
         return res.status(403).json({

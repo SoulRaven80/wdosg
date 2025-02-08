@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const openCreateManuallyModal = () => {
     $('#createManuallyModal').trigger("reset");
     $('#createManuallyFile')[0].files = $('#createFile')[0].files;
@@ -7,8 +8,9 @@ const openCreateManuallyModal = () => {
     $('#createModal').modal("hide");
     const uploadModal = new bootstrap.Modal('#createManuallyModal', {});
     uploadModal.show();
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 function prepareCreateManuallySave() {
     $('#createManuallyModalSave').on('click', () => {
         var validCreateFile = $('#createManuallyFile')[0].checkValidity();
@@ -50,6 +52,7 @@ function prepareCreateManuallySave() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createManuallyDevelopersSelectizes() {
     $("#createManuallyDevelopers").selectize({
         plugins: ["remove_button"],
@@ -78,6 +81,7 @@ function createManuallyDevelopersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createManuallyPublishersSelectizes() {
     $("#createManuallyPublishers").selectize({
         plugins: ["remove_button"],
@@ -106,6 +110,7 @@ function createManuallyPublishersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createManuallyGenresSelectizes(result) {
     $("#createManuallyGenres").selectize({
         plugins: ["remove_button"],

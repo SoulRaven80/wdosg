@@ -28,11 +28,11 @@ router.get('/', verifyAdminToken, async(req, res) => {
         startPage = Math.max(1, endPage - rangeSize + 1);
     }
     res.status(200).json({
-      currentPage: page,
-      totalPages: totalPages,
-      startPage: startPage,
-      endPage: endPage,
-      items: list
+        currentPage: page,
+        totalPages: totalPages,
+        startPage: startPage,
+        endPage: endPage,
+        items: list
     });
 });
 
@@ -60,8 +60,8 @@ router.get('/find', verifyAdminToken, async(req, res) => {
     var game = await dataProvider.findDosZoneGame(gameId);
 
     res.status(200).json({
-      url: game.url,
-      title: game.title,
-      id: game.id
+        url: game.url,
+        title: game.title,
+        id: game.id
     });
 });

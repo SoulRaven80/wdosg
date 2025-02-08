@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const openAddUserModal = () => {
     $('#addUserForm').trigger("reset");
     $('#addUserEmail').removeClass('is-valid is-invalid');
@@ -6,8 +7,9 @@ const openAddUserModal = () => {
     $('#addUserPassword2').removeClass('is-valid is-invalid');
     const uploadModal = new bootstrap.Modal('#addUserModal', {});
     uploadModal.show();
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const confirmAddUser = () => {
     var validEmail = $('#addUserEmail')[0].checkValidity();
     $('#addUserEmail').removeClass('is-valid is-invalid')
@@ -43,6 +45,7 @@ const confirmAddUser = () => {
             data: $('#addUserForm').serialize(), 
             success: () => {
                 appendInfo('User created');
+                // eslint-disable-next-line no-undef
                 openUsersAdmin();
             },
             error: (error) => {
@@ -50,4 +53,4 @@ const confirmAddUser = () => {
             }
         });
     }
-}
+};

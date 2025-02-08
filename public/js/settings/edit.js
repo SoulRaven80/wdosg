@@ -1,3 +1,5 @@
+/* global setMultiValues, setGenresValues */
+// eslint-disable-next-line no-unused-vars
 const openEditModal = (gameId) => {
     $.getJSON(`/api/games/find?gameId=${gameId}`, function(game) {
         try {
@@ -23,6 +25,7 @@ const openEditModal = (gameId) => {
     });
 };
 
+// eslint-disable-next-line no-unused-vars
 function editDevelopersSelectizes() {
     $("#editDevelopers").selectize({
         plugins: ["remove_button"],
@@ -51,6 +54,7 @@ function editDevelopersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function editPublishersSelectizes() {
     $("#editPublishers").selectize({
         plugins: ["remove_button"],
@@ -79,6 +83,7 @@ function editPublishersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function editGenresSelectizes(result) {
     $("#editGenres").selectize({
         plugins: ["remove_button"],

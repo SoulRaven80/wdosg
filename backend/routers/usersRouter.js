@@ -70,7 +70,7 @@ async function addUser(username, email, role, password) {
         user.password = await crypto.encrypt(password);
         await dataProvider.addUser(user);
     } catch (error) {
-        logger.error(`Error while saving new user: ${error}`)
+        logger.error(`Error while saving new user: ${error}`);
         throw error;
     }
 }

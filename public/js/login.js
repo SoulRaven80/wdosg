@@ -8,10 +8,10 @@ const initValidation = () => {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            form.classList.add('was-validated')
+            form.classList.add('was-validated');
         }, false);
     });
-}
+};
 
 const initInfoMessages = () => {
     // Load alert after update / create
@@ -22,7 +22,7 @@ const initInfoMessages = () => {
     if (urlParams.has('info')) {
         appendInfo(urlParams.get('info'));
     }
-}
+};
 
 $('#loginForm').find('input').keypress(function(e) {
     if(e.which == 10 || e.which == 13) {
@@ -58,7 +58,7 @@ const doLogin = () => {
             }
         });
     }
-}
+};
 
 $('#forgotPwdLink').on('click', () => {
     $('#forgotPasswordForm').trigger("reset");
@@ -87,4 +87,11 @@ const resetPassword = () => {
             }
         });
     }
-}
+};
+
+// eslint-disable-next-line no-unused-vars
+const initLoginPage = () => {
+    initValidation();
+    initInfoMessages();
+    $('#forgotPasswordModalSave').on('click', resetPassword);
+};

@@ -59,7 +59,7 @@ app.use(httpLogger({
         ignore: (req) => { 
             return (req.url.includes('/css/')
                 || req.url.includes('/js/')
-                || req.url.includes('/js-dos/'))
+                || req.url.includes('/js-dos/'));
         } 
     },
     redact: {

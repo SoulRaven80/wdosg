@@ -1,5 +1,13 @@
+/* global zip, emulators */
 var zipBlob;
 var dosboxConfig;
+
+// eslint-disable-next-line no-unused-vars
+const initSaveDosConfig = () => {
+    $('#dosboxConfigModalSave').on('click', saveDosboxConfig);
+};
+
+// eslint-disable-next-line no-unused-vars
 const openDosboxConfigModal = (gameId, gamePath) => {
     const workingModal = new bootstrap.Modal('#waitingModal', {});
     $('#waitingModalTitle').text('Retrieving game');
@@ -44,7 +52,7 @@ const openDosboxConfigModal = (gameId, gamePath) => {
             workingModal.hide();
         }
     });
-}
+};
 
 async function getZipDosboxConfig(data) {
     const zipReader = new zip.ZipReader(new zip.BlobReader(data), { Workers: false });
@@ -126,7 +134,7 @@ async function saveDosboxConfig() {
             $('#dosboxConfigModal').modal('hide');
         }
     });
-}
+};
 
 function populateConfigFromForm(config) {
     var formValues = $("#dosboxConfigForm").serializeArray().reduce(function(obj, item) {

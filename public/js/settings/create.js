@@ -1,3 +1,5 @@
+/* global setCreateMultiValues, setGenresValues */
+// eslint-disable-next-line no-unused-vars
 const openCreateModal = (reset) => {
     if (reset) {
         $('#createForm').trigger("reset");
@@ -10,7 +12,12 @@ const openCreateModal = (reset) => {
     
     const uploadModal = new bootstrap.Modal('#createModal', {});
     uploadModal.show();
-}
+};
+
+// eslint-disable-next-line no-unused-vars
+const initSaveNewBundle = () => {
+    $("#createButtonFind").on("click", findMetadata);
+};
 
 const findMetadata = () => {
     var gameName = $('#createName').val();
@@ -68,8 +75,9 @@ const findMetadata = () => {
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the game information: ${error}`);
     });
-} 
+};
 
+// eslint-disable-next-line no-unused-vars
 const getCover = (igdb_id, parentElement) => {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
     for (let i = 0; i < popoverTriggerList.length; i++) {
@@ -100,10 +108,11 @@ const getCover = (igdb_id, parentElement) => {
             trigger: 'focus'
         }).show();
     }
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 function prepareCreateSave() {
-    $('#createModalSave').on('click', event => {
+    $('#createModalSave').on('click', () => {
         var validCreateFile = $('#createFile')[0].checkValidity();
         $('#createFile').removeClass('is-valid is-invalid')
             .addClass(validCreateFile ? 'is-valid' : 'is-invalid');
@@ -188,6 +197,7 @@ function prepareCreateSave() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createDevelopersSelectizes() {
     $("#createDevelopers").selectize({
         create: false,
@@ -200,6 +210,7 @@ function createDevelopersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createPublishersSelectizes() {
     $("#createPublishers").selectize({
         create: false,
@@ -212,6 +223,7 @@ function createPublishersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createGenresSelectizes(result) {
     $("#createGenres").selectize({
         create: false,

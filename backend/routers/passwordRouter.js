@@ -53,7 +53,7 @@ router.post('/sendResetLink', async(req, res) => {
 });
 
 router.get('/startReset', async(req, res) => {
-    const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.query.email, req.query.token)
+    const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.query.email, req.query.token);
     if (!resetPasswordRequest) {
         return res.status(422).send('Invalid reset password link');
     }
@@ -61,7 +61,7 @@ router.get('/startReset', async(req, res) => {
 });
 
 router.post('/reset', async(req, res) => {
-    const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.body.email, req.body.token)
+    const resetPasswordRequest = await dataProvider.findResetPasswordToken(req.body.email, req.body.token);
     if (!resetPasswordRequest) {
         return res.status(422).send('Invalid reset password link');
     }

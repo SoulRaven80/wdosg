@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const openAttachModal = (gameId, gamePath, gameName) => {
     $("#attachmentsForm").trigger("reset");
     $('#attachmentsModalSave').removeClass('d-none');

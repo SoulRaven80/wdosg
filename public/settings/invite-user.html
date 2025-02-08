@@ -8,7 +8,7 @@
                 class="needs-validation" novalidate>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="inviteUserEmail" class="form-label">Email</label>
+                        <label for="inviteUserEmail" class="form-label">Email *</label>
                         <input type="email" class="form-control" id="inviteUserEmail" name="email" required>
                         <div class="invalid-feedback">
                             Please add a valid email.
@@ -24,7 +24,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="inviteUserModalClose">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="inviteUserModalSave" onclick="confirmInviteUser()">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="inviteUserModalSave">Save changes</button>
                     <button class="btn btn-secondary d-none" type="button" id="inviteUserModalSpinner" disabled>
                         <span class="spinner-border spinner-border-sm"></span>
                         <span role="status">Saving...</span>

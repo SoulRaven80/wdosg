@@ -1,17 +1,17 @@
 /* global emulators */
-const openGameStudio = () => {
+$('#openGameStudioAnchor').on('click', () => {
     $('#bundleStudioForm').trigger("reset");
     $('#createBundleStepOneFile').removeClass('is-valid is-invalid');
     $('#radioExecutables').empty();
     $('#panelExecutables').addClass("d-none");
     const uploadModal = new bootstrap.Modal('#createBundleStepOneModal', {});
     uploadModal.show();
-}
+});
 
 const enableToolTips = () => {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-}
+};
 
 var zipFile;
 
@@ -28,14 +28,14 @@ const toggleEye = (button, eye) => {
             classes.remove("bi-eye-slash");
         }
     });
-}
+};
 
 const setCollapsibleEvents = () => {
     toggleEye('#buttonEyeDosbox', '#eyeDosbox');
     toggleEye('#buttonEyeCpu', '#eyeCpu');
     toggleEye('#buttonEyeSdl', '#eyeSdl');
     toggleEye('#buttonEyeMixer', '#eyeMixer');
-}
+};
 
 const configureModalNavigation = () => {
     $('#createBundleLoadButton').on('click', () => {
@@ -49,13 +49,16 @@ const configureModalNavigation = () => {
             inputFile.addClass('is-invalid');
         }
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const prepareGameStudio = () => {
     enableToolTips();
     setCollapsibleEvents();
     configureModalNavigation();
-}
+    $('#createBundleStepTwoModalSave').on('click', createArchive);
+    $('#createBundleStepTwoModalSaveContinue').on('click', createAndAdd);
+};
 
 function getExecutableFiles(files) {
     if (files.length === 0) {
@@ -182,7 +185,7 @@ async function createArchive() {
     $('#createBundleStepTwoModalBack').prop('disabled', false);
     $('#createBundleStepTwoModalBack').removeClass('d-none');
     $('#createBundleStepTwoModalSpinner').addClass('d-none');
-}
+};
 
 async function createAndAdd() {
     $('#createBundleStepTwoModalSave').prop('disabled', true);
@@ -216,5 +219,6 @@ async function createAndAdd() {
     $('#createBundleStepTwoModalBack').removeClass('d-none');
     $('#createBundleStepTwoModalSpinner').addClass('d-none');
     $("#createBundleStepTwoModal").modal("hide");
+    // eslint-disable-next-line no-undef
     openCreateModal(false);
-}
+};

@@ -117,13 +117,13 @@ const confirmChangePassword = () => {
             type: "POST",
             url: "/api/password/change",
             data: $('#changePasswordForm').serialize(), 
-            success: (result, statusMessage, response) => {
+            success: () => {
                 appendInfo('Password Updated');
             },
             error: (error) => {
                 appendAlert(error.message);
             },
-            complete: (xhr, status) => {
+            complete: () => {
                 $('#changePasswordModalSave').removeClass('d-none');
                 $('#changePasswordModalSpinner').addClass('d-none');
                 $('#changePasswordModal').modal('hide');

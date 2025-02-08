@@ -4,7 +4,6 @@ const openListDOSZone = (page, filter, genre) => {
     $('#usersAdminPanel').removeClass('d-none').addClass('d-none');
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
     $('#dosZoneTbody').empty();
-    const contentDiv = document.getElementById('dosZonePanel');
     $.getJSON(`/api/dosZoneGames/genres`, function(result) {
         var sortedGenres = result.sort((a, b) => {
             if (a < b) {

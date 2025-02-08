@@ -17,7 +17,7 @@ const confirmInviteUser = () => {
             type: "POST",
             url: "/api/users/sendInvite",
             data: formData,
-            success: (result, statusMessage, response) => {
+            success: () => {
                 appendInfo('Invitation sent');
                 openUsersAdmin();
             }

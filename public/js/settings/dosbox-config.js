@@ -8,7 +8,7 @@ const openDosboxConfigModal = (gameId, gamePath) => {
         url: `/library/${gamePath}/bundle.jsdos`,
         type: 'GET',
         xhrFields: { responseType: 'blob' },
-        success: async (result, statusMessage, response) => {
+        success: async (result) => {
             try {
                 zipBlob = result;
                 dosboxConfig = await getZipDosboxConfig(result);
@@ -40,7 +40,7 @@ const openDosboxConfigModal = (gameId, gamePath) => {
         error: (error) => {
             appendAlert(`An error has occurred while reading the game information: ${error.responseText}`);
         },
-        complete: (xhr, status) => {
+        complete: () => {
             workingModal.hide();
         }
     });
@@ -111,7 +111,7 @@ async function saveDosboxConfig() {
         data: formData,
         processData: false,
         contentType: false,
-        success: (result, statusMessage, response) => {
+        success: () => {
             appendInfo('Game updated successfully');
         },
         error: (error) => {
@@ -122,7 +122,7 @@ async function saveDosboxConfig() {
                 appendAlert(error.message);
             }
         },
-        complete: (xhr, status) => {
+        complete: () => {
             $('#dosboxConfigModal').modal('hide');
         }
     });

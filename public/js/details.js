@@ -50,11 +50,7 @@ $(document).ready(function() {
                         borderless: 'd-none'
                     },
                     showClose: false,
-                    mainClass: 'd-none',
-                    previewZoomButtonClasses: {
-                        toggleheader: 'd-none',
-                        borderless: 'd-none'
-                    }
+                    mainClass: 'd-none'
                 });
                 if (attachments.length > 0) {
                     $('#attachmentsDetailSection').removeClass('d-none');

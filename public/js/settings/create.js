@@ -84,7 +84,7 @@ const getCover = (igdb_id, parentElement) => {
     }
     var data_content = parentElement.getAttribute('data-bs-content');
     if (data_content !== null && data_content !== undefined && data_content !== '') {
-        const popover = new bootstrap.Popover(parentElement, {
+        new bootstrap.Popover(parentElement, {
             html: true,
             trigger: 'focus'
         }).show();              
@@ -95,7 +95,7 @@ const getCover = (igdb_id, parentElement) => {
             return i.id === igdb_id;
         })[0];
         parentElement.setAttribute('data-bs-content', `<img src='https://images.igdb.com/igdb/image/upload/t_cover_big/${result.cover.image_id}.jpg'>`);
-        const popover = new bootstrap.Popover(parentElement, {
+        new bootstrap.Popover(parentElement, {
             html: true,
             trigger: 'focus'
         }).show();
@@ -163,7 +163,7 @@ function prepareCreateSave() {
                     data: new FormData( $('#createForm')[0] ), 
                     processData: false,
                     contentType: false,
-                    success: (result, statusMessage, response) => {
+                    success: () => {
                         appendInfo('Game created');
                     },
                     error: (error) => {
@@ -174,7 +174,7 @@ function prepareCreateSave() {
                             appendAlert(error.message);
                         }
                     },
-                    complete: (xhr, status) => {
+                    complete: () => {
                         $('#createModal').modal('hide');
 
                         $('#createModalSave').removeClass('d-none');

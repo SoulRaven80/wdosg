@@ -26,7 +26,7 @@ const initFinishRegistrationForm = () => {
     }
 }
 
-$('#finishRegistrationButton').on('click', event => {
+$('#finishRegistrationButton').on('click', () => {
     var validUsername = $('#finishRegistrationUsername')[0].checkValidity();
     $('#finishRegistrationUsername').removeClass('is-valid is-invalid')
         .addClass(validUsername ? 'is-valid' : 'is-invalid');

@@ -26,7 +26,7 @@ const initResetPasswordForm = () => {
     }
 }
 
-$('#resetPasswordButton').on('click', event => {
+$('#resetPasswordButton').on('click', () => {
     var validEmail = $('#resetPasswordEmail')[0].checkValidity();
     $('#resetPasswordEmail').removeClass('is-valid is-invalid')
         .addClass(validEmail ? 'is-valid' : 'is-invalid');
@@ -54,7 +54,7 @@ $('#resetPasswordButton').on('click', event => {
             type: "POST",
             url: "/api/password/reset",
             data: $('#resetPasswordForm').serialize(),
-            success: (result, statusMessage, response) => {
+            success: () => {
                 window.location.replace('/login.html?info=Password%20updated');
             }
         });

@@ -5,7 +5,7 @@ const confirmDeleteGame = () => {
         url: '/api/gameEntry/delete',
         data: { gameId : gameId },
         type: 'DELETE',
-        success: function(result) {
+        success: () => {
             $('#confirmDeleteModal').modal("hide");
             $("#gamesListLink").trigger("click");
             appendInfo('Game removed');

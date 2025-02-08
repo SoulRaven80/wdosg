@@ -10,7 +10,7 @@ const openCreateManuallyModal = () => {
 }
 
 function prepareCreateManuallySave() {
-    $('#createManuallyModalSave').on('click', event => {
+    $('#createManuallyModalSave').on('click', () => {
         var validCreateFile = $('#createManuallyFile')[0].checkValidity();
         $('#createManuallyFile').removeClass('is-valid is-invalid')
             .addClass(validCreateFile ? 'is-valid' : 'is-invalid');
@@ -28,7 +28,7 @@ function prepareCreateManuallySave() {
                 data: new FormData( $('#createManuallyForm')[0] ),
                 processData: false,
                 contentType: false,
-                success: (result, statusMessage, response) => {
+                success: () => {
                     appendInfo('Game created');
                 },
                 error: (error) => {
@@ -39,9 +39,8 @@ function prepareCreateManuallySave() {
                         appendAlert(error.message);
                     }
                 },
-                complete: (xhr, status) => {
+                complete: () => {
                     $('#createManuallyModal').modal('hide');
-
                     $('#createManuallyModalSave').removeClass('d-none');
                     $('#createManuallyModalSpinner').addClass('d-none');
                     $('#createManuallyModalClose').prop("disabled", false);

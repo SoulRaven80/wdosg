@@ -5,7 +5,7 @@ const confirmDeleteUser = () => {
         url: `/api/users/delete`,
         data: {username: userName},
         type: 'DELETE',
-        success: function(result) {
+        success: () => {
             $('#confirmDeleteModal').modal("hide");
             $("#usersAdminLink").trigger("click");
             appendInfo('User removed');

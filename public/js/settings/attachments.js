@@ -45,9 +45,9 @@ const openAttachModal = (gameId, gamePath, gameName) => {
                     borderless: 'd-none'
                 },
                 showClose: false
-            }).on('filepreupload', function(event, data, previewId, index, fileId) {
+            }).on('filepreupload', () => {
                 $('#attachmentsModalClose').prop("disabled", true);
-            }).on('fileuploaded', function(event, previewId, index, fileId) {
+            }).on('fileuploaded', () => {
                 $('#attachmentsModalClose').prop("disabled", false);
             });
 

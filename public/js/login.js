@@ -30,7 +30,7 @@ $('#loginForm').find('input').keypress(function(e) {
     }
 });
 
-$('#loginButton').on('click', event => {
+$('#loginButton').on('click', () => {
     doLogin();
 });
 
@@ -60,7 +60,7 @@ const doLogin = () => {
     }
 }
 
-$('#forgotPwdLink').on('click', event => {
+$('#forgotPwdLink').on('click', () => {
     $('#forgotPasswordForm').trigger("reset");
     $('#forgotPasswordEmail').removeClass('is-valid is-invalid');
     const uploadModal = new bootstrap.Modal('#forgotPasswordModal', {});
@@ -76,13 +76,13 @@ const resetPassword = () => {
             type: "POST",
             url: "/api/password/sendResetLink",
             data: $('#forgotPasswordForm').serialize(),
-            success: (result, statusMessage, response) => {
+            success: () => {
                 appendInfo(`Email sent`);
             },
             error: (error) => {
                 appendAlert(error.responseJSON.message);
             },
-            complete: (xhr, status) => {
+            complete: () => {
                 $('#forgotPasswordModal').modal('hide');
             }
         });

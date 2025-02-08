@@ -19,7 +19,7 @@ const openEditModal = (gameId) => {
             appendAlert(`An error has occurred while reading the game information: ${error}`);
         }
     }).fail(function(jqXHR, status, error) {
-        appendAlert('An error has occurred while getting the game information');
+        appendAlert(`An error has occurred while getting the game information: ${error}`);
     });
 };
 

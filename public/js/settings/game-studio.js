@@ -1,3 +1,4 @@
+/* global emulators */
 const openGameStudio = () => {
     $('#bundleStudioForm').trigger("reset");
     $('#createBundleStepOneFile').removeClass('is-valid is-invalid');
@@ -9,7 +10,7 @@ const openGameStudio = () => {
 
 const enableToolTips = () => {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 }
 
 var zipFile;
@@ -65,7 +66,7 @@ function getExecutableFiles(files) {
     
     const file = files[0];
     const reader = new FileReader();
-    reader.addEventListener("load", async (e) => {
+    reader.addEventListener("load", async() => {
         zipFile = new Uint8Array(reader.result);
         try {
             const executables = await getZipExecutables(zipFile);
@@ -105,6 +106,7 @@ function ensureNoRootFolder(entries) {
 
 async function getZipExecutables(data) {
     const executables = [];
+    // eslint-disable-next-line no-undef
     const zipReader = new zip.ZipReader(new zip.Uint8ArrayReader(data), {
         Workers: false,
     });

@@ -41,7 +41,7 @@ const confirmAddUser = () => {
             type: "POST",
             url: "/api/users/add",
             data: $('#addUserForm').serialize(), 
-            success: (result, statusMessage, response) => {
+            success: () => {
                 appendInfo('User created');
                 openUsersAdmin();
             },

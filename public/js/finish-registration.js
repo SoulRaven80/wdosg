@@ -52,7 +52,7 @@ $('#finishRegistrationButton').on('click', event => {
     if (validUsername && validPassword && validPassword2 && passMatches) {
         $.ajax({
             type: "POST",
-            url: "/api/confirmRegistration",
+            url: "/api/users/confirmRegistration",
             data: $('#finishRegistrationForm').serialize(),
             success: (result, statusMessage, response) => {
                 document.cookie = `auth-token=${response.responseJSON.data.token}; Path=/;`;

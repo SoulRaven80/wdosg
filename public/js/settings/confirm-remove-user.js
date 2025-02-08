@@ -2,7 +2,7 @@ const confirmDeleteUser = () => {
     var userName = $("#idToDelete").val();
     $("#idToDelete").val("");
     $.ajax({
-        url: `/api/deleteUser`,
+        url: `/api/users/delete`,
         data: {username: userName},
         type: 'DELETE',
         success: function(result) {

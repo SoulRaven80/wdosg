@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('game')) {
-        $.getJSON("/api/game?gameId=" + urlParams.get('game'), function(game) {
+        $.getJSON("/api/games/find?gameId=" + urlParams.get('game'), function(game) {
             try {
                 $("#title").text(game.name);
                 $("#description").html((game.description ? game.description : "-"));

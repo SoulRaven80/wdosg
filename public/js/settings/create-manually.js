@@ -24,7 +24,7 @@ function prepareCreateManuallySave() {
 
             $.ajax({
                 type: "POST",
-                url: "/api/create",
+                url: "/api/gameEntry/create",
                 data: new FormData( $('#createManuallyForm')[0] ),
                 processData: false,
                 contentType: false,
@@ -65,7 +65,7 @@ function createManuallyDevelopersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {
@@ -93,7 +93,7 @@ function createManuallyPublishersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {

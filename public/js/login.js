@@ -74,7 +74,7 @@ const resetPassword = () => {
     if (validEmail) {
         $.ajax({
             type: "POST",
-            url: "/api/sendResetPasswordLink",
+            url: "/api/password/sendResetLink",
             data: $('#forgotPasswordForm').serialize(),
             success: (result, statusMessage, response) => {
                 appendInfo(`Email sent`);

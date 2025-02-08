@@ -21,7 +21,7 @@ const openAttachModal = (gameId, gamePath, gameName) => {
                     caption: attachment.name,
                     filename: attachment.name,
                     type: fileTypes[attachment.name.substring(attachment.name.lastIndexOf('.') +1).toLowerCase()],
-                    url: `/api/deleteAttachment/${gameId}`,
+                    url: `/api/attachments/delete/${gameId}`,
                     key: attachment.name
                 });
             }
@@ -33,7 +33,7 @@ const openAttachModal = (gameId, gamePath, gameName) => {
                 initialPreview: urls,
                 overwriteInitial: false,
                 append: true,
-                uploadUrl: `/api/addAttachment`,
+                uploadUrl: `/api/attachments/add`,
                 initialPreviewDownloadUrl: `/library/${gamePath}/attachments/{filename}`,
                 uploadExtraData: {
                     gameId: gameId,

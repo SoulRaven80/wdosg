@@ -107,7 +107,7 @@ async function saveDosboxConfig() {
     formData.append("gamePath", $("#dosboxConfigForm input[name='gamePath']").val());
     $.ajax({
         type: "POST",
-        url: "/api/bundle",
+        url: "/api/bundles/create",
         data: formData,
         processData: false,
         contentType: false,

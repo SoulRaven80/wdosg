@@ -52,7 +52,7 @@ $('#resetPasswordButton').on('click', event => {
     if (validEmail && validPassword && validPassword2 && passMatches) {
         $.ajax({
             type: "POST",
-            url: "/api/resetPassword",
+            url: "/api/password/reset",
             data: $('#resetPasswordForm').serialize(),
             success: (result, statusMessage, response) => {
                 window.location.replace('/login.html?info=Password%20updated');

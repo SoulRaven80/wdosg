@@ -19,7 +19,7 @@ const findMetadata = () => {
         return;
     }
     $('#createName').removeClass('is-valid is-invalid').addClass('is-valid');
-    $.getJSON(`/api/gamemetadata?gameName=${encodeURIComponent(gameName)}`, function(result) {
+    $.getJSON(`/api/games/metadata?gameName=${encodeURIComponent(gameName)}`, function(result) {
         if (result.length > 0) {
             sessionStorage.setItem('searchResults', JSON.stringify(result));
             var wrapper = '<ul class="list-group">';
@@ -159,7 +159,7 @@ function prepareCreateSave() {
     
                 $.ajax({
                     type: "POST",
-                    url: "/api/create",
+                    url: "/api/gameEntry/create",
                     data: new FormData( $('#createForm')[0] ), 
                     processData: false,
                     contentType: false,

@@ -1,5 +1,5 @@
 const openEditModal = (gameId) => {
-    $.getJSON(`/api/game?gameId=${gameId}`, function(game) {
+    $.getJSON(`/api/games/find?gameId=${gameId}`, function(game) {
         try {
             $("#editId").val(game.id);
             $("#editIgdbId").val(game.igdb_id);
@@ -37,7 +37,7 @@ function editDevelopersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {
@@ -65,7 +65,7 @@ function editPublishersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {

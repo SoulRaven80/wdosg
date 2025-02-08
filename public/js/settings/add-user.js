@@ -39,7 +39,7 @@ const confirmAddUser = () => {
         $('#addUserModal').modal('hide');
         $.ajax({
             type: "POST",
-            url: "/api/addUser",
+            url: "/api/users/add",
             data: $('#addUserForm').serialize(), 
             success: (result, statusMessage, response) => {
                 appendInfo('User created');

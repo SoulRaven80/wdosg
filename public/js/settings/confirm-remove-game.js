@@ -2,7 +2,7 @@ const confirmDeleteGame = () => {
     var gameId = $("#idToDelete").val();
     $("#idToDelete").val("");
     $.ajax({
-        url: '/api/deleteGame',
+        url: '/api/gameEntry/delete',
         data: { gameId : gameId },
         type: 'DELETE',
         success: function(result) {

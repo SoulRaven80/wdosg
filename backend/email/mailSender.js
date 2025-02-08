@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const registrationPath = '/finish-registration.html?email={{email}}&token={{token}}';
-const passwordResetPath = '/api/startResetPassword?email={{email}}&token={{token}}';
+const passwordResetPath = '/api/password/startReset?email={{email}}&token={{token}}';
 var registrationLink = '';
 var passwordResetLink = '';
 
@@ -61,5 +61,3 @@ export async function sendResetPasswordEmail(emailTo, token) {
         .replace('{{link}}', link);
     return sendEmail(emailTo, 'wDOSg - Reset password', emailBody);
 }
-
-export default sendInviteEmail;

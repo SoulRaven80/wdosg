@@ -5,7 +5,7 @@ const openListDOSZone = (page, filter, genre) => {
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
     $('#dosZoneTbody').empty();
     const contentDiv = document.getElementById('dosZonePanel');
-    $.getJSON(`/api/dosZoneGenres`, function(result) {
+    $.getJSON(`/api/dosZoneGames/genres`, function(result) {
         var sortedGenres = result.sort((a, b) => {
             if (a < b) {
                 return -1;
@@ -125,7 +125,7 @@ function prepareImportFromDosZone() {
 }
 
 function downloadAndAdd(gameId) {
-    $.getJSON(`/api/getDosZoneGame?id=${gameId}`, function(result) {
+    $.getJSON(`/api/dosZoneGames/find?id=${gameId}`, function(result) {
         const workingModal = new bootstrap.Modal('#waitingModal', {});
         $('#waitingModalTitle').text('Downloading game');
         workingModal.show();

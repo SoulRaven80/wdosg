@@ -23,12 +23,8 @@ export async function listGenres() {
   return await dbManager.listGenres();
 }
 
-export async function searchCompanies(searchTerm) {
-  return await dbManager.searchCompanies(searchTerm);
-}
-
-export async function findCompany(id) {
-  return await dbManager.findCompany(id);
+export async function searchCompanies(name) {
+  return await dbManager.searchCompanies(name);
 }
 
 export async function listAttachments(gameId) {

@@ -115,7 +115,7 @@ const confirmChangePassword = () => {
         $('#changePasswordModalSpinner').removeClass('d-none');
         $.ajax({
             type: "POST",
-            url: "/api/changePassword",
+            url: "/api/password/change",
             data: $('#changePasswordForm').serialize(), 
             success: (result, statusMessage, response) => {
                 appendInfo('Password Updated');

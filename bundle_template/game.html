@@ -65,7 +65,7 @@
     function ajaxCall(formData, dos) {
       let xhr = new XMLHttpRequest();
 
-      xhr.open('POST', '/api/uploadSaveGame', true);
+      xhr.open('POST', '/api/saveGame/upload', true);
       xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           dos.layers.notyf.success('Savegame synched to server');

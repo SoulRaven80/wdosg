@@ -15,7 +15,7 @@ const confirmInviteUser = () => {
         var formData = $('#inviteUserForm').serialize();
         $.ajax({
             type: "POST",
-            url: "/api/sendUserInvitation",
+            url: "/api/users/sendInvite",
             data: formData,
             success: (result, statusMessage, response) => {
                 appendInfo('Invitation sent');

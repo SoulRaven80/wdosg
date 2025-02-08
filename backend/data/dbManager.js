@@ -64,21 +64,12 @@ export async function listCompanies() {
   }
 }
 
-export async function searchCompanies(searchTerm) {
-  logger.debug(`Getting list of companies with name: ${searchTerm}`);
+export async function searchCompanies(name) {
+  logger.debug(`Getting list of companies with name: ${name}`);
   try {
-    return await sqlite.fetchAll(`SELECT * FROM companies WHERE name LIKE ?`, ['%' + searchTerm + '%']);
+    return await sqlite.fetchAll(`SELECT * FROM companies WHERE name LIKE ?`, [`%${name}%`]);
   } catch (err) {
-    logger.error(err, `Error while getting list of games with name: ${searchTerm}`);
-  }
-}
-
-export async function findCompany(id) {
-  logger.debug(`Getting company with id: ${id}`);
-  try {
-    return await sqlite.fetch(`SELECT * FROM companies WHERE id= ?`, [id]);
-  } catch (err) {
-    logger.error(err, `Error while getting company with id: ${id}`);
+    logger.error(err, `Error while getting list of games with name: ${name}`);
   }
 }
 

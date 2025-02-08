@@ -6,7 +6,7 @@ $("#gamesListLink").on("click", function(e) {
     $('#usersAdminPanel').removeClass('d-none').addClass('d-none');
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
 
-    $.getJSON("/api/gamesShallowInfo", function(data) {
+    $.getJSON("/api/games/shallowInfo", function(data) {
         try {
             if (data.length == 0) {
                 $('#emptyGamesListDiv').removeClass('d-none');

@@ -141,7 +141,7 @@ const populateTablesIfEmpty = async() => {
     await execute(`DELETE FROM tokens_blacklist`);
 };
 
-const runTransaction = (data) => {
+export const runTransaction = (data) => {
     db.serialize(() => {
         db.run('BEGIN TRANSACTION;');
         data.forEach((query) => {

@@ -411,6 +411,10 @@ export async function setupDosZoneGamesTable() {
     }
 }
 
+export function runTransaction(queries) {
+    return sqlite.runTransaction(queries);
+}
+
 export async function init() {
     return sqlite.init();
 }

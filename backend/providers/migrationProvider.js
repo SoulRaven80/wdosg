@@ -2,9 +2,11 @@ import * as dbManager from '../data/dbManager.js';
 import { logger } from '../logger/logger.js';
 import * as config from '../../config.js';
 import fs from 'fs';
+import os from 'os';
 
 const template_path = config.getBundleTemplatePath();
 const games_library = config.getGamesLibraryLocation();
+const root_path = config.getRootPath();
 
 export async function runMigrate() {
     const version = await dbManager.fetchMigrateVersion();
@@ -51,6 +53,10 @@ async function migrateTo132() {
         fs.copyFileSync(`${template_path}/game.html`, `${games_library}/${folder}/game.html`);
         fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
     }
+    const sqlFile = root_path + 'sql/dos-zone-titles-1.3.2.sql';
+    const queries = fs.readFileSync(sqlFile).toString().split(os.EOL);
+    dbManager.runTransaction(queries);
+
     await dbManager.updateMigrateVersion(2);
     // await migrateTo3();
 }

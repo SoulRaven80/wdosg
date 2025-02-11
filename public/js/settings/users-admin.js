@@ -1,3 +1,13 @@
+/* eslint-disable no-undef */
+// eslint-disable-next-line no-unused-vars
+const initUsersAdmin = () => {
+    $('#addNewUserButton').on('click', openAddUserModal);
+    $('#inviteUserButton').on('click', openInviteUserModal);
+    $('#inviteUserModalSave').on('click', confirmInviteUser);
+    $('#addUserModalSave').on('click', confirmAddUser);
+    $('#usersAdminLink').on('click', openUsersAdmin);
+};
+
 const openUsersAdmin = () => {
     window.history.replaceState("", "", `/settings.html`);
     $('#emptyGamesListDiv').removeClass('d-none').addClass('d-none');
@@ -33,4 +43,4 @@ const openUsersAdmin = () => {
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the list of users: ${error}`);
     });
-}
+};

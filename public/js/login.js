@@ -8,10 +8,10 @@ const initValidation = () => {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            form.classList.add('was-validated')
+            form.classList.add('was-validated');
         }, false);
     });
-}
+};
 
 const initInfoMessages = () => {
     // Load alert after update / create
@@ -22,7 +22,7 @@ const initInfoMessages = () => {
     if (urlParams.has('info')) {
         appendInfo(urlParams.get('info'));
     }
-}
+};
 
 $('#loginForm').find('input').keypress(function(e) {
     if(e.which == 10 || e.which == 13) {
@@ -30,7 +30,7 @@ $('#loginForm').find('input').keypress(function(e) {
     }
 });
 
-$('#loginButton').on('click', event => {
+$('#loginButton').on('click', () => {
     doLogin();
 });
 
@@ -58,9 +58,9 @@ const doLogin = () => {
             }
         });
     }
-}
+};
 
-$('#forgotPwdLink').on('click', event => {
+$('#forgotPwdLink').on('click', () => {
     $('#forgotPasswordForm').trigger("reset");
     $('#forgotPasswordEmail').removeClass('is-valid is-invalid');
     const uploadModal = new bootstrap.Modal('#forgotPasswordModal', {});
@@ -74,17 +74,24 @@ const resetPassword = () => {
     if (validEmail) {
         $.ajax({
             type: "POST",
-            url: "/api/sendResetPasswordLink",
+            url: "/api/password/sendResetLink",
             data: $('#forgotPasswordForm').serialize(),
-            success: (result, statusMessage, response) => {
+            success: () => {
                 appendInfo(`Email sent`);
             },
             error: (error) => {
                 appendAlert(error.responseJSON.message);
             },
-            complete: (xhr, status) => {
+            complete: () => {
                 $('#forgotPasswordModal').modal('hide');
             }
         });
     }
-}
+};
+
+// eslint-disable-next-line no-unused-vars
+const initLoginPage = () => {
+    initValidation();
+    initInfoMessages();
+    $('#forgotPasswordModalSave').on('click', resetPassword);
+};

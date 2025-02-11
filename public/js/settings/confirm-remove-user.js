@@ -1,11 +1,12 @@
+// eslint-disable-next-line no-unused-vars
 const confirmDeleteUser = () => {
     var userName = $("#idToDelete").val();
     $("#idToDelete").val("");
     $.ajax({
-        url: `/api/deleteUser`,
+        url: `/api/users/delete`,
         data: {username: userName},
         type: 'DELETE',
-        success: function(result) {
+        success: () => {
             $('#confirmDeleteModal').modal("hide");
             $("#usersAdminLink").trigger("click");
             appendInfo('User removed');
@@ -14,11 +15,12 @@ const confirmDeleteUser = () => {
             appendAlert(error.message);
         }
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const openDeleteUserConfirmation = (username) => {
     $("#idToDelete").val(username);
     $("#confirmDeleteButton").attr("onclick","confirmDeleteUser()");
     const confirmDeleteModal = new bootstrap.Modal('#confirmDeleteModal', {});
     confirmDeleteModal.show();
-}
+};

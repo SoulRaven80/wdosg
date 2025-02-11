@@ -7,21 +7,21 @@ const dbPath = process.env.DB_PATH || path.join(__dirname, '/database');
 const libPath = process.env.GAMES_LIBRARY || path.join(__dirname, './wdosglibrary');
 
 export function getRootPath() {
-    logger.trace(`getRootPath(): ${__dirname}`)
+    logger.trace(`getRootPath(): ${__dirname}`);
     return __dirname;
 }
 
 export function getBundleTemplatePath() {
-    logger.trace(`getBundleTemplatePath(): ${__dirname + '/bundle_template'}`)
+    logger.trace(`getBundleTemplatePath(): ${__dirname + '/bundle_template'}`);
     return __dirname + '/bundle_template';
 }
 
 export function getDbPath() {
-    logger.trace(`getDbPath(): ${dbPath}`)
+    logger.trace(`getDbPath(): ${dbPath}`);
     return dbPath;
 }
 
 export function getGamesLibraryLocation() {
-    logger.trace(`getGamesLibraryLocation(): ${libPath}`)
+    logger.trace(`getGamesLibraryLocation(): ${libPath}`);
     return libPath;
 }

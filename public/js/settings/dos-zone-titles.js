@@ -4,8 +4,7 @@ const openListDOSZone = (page, filter, genre) => {
     $('#usersAdminPanel').removeClass('d-none').addClass('d-none');
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
     $('#dosZoneTbody').empty();
-    const contentDiv = document.getElementById('dosZonePanel');
-    $.getJSON(`/api/dosZoneGenres`, function(result) {
+    $.getJSON(`/api/dosZoneGames/genres`, function(result) {
         var sortedGenres = result.sort((a, b) => {
             if (a < b) {
                 return -1;
@@ -13,22 +12,22 @@ const openListDOSZone = (page, filter, genre) => {
         });
 
         $("#filterDosZoneGenre").empty();
-        $("#filterDosZoneGenre").append(`<option value="">Filter by genre</option>`)
+        $("#filterDosZoneGenre").append(`<option value="">Filter by genre</option>`);
         sortedGenres.forEach(genre => {
             $("#filterDosZoneGenre").append(`<option value="${genre}">${genre}</option>`);
         });
         $(`#filterDosZoneGenre option[value="${genre}"]`).attr("selected", "selected");
     });
     $.getJSON(`/api/dosZoneGames`, {
-            page: page,
-            filter: encodeURIComponent(filter),
-            genre: encodeURIComponent(genre)
-        }, function(result) {
+        page: page,
+        filter: encodeURIComponent(filter),
+        genre: encodeURIComponent(genre)
+    }, function(result) {
         try {
             $('#filterDosZoneGames').val(filter);
             $('#dosZonePageNavigation').empty();
 
-            $('#dosZoneSearch').attr("onclick",`openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val(), $('#filterDosZoneGenre').find(":selected").val())`);
+            $('#dosZoneSearch').attr("onclick", `openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val(), $('#filterDosZoneGenre').find(":selected").val())`);
 
             var navigation = `<ul class="pagination justify-content-center" style="margin-bottom: unset">
                                 <li class="page-item ${result.currentPage > 1 ? '' : 'disabled'}">
@@ -90,8 +89,9 @@ const openListDOSZone = (page, filter, genre) => {
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the games list: ${error}`);
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 function prepareImportFromDosZone() {
     $("#filterDosZoneGames").keyup(function(event) {
         if (event.keyCode === 13) {
@@ -124,8 +124,9 @@ function prepareImportFromDosZone() {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function downloadAndAdd(gameId) {
-    $.getJSON(`/api/getDosZoneGame?id=${gameId}`, function(result) {
+    $.getJSON(`/api/dosZoneGames/find?id=${gameId}`, function(result) {
         const workingModal = new bootstrap.Modal('#waitingModal', {});
         $('#waitingModalTitle').text('Downloading game');
         workingModal.show();
@@ -135,20 +136,18 @@ function downloadAndAdd(gameId) {
             } else {
                 return response.blob();
             }
-        })
-        .then(blob => {
+        }).then(blob => {
             workingModal.hide();
             const bundleFile = new Blob([blob]);
             const file = new File([bundleFile], "bundle.jsdos", { type:"application/octet-stream", lastModified:new Date().getTime() });
             const container = new DataTransfer();
             container.items.add(file);
-        
+            // eslint-disable-next-line no-undef
             openCreateModal(true);
             $("#createFile")[0].files = container.files;
             $('#createName').val(result.title);
             $('#createButtonFind').click();
-        })
-        .catch(error => {
+        }).catch(error => {
             appendAlert(`An error has occurred while importing the game: ${error}`);
             workingModal.hide();
         });

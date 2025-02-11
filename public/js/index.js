@@ -31,7 +31,7 @@ const hideTooltips = () => {
             ttip.hide();
         }
     }
-}
+};
 
 const appyFilters = (nameFilter, genreFilter, data) => {
     // build list filtered by name
@@ -47,10 +47,10 @@ const appyFilters = (nameFilter, genreFilter, data) => {
     else {
         hideTooltips();
         buildGamesList(filteredData.filter(function(i) {
-            return i.genres.map(function(j) { return j.id }).includes(genreFilter)
+            return i.genres.map(function(j) { return j.id; }).includes(genreFilter);
         }));
     }
-}
+};
 
 const buildMainScreen = (data) => {
     $("#main_container").prepend(`<div class="row py-3">
@@ -82,7 +82,7 @@ const buildMainScreen = (data) => {
         appyFilters(event.target.value, $("#filterGenre :selected").val(), data);
     });
     buildGamesList(data);
-}
+};
 
 
 const buildGamesList = (data) => {
@@ -112,5 +112,5 @@ const buildGamesList = (data) => {
         gamesList.append(wrapper);
     }
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-}
+    [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+};

@@ -1,3 +1,5 @@
+/* global setCreateMultiValues, setGenresValues */
+// eslint-disable-next-line no-unused-vars
 const openCreateModal = (reset) => {
     if (reset) {
         $('#createForm').trigger("reset");
@@ -10,7 +12,12 @@ const openCreateModal = (reset) => {
     
     const uploadModal = new bootstrap.Modal('#createModal', {});
     uploadModal.show();
-}
+};
+
+// eslint-disable-next-line no-unused-vars
+const initSaveNewBundle = () => {
+    $("#createButtonFind").on("click", findMetadata);
+};
 
 const findMetadata = () => {
     var gameName = $('#createName').val();
@@ -19,7 +26,7 @@ const findMetadata = () => {
         return;
     }
     $('#createName').removeClass('is-valid is-invalid').addClass('is-valid');
-    $.getJSON(`/api/gamemetadata?gameName=${encodeURIComponent(gameName)}`, function(result) {
+    $.getJSON(`/api/games/metadata?gameName=${encodeURIComponent(gameName)}`, function(result) {
         if (result.length > 0) {
             sessionStorage.setItem('searchResults', JSON.stringify(result));
             var wrapper = '<ul class="list-group">';
@@ -68,8 +75,9 @@ const findMetadata = () => {
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the game information: ${error}`);
     });
-} 
+};
 
+// eslint-disable-next-line no-unused-vars
 const getCover = (igdb_id, parentElement) => {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
     for (let i = 0; i < popoverTriggerList.length; i++) {
@@ -84,7 +92,7 @@ const getCover = (igdb_id, parentElement) => {
     }
     var data_content = parentElement.getAttribute('data-bs-content');
     if (data_content !== null && data_content !== undefined && data_content !== '') {
-        const popover = new bootstrap.Popover(parentElement, {
+        new bootstrap.Popover(parentElement, {
             html: true,
             trigger: 'focus'
         }).show();              
@@ -95,15 +103,16 @@ const getCover = (igdb_id, parentElement) => {
             return i.id === igdb_id;
         })[0];
         parentElement.setAttribute('data-bs-content', `<img src='https://images.igdb.com/igdb/image/upload/t_cover_big/${result.cover.image_id}.jpg'>`);
-        const popover = new bootstrap.Popover(parentElement, {
+        new bootstrap.Popover(parentElement, {
             html: true,
             trigger: 'focus'
         }).show();
     }
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 function prepareCreateSave() {
-    $('#createModalSave').on('click', event => {
+    $('#createModalSave').on('click', () => {
         var validCreateFile = $('#createFile')[0].checkValidity();
         $('#createFile').removeClass('is-valid is-invalid')
             .addClass(validCreateFile ? 'is-valid' : 'is-invalid');
@@ -159,11 +168,11 @@ function prepareCreateSave() {
     
                 $.ajax({
                     type: "POST",
-                    url: "/api/create",
+                    url: "/api/gameEntry/create",
                     data: new FormData( $('#createForm')[0] ), 
                     processData: false,
                     contentType: false,
-                    success: (result, statusMessage, response) => {
+                    success: () => {
                         appendInfo('Game created');
                     },
                     error: (error) => {
@@ -174,7 +183,7 @@ function prepareCreateSave() {
                             appendAlert(error.message);
                         }
                     },
-                    complete: (xhr, status) => {
+                    complete: () => {
                         $('#createModal').modal('hide');
 
                         $('#createModalSave').removeClass('d-none');
@@ -188,6 +197,7 @@ function prepareCreateSave() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createDevelopersSelectizes() {
     $("#createDevelopers").selectize({
         create: false,
@@ -200,6 +210,7 @@ function createDevelopersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createPublishersSelectizes() {
     $("#createPublishers").selectize({
         create: false,
@@ -212,6 +223,7 @@ function createPublishersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createGenresSelectizes(result) {
     $("#createGenres").selectize({
         create: false,

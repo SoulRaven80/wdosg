@@ -1,4 +1,4 @@
-$("#gamesListLink").on("click", function(e) {
+$("#gamesListLink").on("click", function() {
     window.history.replaceState("", "", `/settings.html`);
     $('#emptyGamesListDiv').removeClass('d-none').addClass('d-none');
     $('#gamesListPanel').removeClass('d-none').addClass('d-none');
@@ -6,16 +6,15 @@ $("#gamesListLink").on("click", function(e) {
     $('#usersAdminPanel').removeClass('d-none').addClass('d-none');
     $('#dosZonePanel').removeClass('d-none').addClass('d-none');
 
-    $.getJSON("/api/gamesShallowInfo", function(data) {
+    $.getJSON("/api/games/shallowInfo", function(data) {
         try {
             if (data.length == 0) {
                 $('#emptyGamesListDiv').removeClass('d-none');
                 return;
             }
-            var wrapper = '';
             var sortedData = data.sort((a, b) => {
                 if (a.name.toLowerCase() < b.name.toLowerCase()) {
-                  return -1;
+                    return -1;
                 }
             });
             for (let i = 0; i < sortedData.length; i++) {
@@ -38,7 +37,7 @@ $("#gamesListLink").on("click", function(e) {
             $('#gamesListPanel').removeClass('d-none');
         }
         catch (error) {
-            appendAlert('An error has occurred while reading the games information');
+            appendAlert(`An error has occurred while reading the games information: ${error}`);
         }
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the game list information: ${error}`);

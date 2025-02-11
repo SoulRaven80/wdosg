@@ -16,14 +16,14 @@
                 <input type="hidden" id="createTrailerUrl" name="trailer">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="createFile" class="form-label">Game bundle</label>
+                        <label for="createFile" class="form-label">Game bundle *</label>
                         <input class="form-control" type="file" id="createFile" name="file" accept=".jsdos" required>
                         <div class="invalid-feedback">
                             Please add a game bundle file.
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="createName" class="form-label">Name</label>
+                        <label for="createName" class="form-label">Name *</label>
                         <div class="col">
                             <input type="text" class="form-control" id="createName" name="name" required>
                             <div class="invalid-feedback">
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <button type="button" class="btn btn-primary" onclick="findMetadata()" id="createButtonFind">Find metadata</button>
+                            <button type="button" class="btn btn-primary" id="createButtonFind">Find metadata</button>
                         </div>
                     </div>
                     <div id="createDiv"></div>

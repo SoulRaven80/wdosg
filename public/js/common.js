@@ -24,12 +24,15 @@ const appendInfo = (message) => {
     alertPlaceholder.append(wrapper);
 };
 
+// eslint-disable-next-line no-unused-vars
 const initHeader = () => {
     setUserName();
     if (sessionStorage.getItem('isAdmin') === 'true') {
         $('#settingsDiv').removeClass('d-none');
     }
-    includeHTMLPage('/change-password.html');
+    includeHTMLPage('/change-password.html', () => {
+        $("#changePasswordModalSave").on("click", confirmChangePassword);
+    });
     if (document.location.pathname.startsWith('/library/')) {
         var divElem = document.createElement("div");
         divElem.setAttribute('id', 'alertPlaceholder');
@@ -40,7 +43,9 @@ const initHeader = () => {
         appendInfo(sessionStorage.getItem('message'));
         sessionStorage.setItem('message', '');
     }
-}
+    $("#openChangePasswordButton").on("click", openChangePassword);
+    $("#logoutButton").on("click", logout);
+};
 
 const includeHTMLPage = function(file, cb) {
     var elmnt, xhttp;
@@ -49,24 +54,24 @@ const includeHTMLPage = function(file, cb) {
     if (file) {
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-          if (this.readyState == 4) {
-            if (this.status == 200) {
-                elmnt.innerHTML = this.responseText;
-                document.body.appendChild(elmnt);
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    elmnt.innerHTML = this.responseText;
+                    document.body.appendChild(elmnt);
+                    if (cb) cb();
+                }
+                if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
             }
-            if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
-          }
-        }
+        };
         xhttp.open("GET", file, true);
         xhttp.send();
         return;
     }
-    if (cb) cb();
 };
 
 const setUserName = () => {
     $('#userName').text(sessionStorage.getItem('userName'));
-}
+};
 
 const logout = () => {
     sessionStorage.setItem('userName', '');
@@ -75,7 +80,7 @@ const logout = () => {
     sessionStorage.setItem('gamesList', '');
     document.cookie = 'auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     window.location.replace('/login.html');
-}
+};
 
 const openChangePassword = () => {
     $('#changePasswordForm').trigger("reset");
@@ -85,7 +90,7 @@ const openChangePassword = () => {
     $('#changePasswordEmail').val(sessionStorage.getItem('email'));
     const confirmDeleteModal = new bootstrap.Modal('#changePasswordModal', {});
     confirmDeleteModal.show();
-}
+};
 
 const confirmChangePassword = () => {
     var validCurrentPassword = $('#currentPassword')[0].checkValidity();
@@ -115,23 +120,24 @@ const confirmChangePassword = () => {
         $('#changePasswordModalSpinner').removeClass('d-none');
         $.ajax({
             type: "POST",
-            url: "/api/changePassword",
+            url: "/api/password/change",
             data: $('#changePasswordForm').serialize(), 
-            success: (result, statusMessage, response) => {
+            success: () => {
                 appendInfo('Password Updated');
             },
             error: (error) => {
                 appendAlert(error.message);
             },
-            complete: (xhr, status) => {
+            complete: () => {
                 $('#changePasswordModalSave').removeClass('d-none');
                 $('#changePasswordModalSpinner').addClass('d-none');
                 $('#changePasswordModal').modal('hide');
             }
         });
     }
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const fileTypes = {
     'jpg': 'image',
     'jpeg': 'image',

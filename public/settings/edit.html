@@ -4,12 +4,12 @@
             <div class="modal-header">
                 <h5 class="modal-title">Edit game</h5>
             </div>
-            <form action="/api/update" id="editForm" method="post" class="needs-validation" novalidate>
+            <form action="/api/gameEntry/update" id="editForm" method="post" class="needs-validation" novalidate>
                 <input type="hidden" id="editId" name="id">
                 <input type="hidden" id="editIgdbId" name="igdb_id">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="editName" class="form-label">Name</label>
+                        <label for="editName" class="form-label">Name *</label>
                         <input type="text" class="form-control" id="editName" name="name" required>
                         <div class="invalid-feedback">
                             Please add a game name.

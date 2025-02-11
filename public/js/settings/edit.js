@@ -1,5 +1,7 @@
+/* global setMultiValues, setGenresValues */
+// eslint-disable-next-line no-unused-vars
 const openEditModal = (gameId) => {
-    $.getJSON(`/api/game?gameId=${gameId}`, function(game) {
+    $.getJSON(`/api/games/find?gameId=${gameId}`, function(game) {
         try {
             $("#editId").val(game.id);
             $("#editIgdbId").val(game.igdb_id);
@@ -19,10 +21,11 @@ const openEditModal = (gameId) => {
             appendAlert(`An error has occurred while reading the game information: ${error}`);
         }
     }).fail(function(jqXHR, status, error) {
-        appendAlert('An error has occurred while getting the game information');
+        appendAlert(`An error has occurred while getting the game information: ${error}`);
     });
 };
 
+// eslint-disable-next-line no-unused-vars
 function editDevelopersSelectizes() {
     $("#editDevelopers").selectize({
         plugins: ["remove_button"],
@@ -37,7 +40,7 @@ function editDevelopersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {
@@ -51,6 +54,7 @@ function editDevelopersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function editPublishersSelectizes() {
     $("#editPublishers").selectize({
         plugins: ["remove_button"],
@@ -65,7 +69,7 @@ function editPublishersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {
@@ -79,6 +83,7 @@ function editPublishersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function editGenresSelectizes(result) {
     $("#editGenres").selectize({
         plugins: ["remove_button"],

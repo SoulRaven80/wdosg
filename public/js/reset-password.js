@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const initValidation = () => {
 // Fetch all the forms we want to apply custom Bootstrap validation styles to
     const forms = document.querySelectorAll('.needs-validation');
@@ -8,11 +9,12 @@ const initValidation = () => {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            form.classList.add('was-validated')
+            form.classList.add('was-validated');
         }, false);
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const initResetPasswordForm = () => {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('email') && urlParams.has('token')) {
@@ -24,9 +26,9 @@ const initResetPasswordForm = () => {
         appendAlert('Error on registration info');
         $('#resetPasswordDiv').addClass('d-none');
     }
-}
+};
 
-$('#resetPasswordButton').on('click', event => {
+$('#resetPasswordButton').on('click', () => {
     var validEmail = $('#resetPasswordEmail')[0].checkValidity();
     $('#resetPasswordEmail').removeClass('is-valid is-invalid')
         .addClass(validEmail ? 'is-valid' : 'is-invalid');
@@ -52,9 +54,9 @@ $('#resetPasswordButton').on('click', event => {
     if (validEmail && validPassword && validPassword2 && passMatches) {
         $.ajax({
             type: "POST",
-            url: "/api/resetPassword",
+            url: "/api/password/reset",
             data: $('#resetPasswordForm').serialize(),
-            success: (result, statusMessage, response) => {
+            success: () => {
                 window.location.replace('/login.html?info=Password%20updated');
             }
         });

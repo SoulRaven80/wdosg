@@ -1,5 +1,13 @@
+/* global zip, emulators */
 var zipBlob;
 var dosboxConfig;
+
+// eslint-disable-next-line no-unused-vars
+const initSaveDosConfig = () => {
+    $('#dosboxConfigModalSave').on('click', saveDosboxConfig);
+};
+
+// eslint-disable-next-line no-unused-vars
 const openDosboxConfigModal = (gameId, gamePath) => {
     const workingModal = new bootstrap.Modal('#waitingModal', {});
     $('#waitingModalTitle').text('Retrieving game');
@@ -8,7 +16,7 @@ const openDosboxConfigModal = (gameId, gamePath) => {
         url: `/library/${gamePath}/bundle.jsdos`,
         type: 'GET',
         xhrFields: { responseType: 'blob' },
-        success: async (result, statusMessage, response) => {
+        success: async (result) => {
             try {
                 zipBlob = result;
                 dosboxConfig = await getZipDosboxConfig(result);
@@ -40,11 +48,11 @@ const openDosboxConfigModal = (gameId, gamePath) => {
         error: (error) => {
             appendAlert(`An error has occurred while reading the game information: ${error.responseText}`);
         },
-        complete: (xhr, status) => {
+        complete: () => {
             workingModal.hide();
         }
     });
-}
+};
 
 async function getZipDosboxConfig(data) {
     const zipReader = new zip.ZipReader(new zip.BlobReader(data), { Workers: false });
@@ -107,11 +115,11 @@ async function saveDosboxConfig() {
     formData.append("gamePath", $("#dosboxConfigForm input[name='gamePath']").val());
     $.ajax({
         type: "POST",
-        url: "/api/bundle",
+        url: "/api/bundles/create",
         data: formData,
         processData: false,
         contentType: false,
-        success: (result, statusMessage, response) => {
+        success: () => {
             appendInfo('Game updated successfully');
         },
         error: (error) => {
@@ -122,11 +130,11 @@ async function saveDosboxConfig() {
                 appendAlert(error.message);
             }
         },
-        complete: (xhr, status) => {
+        complete: () => {
             $('#dosboxConfigModal').modal('hide');
         }
     });
-}
+};
 
 function populateConfigFromForm(config) {
     var formValues = $("#dosboxConfigForm").serializeArray().reduce(function(obj, item) {

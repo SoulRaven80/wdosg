@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('game')) {
-        $.getJSON("/api/game?gameId=" + urlParams.get('game'), function(game) {
+        $.getJSON("/api/games/find?gameId=" + urlParams.get('game'), function(game) {
             try {
                 $("#title").text(game.name);
                 $("#description").html((game.description ? game.description : "-"));
@@ -50,11 +50,7 @@ $(document).ready(function() {
                         borderless: 'd-none'
                     },
                     showClose: false,
-                    mainClass: 'd-none',
-                    previewZoomButtonClasses: {
-                        toggleheader: 'd-none',
-                        borderless: 'd-none'
-                    }
+                    mainClass: 'd-none'
                 });
                 if (attachments.length > 0) {
                     $('#attachmentsDetailSection').removeClass('d-none');

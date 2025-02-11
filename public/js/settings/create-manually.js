@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const openCreateManuallyModal = () => {
     $('#createManuallyModal').trigger("reset");
     $('#createManuallyFile')[0].files = $('#createFile')[0].files;
@@ -7,10 +8,11 @@ const openCreateManuallyModal = () => {
     $('#createModal').modal("hide");
     const uploadModal = new bootstrap.Modal('#createManuallyModal', {});
     uploadModal.show();
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 function prepareCreateManuallySave() {
-    $('#createManuallyModalSave').on('click', event => {
+    $('#createManuallyModalSave').on('click', () => {
         var validCreateFile = $('#createManuallyFile')[0].checkValidity();
         $('#createManuallyFile').removeClass('is-valid is-invalid')
             .addClass(validCreateFile ? 'is-valid' : 'is-invalid');
@@ -24,11 +26,11 @@ function prepareCreateManuallySave() {
 
             $.ajax({
                 type: "POST",
-                url: "/api/create",
+                url: "/api/gameEntry/create",
                 data: new FormData( $('#createManuallyForm')[0] ),
                 processData: false,
                 contentType: false,
-                success: (result, statusMessage, response) => {
+                success: () => {
                     appendInfo('Game created');
                 },
                 error: (error) => {
@@ -39,9 +41,8 @@ function prepareCreateManuallySave() {
                         appendAlert(error.message);
                     }
                 },
-                complete: (xhr, status) => {
+                complete: () => {
                     $('#createManuallyModal').modal('hide');
-
                     $('#createManuallyModalSave').removeClass('d-none');
                     $('#createManuallyModalSpinner').addClass('d-none');
                     $('#createManuallyModalClose').prop("disabled", false);
@@ -51,6 +52,7 @@ function prepareCreateManuallySave() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createManuallyDevelopersSelectizes() {
     $("#createManuallyDevelopers").selectize({
         plugins: ["remove_button"],
@@ -65,7 +67,7 @@ function createManuallyDevelopersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {
@@ -79,6 +81,7 @@ function createManuallyDevelopersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createManuallyPublishersSelectizes() {
     $("#createManuallyPublishers").selectize({
         plugins: ["remove_button"],
@@ -93,7 +96,7 @@ function createManuallyPublishersSelectizes() {
         load: function (query, callback) {
             if (!query.length) return callback();
             $.ajax({
-                url: `/api/searchCompanies?search=${encodeURIComponent(query)}`,
+                url: `/api/companies/search?name=${encodeURIComponent(query)}`,
                 type: 'GET',
                 dataType: 'json',
                 error: function () {
@@ -107,6 +110,7 @@ function createManuallyPublishersSelectizes() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
 function createManuallyGenresSelectizes(result) {
     $("#createManuallyGenres").selectize({
         plugins: ["remove_button"],

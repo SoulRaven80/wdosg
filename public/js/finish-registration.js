@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const initValidation = () => {
 // Fetch all the forms we want to apply custom Bootstrap validation styles to
     const forms = document.querySelectorAll('.needs-validation');
@@ -8,11 +9,12 @@ const initValidation = () => {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            form.classList.add('was-validated')
+            form.classList.add('was-validated');
         }, false);
     });
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const initFinishRegistrationForm = () => {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('email') && urlParams.has('token')) {
@@ -24,9 +26,9 @@ const initFinishRegistrationForm = () => {
         appendAlert('Error on registration info');
         $('#finishRegistrationDiv').addClass('d-none');
     }
-}
+};
 
-$('#finishRegistrationButton').on('click', event => {
+$('#finishRegistrationButton').on('click', () => {
     var validUsername = $('#finishRegistrationUsername')[0].checkValidity();
     $('#finishRegistrationUsername').removeClass('is-valid is-invalid')
         .addClass(validUsername ? 'is-valid' : 'is-invalid');
@@ -52,7 +54,7 @@ $('#finishRegistrationButton').on('click', event => {
     if (validUsername && validPassword && validPassword2 && passMatches) {
         $.ajax({
             type: "POST",
-            url: "/api/confirmRegistration",
+            url: "/api/users/confirmRegistration",
             data: $('#finishRegistrationForm').serialize(),
             success: (result, statusMessage, response) => {
                 document.cookie = `auth-token=${response.responseJSON.data.token}; Path=/;`;

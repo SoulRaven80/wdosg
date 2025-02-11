@@ -44,7 +44,7 @@
           </div>
           <div class="list-group-item list-group-item-action pe-1">
             <div class="d-flex w-100 justify-content-between">
-              <a class="bi-box-seam nav-link primary" aria-current="page" onclick="openGameStudio()" style="cursor: pointer;">
+              <a class="bi-box-seam nav-link primary" aria-current="page" id="openGameStudioAnchor" style="cursor: pointer;">
                 <svg class="bi pe-none" width="16" height="16"></svg>
                 Add game from Zip
               </a>
@@ -68,7 +68,7 @@
           </div>
           <div class="list-group-item list-group-item-action pe-1">
             <div class="d-flex w-100 justify-content-between">
-              <a class="bi-people nav-link primary" aria-current="page" id="usersAdminLink" onclick="openUsersAdmin()" style="cursor: pointer;">
+              <a class="bi-people nav-link primary" aria-current="page" id="usersAdminLink" style="cursor: pointer;">
                 <svg class="bi pe-none" width="16" height="16"></svg>
                 Users
               </a>
@@ -106,39 +106,42 @@
 <div class="fixed-bottom" w3-include-html="/footer.html"></div>
 
 <!--  Scripts-->
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.bundle.min.js"></script>
-<script src="/js/selectize.min.js"></script>
-<script src="/js/w3.js"></script>
-<script src="/js/settings/game-studio.js"></script>
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+<script src="/js/selectize.min.js" type="text/javascript"></script>
+<script src="/js/w3.js" type="text/javascript"></script>
+<script src="/js/settings/game-studio.js" type="text/javascript"></script>
+<script src="/js/color-modes.js" type="text/javascript"></script>
+<script src="/js/common.js" type="text/javascript"></script>
+<script src="/js/settings.js" type="text/javascript"></script>
+<script src="/js-dos/js-dos.js" type="text/javascript"></script>
+<script src="/js/settings/create.js" type="text/javascript"></script>
+<script src="/js/settings/create-manually.js" type="text/javascript"></script>
+<script src="/js/settings/edit.js" type="text/javascript"></script>
+<script src="/js/settings/attachments.js" type="text/javascript"></script>
+<script src="/js/settings/confirm-remove-game.js" type="text/javascript"></script>
+<script src="/js/settings/confirm-remove-user.js" type="text/javascript"></script>
+<script src="/js/settings/dos-zone-titles.js" type="text/javascript"></script>
+<script src="/js/settings/games-list.js" type="text/javascript"></script>
+<script src="/js/settings/users-admin.js" type="text/javascript"></script>
+<script src="/js/settings/add-user.js" type="text/javascript"></script>
+<script src="/js/settings/invite-user.js" type="text/javascript"></script>
+<script src="/js/settings/dosbox-config.js" type="text/javascript"></script>
+<script src="/js/bootstrap-fileinput/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap-fileinput/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap-fileinput/plugins/piexif.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap-fileinput/fileinput.min.js" type="text/javascript"></script>
 <script>
   w3.includeHTML(async function() {
     initializeColorMode();
     initHeader();
     afterLoadingPage();
+    initSaveNewBundle();
+    initUsersAdmin();
+    initSaveDosConfig();
     prepareGameStudio();
     prepareImportFromDosZone();
   });
 </script>
-<script src="/js/color-modes.js"></script>
-<script src="/js/common.js"></script>
-<script src="/js/settings.js"></script>
-<script src="/js-dos/js-dos.js"></script>
-<script src="/js/settings/create.js"></script>
-<script src="/js/settings/create-manually.js"></script>
-<script src="/js/settings/edit.js"></script>
-<script src="/js/settings/attachments.js"></script>
-<script src="/js/settings/confirm-remove-game.js"></script>
-<script src="/js/settings/confirm-remove-user.js"></script>
-<script src="/js/settings/dos-zone-titles.js"></script>
-<script src="/js/settings/games-list.js"></script>
-<script src="/js/settings/users-admin.js"></script>
-<script src="/js/settings/add-user.js"></script>
-<script src="/js/settings/invite-user.js"></script>
-<script src="/js/settings/dosbox-config.js"></script>
-<script src="/js/bootstrap-fileinput/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="/js/bootstrap-fileinput/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="/js/bootstrap-fileinput/plugins/piexif.min.js" type="text/javascript"></script>
-<script src="/js/bootstrap-fileinput/fileinput.min.js" type="text/javascript"></script>
 </body>
 </html>

@@ -8,14 +8,14 @@
                 class="needs-validation" novalidate>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="addUsername" class="form-label">Username</label>
+                        <label for="addUsername" class="form-label">Username *</label>
                         <input type="text" class="form-control" id="addUsername" name="username" required>
                         <div class="invalid-feedback">
                             Please add an username.
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="addUserEmail" class="form-label">Email</label>
+                        <label for="addUserEmail" class="form-label">Email *</label>
                         <input type="email" class="form-control" id="addUserEmail" name="email" required>
                         <div class="invalid-feedback">
                             Please add a valid email.
@@ -29,14 +29,14 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="addUserPassword" class="form-label">Password</label>
+                        <label for="addUserPassword" class="form-label">Password *</label>
                         <input type="password" id="addUserPassword" class="form-control" name="password" required>
                         <div class="invalid-feedback">
                             Please add a password.
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="addUserPassword2" class="form-label">Confirm Password</label>
+                        <label for="addUserPassword2" class="form-label">Confirm Password *</label>
                         <input type="password" id="addUserPassword2" class="form-control" required>
                         <div class="invalid-feedback">
                             Please add a password confirmation.
@@ -45,7 +45,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="addUserModalClose">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="addUserModalSave" onclick="confirmAddUser()">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="addUserModalSave">Save changes</button>
                     <button class="btn btn-secondary d-none" type="button" id="addUserModalSpinner" disabled>
                         <span class="spinner-border spinner-border-sm"></span>
                         <span role="status">Saving...</span>

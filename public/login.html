@@ -32,14 +32,14 @@
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-4">Please enter your email and password</p>
                                 <div class="form-outline mb-4">
-                                    <label class="form-label" for="loginEmail">Email</label>
+                                    <label class="form-label" for="loginEmail">Email *</label>
                                     <input type="email" name="email" id="loginEmail" class="form-control form-control-lg" required>
                                     <div class="invalid-feedback">
                                         Please add a valid email.
                                     </div>
                                 </div>
                                 <div class="form-outline mb-2">
-                                    <label class="form-label" for="loginPassword">Password</label>
+                                    <label class="form-label" for="loginPassword">Password *</label>
                                     <input type="password" name="password" id="loginPassword" class="form-control form-control-lg" required>
                                     <div class="invalid-feedback">
                                         Please add a password.
@@ -67,10 +67,8 @@
 <script>
     w3.includeHTML(() => {
         setTheme(getPreferredTheme());
-        initValidation();
-        initInfoMessages();
+        initLoginPage();
     });
 </script>
-  
 </body>
 </html>

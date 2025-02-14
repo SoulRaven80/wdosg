@@ -24,7 +24,16 @@
       --bs-body-bg: #212529;
     }
   </style>
-  <script src="/js-dos/js-dos.js"></script>
+  <script>
+    let deleteRequest = indexedDB.deleteDatabase("js-dos-cache (emulators-ui-saves)");
+    deleteRequest.onerror = function() {
+      console.error("Error", deleteRequest.error);
+    };
+    deleteRequest.onsuccess = function() {
+      console.log(deleteRequest.result);
+    };
+  </script>
+<script src="/js-dos/js-dos.js"></script>
   <link href="/js-dos/js-dos.css" rel="stylesheet">
 </head>
 

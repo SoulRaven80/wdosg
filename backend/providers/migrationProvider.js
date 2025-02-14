@@ -17,7 +17,7 @@ export async function runMigrate() {
         const functions = [];
         functions.push(migrateTo131);
         functions.push(migrateTo132);
-        // functions.push(migrateTo3);
+        functions.push(migrateTo133);
         if (version.version_number < functions.length) {
             await functions[version.version_number].call(); //.call(this, param);
         }
@@ -58,14 +58,19 @@ async function migrateTo132() {
     dbManager.runTransaction(queries);
 
     await dbManager.updateMigrateVersion(2);
-    // await migrateTo3();
+    await migrateTo133();
 }
-/*
-examples
-async function migrateTo3() {
-  logger.debug(`migrate 3`);
-  logger.debug();
-  await dbManager.updateMigrateVersion(3);
+
+async function migrateTo133() {
+    logger.debug(`Running Migrate process v1.3.3`);
+    const gamesFolders = getSubfolders(games_library);
+    for (const folder of gamesFolders) {
+        fs.copyFileSync(`${template_path}/game.html`, `${games_library}/${folder}/game.html`);
+        fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
+    }
+
+    await dbManager.updateMigrateVersion(3);
+    // await migrateTo();
 }
-*/
+
 export default runMigrate;

@@ -92,23 +92,21 @@ const buildGamesList = (data) => {
         const game = data[i];
         const wrapper = document.createElement('div');
         wrapper.classList.add("col");
-        wrapper.innerHTML = [
-            '<div class="card shadow-sm">',
-            `  <img src="${game.img ? game.img : '/img/image-not-found.png'}" class="img-fluid img-content mx-auto rounded m-1" alt="${game.name}">`,
-            '  <div class="card-body">',
-            '    <div class="d-flex justify-content-between align-items-center">',
-            '      <div class="d-flex w-75">',
-            `        <a href="details.html?game=${game.id}" class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover w-100">`,
-            `          <span class="small text-body-secondary d-inline-block text-truncate w-100" data-bs-toggle="tooltip" data-bs-title="${game.name}"><strong>${game.name}</strong></span>`,
-            '        </a>',
-            '      </div>',
-            '      <div class="btn-group d-flex w-25">',
-            `        <a class="btn btn-sm btn-outline-secondary" href="/library/${game.path}/index.html">Play!</a>`,
-            '      </div>',
-            '    </div>',
-            '  </div>',
-            '</div>'
-        ].join('');
+        wrapper.innerHTML = `<div class="card shadow-sm">
+              <img role="button" onclick="window.location.href='details.html?game=${game.id}'" src="${game.img ? game.img : '/img/image-not-found.png'}" class="img-fluid img-content mx-auto rounded m-1" alt="${game.name}">
+              <div class="card-body py-3 px-2">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex w-75">
+                    <a href="details.html?game=${game.id}" class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover w-100">
+                      <span class="small text-body-secondary d-inline-block text-truncate w-100 text-center" data-bs-toggle="tooltip" data-bs-title="${game.name}"><strong>${game.name}</strong></span>
+                    </a>
+                  </div>
+                  <div class="btn-group d-flex w-25">
+                    <a class="btn btn-sm btn-outline-secondary" href="/library/${game.path}/index.html">Play!</a>
+                  </div>
+                </div>
+              </div>
+            </div>`;
         gamesList.append(wrapper);
     }
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');

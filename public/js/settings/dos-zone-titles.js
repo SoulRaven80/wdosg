@@ -29,7 +29,7 @@ const openListDOSZone = (page, filter, genre) => {
 
             $('#dosZoneSearch').attr("onclick", `openListDOSZone(${result.currentPage}, $('#filterDosZoneGames').val(), $('#filterDosZoneGenre').find(":selected").val())`);
 
-            var navigation = `<ul class="pagination justify-content-center" style="margin-bottom: unset">
+            var navigation = `<ul class="pagination justify-content-center mb-1">
                                 <li class="page-item ${result.currentPage > 1 ? '' : 'disabled'}">
                                     <a class="page-link" href="#" onclick="openListDOSZone(${result.currentPage - 1}, '${filter}', '${genre}')" aria-label="Previous">
                                         <span>&laquo;</span>

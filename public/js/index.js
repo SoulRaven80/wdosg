@@ -84,7 +84,6 @@ const buildMainScreen = (data) => {
     buildGamesList(data);
 };
 
-
 const buildGamesList = (data) => {
     const gamesList = document.getElementById('games_list');
     gamesList.innerHTML = '';
@@ -93,7 +92,7 @@ const buildGamesList = (data) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add("col");
         wrapper.innerHTML = `<div class="card shadow-sm">
-              <img role="button" onclick="window.location.href='details.html?game=${game.id}'" src="${game.img ? game.img : '/img/image-not-found.png'}" class="img-fluid img-content mx-auto rounded m-1" alt="${game.name}">
+              <img role="button" onclick="window.location.href='details.html?game=${game.id}'" src="/library/${game.path}/metadata/cover" class="img-fluid img-content mx-auto rounded m-1" alt="${game.name}">
               <div class="card-body py-3 px-2">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="d-flex w-75">

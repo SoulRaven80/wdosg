@@ -1,16 +1,9 @@
-import bcrypt from 'bcrypt';
-import { logger } from '../logger/logger.js';
+import bcrypt from 'bcryptjs';
 const crypto = await import('node:crypto');
 
-export async function encrypt(value) {
-    const salt = await bcrypt.genSalt();
-    return bcrypt.hashSync(value, salt, (err, hash) => {
-        if (err) {
-            logger.error(`Error hashing value: ${err}`);
-            return;
-        }
-        return hash;
-    });
+export function encrypt(value) {
+    const salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(value, salt);
 }
 
 export async function compare(value1, value2) {

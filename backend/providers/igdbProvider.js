@@ -11,17 +11,16 @@ export async function searchGame(name) {
             .search(name)
             .where('release_dates.platform = (13)') // filter the results by DOS
             .request('/games');
+        var result = response.data.filter(function(i) {
+            const release = (i.first_release_date !== undefined && i.first_release_date !== null); // has been released
+            return release;
+        });
+        logger.debug(`IGDB game data: ${JSON.stringify(result, null, 2)}`);
+        return result;
     } catch (error) {
         logger.error(`Error calling IGDB API. Please check IGDB configuration. Error message: ${error.message}`);
         throw error;
     }
-    var result = response.data.filter(function(i) {
-        const release = (i.first_release_date !== undefined && i.first_release_date !== null); // has been released
-        return release;
-    });
-    
-    logger.debug(`IGDB game data: ${JSON.stringify(result, null, 2)}`);
-    return result;
 }
 
 export default searchGame;

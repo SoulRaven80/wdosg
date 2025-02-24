@@ -33,26 +33,24 @@ const findMetadata = () => {
             for (let i = 0; i < result.length; i++) {
                 const game = result[i];
                 // IN THIS CONTEXT, "ID" IS "IGDB_ID"
-                wrapper += ['<li class="list-group-item">',
-                    '  <div class="row">',
-                    '    <div class="col">',
-                    `      <input class="form-check-input me-1" type="radio" name="igdb_id" value="${game.id}" id="radio${game.id}">`,
-                    `      <label class="form-check-label" for="radio${game.id}">${game.name} (${new Date(game.first_release_date * 1000).getFullYear()})</label>`,
-                    '    </div>',
-                    '    <div class="col-auto">',
-                    `      <a href="#" onclick="getCover(${game.id}, this)" tabindex="0" data-bs-toggle="popover" data-bs-placement="left" data-bs-title="Cover"><i class="bi bi-images"></i></a>`,
-                    '    </div>',
-                    '</li>'
-                ].join('');
+                wrapper += `<li class="list-group-item">
+                      <div class="row">
+                        <div class="col">
+                          <input class="form-check-input me-1" type="radio" name="igdb_id" value="${game.id}" id="radio${game.id}">
+                          <label class="form-check-label" for="radio${game.id}">${game.name} (${new Date(game.first_release_date * 1000).getFullYear()})</label>
+                        </div>
+                        <div class="col-auto">
+                          <a href="#" onclick="getCover(${game.id}, this)" tabindex="0" data-bs-toggle="popover" data-bs-placement="left" data-bs-title="Cover"><i class="bi bi-images"></i></a>
+                        </div>
+                    </li>`;
             }
-            wrapper += ['<li class="list-group-item">',
-                '  <div class="row">',
-                '    <div class="col">',
-                `      <input class="form-check-input me-1" type="radio" name="igdb_id" value="-1" id="radio-1">`,
-                `      <label class="form-check-label" for="radio-1">Game not listed. <a href="#" onclick="openCreateManuallyModal()">Manually edit</a></label>`,
-                '    </div>',
-                '</li>'
-            ].join('');
+            wrapper += `<li class="list-group-item">
+                  <div class="row">
+                    <div class="col">
+                      <input class="form-check-input me-1" type="radio" name="igdb_id" value="-1" id="radio-1">
+                      <label class="form-check-label" for="radio-1">Game not listed. <a href="#" onclick="openCreateManuallyModal()">Manually edit</a></label>
+                    </div>
+                </li>`;
             wrapper += '</ul>';
             $('#createDiv').html(wrapper);
             var radios = $('#createForm').get(0).igdb_id;
@@ -95,7 +93,7 @@ const getCover = (igdb_id, parentElement) => {
         new bootstrap.Popover(parentElement, {
             html: true,
             trigger: 'focus'
-        }).show();              
+        }).show();
     }
     else {
         var searchResults = JSON.parse(sessionStorage.searchResults);

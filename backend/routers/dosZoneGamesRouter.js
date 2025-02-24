@@ -1,11 +1,13 @@
 import express from 'express';
+import apicache from 'apicache';
 import { verifyAdminToken } from '../middleware/userTokenMiddleware.js';
 import * as dataProvider from '../providers/dataProvider.js';
 import querystring from 'querystring';
 
 export const router = express.Router();
+const cache = apicache.middleware;
 
-router.get('/', verifyAdminToken, async(req, res) => {
+router.get('/', [verifyAdminToken, cache('1 day')], async(req, res) => {
     const itemsPerPage = 20;
     var page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
     const filter = querystring.unescape(req.query.filter) || ''; // Filter keyword from query params
@@ -36,7 +38,7 @@ router.get('/', verifyAdminToken, async(req, res) => {
     });
 });
 
-router.get('/genres', verifyAdminToken, async(req, res) => {
+router.get('/genres', [verifyAdminToken, cache('1 day')], async(req, res) => {
     var genres = await dataProvider.listDosZoneGenres();
     genres = genres.map(g => g.genre);
     // Some games had multiple genre in the same value. Splitting and filtering
@@ -52,7 +54,7 @@ router.get('/genres', verifyAdminToken, async(req, res) => {
     );
 });
 
-router.get('/find', verifyAdminToken, async(req, res) => {
+router.get('/find', [verifyAdminToken, cache('1 day')], async(req, res) => {
     if (!req.query.id || !parseInt(req.query.id)) {
         return res.status(422).send('Empty or invalid game id');
     }

@@ -22,6 +22,7 @@ import * as loginRouter from './backend/routers/loginRouter.js';
 import * as logoutRouter from './backend/routers/logoutRouter.js';
 import * as genresRouter from './backend/routers/genresRouter.js';
 import * as saveGameRouter from './backend/routers/saveGameRouter.js';
+import * as coversRouter from './backend/routers/coversRouter.js';
 
 if (process.env.TWITCH_CLIENT_ID_FILE) {
     process.env.TWITCH_CLIENT_ID = fs.readFileSync(process.env.TWITCH_CLIENT_ID_FILE, 'utf8').trim();
@@ -82,6 +83,7 @@ app.use('/api/login', loginRouter.router);
 app.use('/api/logout', logoutRouter.router);
 app.use('/api/genres', genresRouter.router);
 app.use('/api/saveGame', saveGameRouter.router);
+app.use('/api/covers', coversRouter.router);
 
 app.get("/home", verifyToken, (req, res) => {
     res.status(201).redirect("/index.html");

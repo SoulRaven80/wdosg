@@ -17,7 +17,7 @@ router.post('/add', verifyAdminToken, async(req, res) => {
     user.username = req.body.username;
     user.email = req.body.email;
     user.role = req.body.role;
-    user.password = await crypto.encrypt(req.body.password);
+    user.password = crypto.encrypt(req.body.password);
     try {
         await dataProvider.addUser(user);
         res.status(200).json({"success": true});
@@ -67,7 +67,8 @@ async function addUser(username, email, role, password) {
         user.username = username;
         user.email = email;
         user.role = role;
-        user.password = await crypto.encrypt(password);
+        user.password = crypto.encrypt(password);
+        logger.debug(`userrouter: ${user.password}`);
         await dataProvider.addUser(user);
     } catch (error) {
         logger.error(`Error while saving new user: ${error}`);

@@ -20,10 +20,21 @@
               Please add a game name.
             </div>
           </div>
-          <div class="mb-3">
-            <label for="createManuallyImageUrl" class="form-label">Cover URL</label>
-            <input type="text" class="form-control" id="createManuallyImageUrl" name="img">
-          </div>
+          <div class="col-auto">
+            <div class="row">
+                <div class="col-auto me-auto">
+                    <label for="createManuallyCoverFile" class="form-label">Cover</label>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary py-1" id="buttonEyeCreateManuallyCover" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleCreateManuallyCover" aria-expanded="false">
+                        <i class="bi bi-eye" id="eyeCreateManuallyCover"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="collapse show card-body" id="collapsibleCreateManuallyCover">
+            <input type="file" id="createManuallyCoverFile" name="cover" accept="image">
+        </div>
           <div class="mb-3">
             <label for="createManuallyDescription" class="form-label">Description</label>
             <textarea class="form-control" id="createManuallyDescription" rows="3" name="description"></textarea>

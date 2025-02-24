@@ -15,9 +15,20 @@
                             Please add a game name.
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="editImageUrl" class="form-label">Cover URL</label>
-                        <input type="text" class="form-control" id="editImageUrl" name="img">
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col-auto me-auto">
+                                <label for="editCoverFile" class="form-label">Cover</label>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary py-1" id="buttonEyeEditCover" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleEditCover" aria-expanded="false">
+                                    <i class="bi bi-eye" id="eyeEditCover"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show card-body" id="collapsibleEditCover">
+                        <input type="file" id="editCoverFile" name="cover" accept="image">
                     </div>
                     <div class="mb-3">
                         <label for="editDescription" class="form-label">Description</label>

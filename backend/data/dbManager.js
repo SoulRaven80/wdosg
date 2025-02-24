@@ -160,9 +160,9 @@ export async function fetchDosZoneGame(gameId) {
 export async function saveNewGame(game) {
     logger.info(`Saving new game with name: ${game.name}`);
     try {
-        await sqlite.execute(`INSERT INTO games(igdb_id,name,img,year,trailer,id,path,description) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [game.igdb_id, game.name, game.img, game.year, game.trailer, game.id, game.path, game.description]);
+        await sqlite.execute(`INSERT INTO games(igdb_id,name,year,trailer,id,path,description)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [game.igdb_id, game.name, game.year, game.trailer, game.id, game.path, game.description]);
         if (Array.isArray(game.genres)) {
             for (let i = 0; i < game.genres.length; i++) {
                 const genre = game.genres[i];
@@ -275,8 +275,8 @@ export async function updateGame(game) {
             }
         }
 
-        await sqlite.execute(`UPDATE games SET igdb_id = ?, name = ?, img = ?, year = ?, trailer = ?, description = ? WHERE id = ?`,
-            [game.igdb_id, game.name, game.img, game.year, game.trailer, game.description, game.id]);
+        await sqlite.execute(`UPDATE games SET igdb_id = ?, name = ?, year = ?, trailer = ?, description = ? WHERE id = ?`,
+            [game.igdb_id, game.name, game.year, game.trailer, game.description, game.id]);
     } catch (err) {
         logger.error(err, `Error while updating game: ${game.name}`);
     }

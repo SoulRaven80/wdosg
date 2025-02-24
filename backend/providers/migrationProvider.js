@@ -1,6 +1,7 @@
 import * as dbManager from '../data/dbManager.js';
 import { logger } from '../logger/logger.js';
 import * as config from '../../config.js';
+import * as imageProvider from './imageProvider.js';
 import fs from 'fs';
 import os from 'os';
 
@@ -64,13 +65,26 @@ async function migrateTo132() {
 async function migrateTo133() {
     logger.debug(`Running Migrate process v1.3.3`);
     const gamesFolders = getSubfolders(games_library);
+    // Updating latest game.html files
     for (const folder of gamesFolders) {
         fs.copyFileSync(`${template_path}/game.html`, `${games_library}/${folder}/game.html`);
         fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
     }
-
+    const list = await dbManager.listGamesShallow();
+    // Updating covers
+    for (let i = 0; i < list.length; i++) {
+        const game = list[i];
+        fs.mkdirSync(`${games_library}/${game.path}/metadata`, { recursive: true });
+        if (game.img) {
+            logger.debug(`Downloading image url ${game.img}`);
+            imageProvider.downloadImage(game.img, `${games_library}/${game.path}/metadata/`, 'cover', `${root_path}public/img/image-not-found.png`);
+        }
+        else {
+            fs.copyFileSync(`${root_path}public/img/image-not-found.png`, `${games_library}/${game.path}/metadata/cover`);
+        }
+    }
     await dbManager.updateMigrateVersion(3);
-    // await migrateTo();
+    // await migrateTo134();
 }
 
 export default runMigrate;

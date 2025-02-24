@@ -25,7 +25,7 @@ router.post('/change', verifyToken, async(req, res) => {
                 message: "Incorrect password. Please try again with the correct password.",
             });
         }
-        var password = await crypto.encrypt(req.body.newPassword);
+        var password = crypto.encrypt(req.body.newPassword);
         await dataProvider.updateUserPassword(req.body.email, password);
         res.status(200).json({"success": true});
     } catch (err) {

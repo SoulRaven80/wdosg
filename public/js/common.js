@@ -3,11 +3,9 @@ const appendAlert = (message) => {
     const wrapper = document.createElement('div');
     $(wrapper).addClass("alert alert-danger d-flex align-items-center alert-dismissible fade show");
     $(wrapper).attr("role", "alert");
-    wrapper.innerHTML = [
-        '   <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>',
-        `   <div>${message}</div>`,
-        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
-    ].join('');
+    wrapper.innerHTML = `<svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>${message}</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
     alertPlaceholder.append(wrapper);
 };
 
@@ -16,11 +14,9 @@ const appendInfo = (message) => {
     const wrapper = document.createElement('div');
     $(wrapper).addClass("alert alert-info d-flex align-items-center alert-dismissible fade show");
     $(wrapper).attr("role", "alert");
-    wrapper.innerHTML = [
-        '   <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>',
-        `   <div>${message}</div>`,
-        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
-    ].join('');
+    wrapper.innerHTML = `<svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+        <div>${message}</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
     alertPlaceholder.append(wrapper);
 };
 

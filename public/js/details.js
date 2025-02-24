@@ -5,7 +5,7 @@ $(document).ready(function() {
             try {
                 $("#title").text(game.name);
                 $("#description").html((game.description ? game.description : "-"));
-                $("#image").attr('src', (game.img ? game.img : '/img/image-not-found.png'));
+                $("#image").attr('src', `/library/${game.path}/metadata/cover`);
                 $("#image").attr('alt', game.name);
                 if (game.trailer.includes("youtube")) {
                     $("#video").attr('src', game.trailer);

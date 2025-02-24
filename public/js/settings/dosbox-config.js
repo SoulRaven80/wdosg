@@ -102,6 +102,8 @@ function getConfigSection(text, key) {
 }
 
 async function saveDosboxConfig() {
+    $('#dosboxConfigModalSave').addClass('d-none');
+    $('#dosboxConfigModalSpinner').removeClass('d-none');
     const dosBundle = await emulators.dosBundle();
     populateConfigFromForm(dosBundle.config);
     const url = URL.createObjectURL(zipBlob);
@@ -131,6 +133,8 @@ async function saveDosboxConfig() {
             }
         },
         complete: () => {
+            $('#dosboxConfigModalSave').removeClass('d-none');
+            $('#dosboxConfigModalSpinner').addClass('d-none');
             $('#dosboxConfigModal').modal('hide');
         }
     });

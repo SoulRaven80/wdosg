@@ -5,8 +5,55 @@ const openCreateManuallyModal = () => {
     $('#createManuallyFile').removeClass('is-valid is-invalid');
     $('#createManuallyName').removeClass('is-valid is-invalid');
 
+    $("#createManuallyCoverFile").fileinput('destroy');
+    $("#createManuallyCoverFile").fileinput({
+        showUpload: false,
+        showRemove: false,
+        initialPreviewAsData: true,
+        initialPreviewConfig: [{ url: `/api/covers/delete/TMP` }],
+        uploadUrl: `/api/covers/add`,
+        overwriteInitial: true,
+        append: true,
+        uploadExtraData: {
+            gameId: 'TMP',
+            gamePath: 'TMP',
+        },
+        maxFileCount: 1,
+        allowedFileTypes: [ 'image' ],
+        allowedFileExtensions: ["jpg", "gif", "png", "jpeg"],
+        previewZoomButtonClasses: {
+            toggleheader: 'd-none',
+            borderless: 'd-none'
+        },
+        showClose: false
+    });
     $('#createModal').modal("hide");
     const uploadModal = new bootstrap.Modal('#createManuallyModal', {});
+
+    // Setup collapsible eye icon
+    $('#buttonEyeCreateManuallyCover').on('click', () => {
+        var classes = $('#eyeCreateManuallyCover')[0].classList;
+        var open = classes.contains("bi-eye");
+        if (open) {
+            classes.remove("bi-eye");
+            classes.add("bi-eye-slash");
+        }
+        else {
+            classes.add("bi-eye");
+            classes.remove("bi-eye-slash");
+        }
+    });
+
+    // Cleanup unused cover
+    document.getElementById('createManuallyModal').addEventListener('hidden.bs.modal', () => {
+        $.ajax({
+            type: "POST",
+            url: "/api/covers/delete/TMP",
+            processData: false,
+            contentType: false,
+        });
+    });
+
     uploadModal.show();
 };
 

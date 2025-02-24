@@ -56,7 +56,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 
 ## Roadmap
 
-- [ ] Basic features
+- Features
   - [x] Add / remove games
   - [x] Edit games information
   - [x] Download IGDB metadata
@@ -65,15 +65,16 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [x] User authentication (local)
   - [x] User administration
   - [x] Add Manuals / Attachments to each game
-- [ ] Desired features
-  - [ ] Cloud saving (enabled through _js-dos_)
-  - [x] Cross-device local saving
+  - [x] ~~Cloud saving (enabled through _js-dos_)~~ Server saving for multiple device support `NEW!`
+  - [x] Device local saving
   - [x] _js-dos_ per-game configuration
+  - [x] Send registering invites via email
+  - [x] Password recovery `NEW!`
+  - [x] Support for Docker Secrets `NEW!`
+- Down the line
   - [ ] Create entry from game folder - as opposed to a _jsdos bundle_ file
   - [ ] Support for _js-dos_ v8 (currently v7)
   - [ ] Ability to scan library folder (bulk import)
-  - [x] Send registering invites via email
-  - [x] Password recovery
 
 > [!CAUTION]
 > wDOSg has been imagined as a _convenient_ way to run DOS games. Although it requires user authentication, it has not been 
@@ -144,7 +145,7 @@ Some environment variables are supported to be included as docker secrets instea
 
 The currently recommended way to run the server is via Docker.
 
-This is a `docker-compose.yml` example file:
+This is a simple `docker-compose.yml` example file to start running:
 
 ```yaml
 services:
@@ -160,9 +161,9 @@ services:
                                      # **NOT your secret**
       - LOG_LEVEL=info # Level of logging to be reflected on console
       - TOKEN_SECRET=secret # Your key to encrypt the session tokens
-      # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this variable, 
+      # - GAMES_LIBRARY=/app/wdosglibrary # If for some reason you need to modify this variable, 
                                                # make sure mapped volumes are consistent with this value
-      # - DB_PATH=/your/wDOSg/database/path/ # If for some reason you need to modify this variable, 
+      # - DB_PATH=/app/database # If for some reason you need to modify this variable, 
                                           # make sure mapped volumes are consistent with this value
       - EMAIL_SERVICE=mymail # Your email service
       - EMAIL_USER=wdosg@mymail.com # Email user that wDOSg will use
@@ -171,15 +172,9 @@ services:
     volumes:
       - your_library_location:/app/wdosglibrary # directory containing your library
       - your_db_location:/app/database # directory containing your database
-    networks:
-      - proxy # assuming "proxy" is the network for the reverse proxy (i.e. Traefik)
-
-networks:
-  proxy:
-    external: true
 ```
 
-#### Docker compose example with docker secrets
+#### Docker compose example with docker secrets and reverse proxy
 ```yaml
 services:
   wdosg:

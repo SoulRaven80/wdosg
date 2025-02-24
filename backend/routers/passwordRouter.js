@@ -66,6 +66,7 @@ router.post('/reset', async(req, res) => {
         return res.status(422).send('Invalid reset password link');
     }
     await dataProvider.deleteResetPasswordToken(req.body.email, req.body.token);
-    await dataProvider.updateUserPassword(req.body.email, req.body.password);
+    var newPassword = crypto.encrypt(req.body.password);
+    await dataProvider.updateUserPassword(req.body.email, newPassword);
     res.status(200).json({ success: true });
 });

@@ -69,7 +69,7 @@ export const getAuthToken = (req) => {
         let cookies = cookieStr.split("; ");
         for (let i = 0; i < cookies.length; i++) {
             const element = cookies[i];
-            if (element.startsWith('auth-token=')) {
+            if (element.startsWith('wdowsg-auth-token=')) {
                 return element.split("=")[1];
             }
         }

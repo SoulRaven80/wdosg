@@ -47,7 +47,7 @@ const doLogin = () => {
             url: "/api/login",
             data: $('#loginForm').serialize(), 
             success: (result, statusMessage, response) => {
-                document.cookie = `auth-token=${response.responseJSON.data.token}; Path=/;`;
+                document.cookie = `wdowsg-auth-token=${response.responseJSON.data.token}; Path=/;`;
                 sessionStorage.setItem('userName', response.responseJSON.data.username);
                 sessionStorage.setItem('email', response.responseJSON.data.email);
                 sessionStorage.setItem('isAdmin', response.responseJSON.data.isAdmin);

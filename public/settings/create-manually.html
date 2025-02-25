@@ -1,4 +1,4 @@
-<div class="modal fade" id="createManuallyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+<div class="modal fade no-caret" id="createManuallyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -8,14 +8,14 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="createManuallyFile" class="form-label">Game bundle *</label>
-            <input class="form-control" type="file" id="createManuallyFile" name="file" accept=".jsdos" required>
+            <input class="form-control auto-caret" type="file" id="createManuallyFile" name="file" accept=".jsdos" required>
             <div class="invalid-feedback">
               Please add a game bundle file.
             </div>
           </div>
           <div class="mb-3">
             <label for="createManuallyName" class="form-label">Name *</label>
-            <input type="text" class="form-control" id="createManuallyName" name="name" required>
+            <input type="text" class="form-control auto-caret" id="createManuallyName" name="name" required>
             <div class="invalid-feedback">
               Please add a game name.
             </div>
@@ -37,27 +37,27 @@
         </div>
           <div class="mb-3">
             <label for="createManuallyDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="createManuallyDescription" rows="3" name="description"></textarea>
+            <textarea class="form-control auto-caret" id="createManuallyDescription" rows="3" name="description"></textarea>
           </div>
           <div class="mb-3">
             <label for="createManuallyDevelopers" class="form-label">Developers</label>
-            <select class="form-control" id="createManuallyDevelopers" name="developers" multiple></select>
+            <select class="form-control auto-caret" id="createManuallyDevelopers" name="developers" multiple></select>
           </div>
           <div class="mb-3">
             <label for="createManuallyPublishers" class="form-label">Publishers</label>
-            <select class="form-control" id="createManuallyPublishers" name="publishers" multiple></select>
+            <select class="form-control auto-caret" id="createManuallyPublishers" name="publishers" multiple></select>
           </div>
           <div class="mb-3">
             <label for="createManuallyGenres" class="form-label">Genres</label>
-            <select class="form-control" id="createManuallyGenres" name="genres" multiple></select>
+            <select class="form-control auto-caret" id="createManuallyGenres" name="genres" multiple></select>
           </div>
           <div class="mb-3">
             <label for="createManuallyYear" class="form-label">Release</label>
-            <input type="text" class="form-control" id="createManuallyYear" name="year">
+            <input type="text" class="form-control auto-caret" id="createManuallyYear" name="year">
           </div>
           <div class="mb-3">
             <label for="createManuallyTrailerUrl" class="form-label">Trailer URL</label>
-            <input type="text" class="form-control" id="createManuallyTrailerUrl" name="trailer">
+            <input type="text" class="form-control auto-caret" id="createManuallyTrailerUrl" name="trailer">
           </div>
         </div>
         <div class="modal-footer">

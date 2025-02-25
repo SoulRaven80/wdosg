@@ -9,3 +9,7 @@
 .kv-file-rotate {
     display: none !important;
 }
+
+.no-caret {
+    caret-color: transparent !important;
+}

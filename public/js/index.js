@@ -55,7 +55,7 @@ const appyFilters = (nameFilter, genreFilter, data) => {
 const buildMainScreen = (data) => {
     $("#main_container").prepend(`<div class="row py-3">
           <div class="col-6">
-            <input class="form-control" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterInputText">
+            <input class="form-control auto-caret" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterInputText">
           </div>
           <div class="col-6">
             <select class="form-select" aria-label="Genre filter" id="filterGenre"><option value="-1" selected>Filter by genre</option></select>

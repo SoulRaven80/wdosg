@@ -85,3 +85,11 @@
     padding: 0px !important;
     margin-bottom: 0px !important;
 }
+
+.no-caret {
+    caret-color: transparent !important;
+}
+
+.auto-caret {
+    caret-color: auto !important;
+}

@@ -85,3 +85,11 @@ div.card.shadow-sm:hover {
     --bs-card-bg: var(--bs-card-bg);
     --bs-card-border-color: black;
 }
+
+.no-caret {
+    caret-color: transparent !important;
+}
+
+.auto-caret {
+    caret-color: auto !important;
+}

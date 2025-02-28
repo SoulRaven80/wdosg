@@ -9,7 +9,7 @@ import * as config from './config.js';
 import httpLogger from 'pino-http';
 import { logger } from './backend/logger/logger.js';
 import * as mailSender from './backend/email/mailSender.js';
-import { verifyToken } from './backend/middleware/userTokenMiddleware.js';
+import { verifyAdminToken, verifyToken } from './backend/middleware/userTokenMiddleware.js';
 import * as gamesRouter from './backend/routers/gamesRouter.js';
 import * as attachmentsRouter from './backend/routers/attachmentsRouter.js';
 import * as companiesRouter from './backend/routers/companiesRouter.js';
@@ -41,9 +41,11 @@ const temporaryDir = './tmp/';
 const appPort = process.env.PORT || 3001;
 
 var app = express();
-app.use('/', verifyToken);
-app.use('/', express.static(path.join(config.getRootPath(), 'public'), { index: 'login.html'}));
-app.use('/library', express.static(games_library));
+app.use("/settings*", verifyAdminToken, (req, res, next) => {
+    next();
+});
+app.use('/', [verifyToken, express.static(path.join(config.getRootPath(), 'public'), { index: '/home' })]);
+app.use('/library', [verifyToken, express.static(games_library)]);
 app.disable("x-powered-by");
 app.use(cors());
 app.use(express.json());
@@ -86,6 +88,10 @@ app.use('/api/saveGame', saveGameRouter.router);
 app.use('/api/covers', coversRouter.router);
 
 app.get("/home", verifyToken, (req, res) => {
+    res.status(201).redirect("/index.html");
+});
+
+app.get("/", verifyToken, (req, res) => {
     res.status(201).redirect("/index.html");
 });
 

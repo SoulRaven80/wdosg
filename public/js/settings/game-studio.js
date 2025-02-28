@@ -73,15 +73,14 @@ function getExecutableFiles(files) {
         zipFile = new Uint8Array(reader.result);
         try {
             const executables = await getZipExecutables(zipFile);
+            $('#radioExecutables').empty();
             for (let i = 0; i < executables.length; i++) {
                 const exec = executables[i];
                 const wrapper = document.createElement('div');
-                wrapper.innerHTML = [
-                    '<div class="form-check">',
-                    `   <input class="form-check-input" id="exec${i}" type="radio" name="executable" value="${exec}">`,
-                    `   <label class="form-check-label" for="exec${i}">${exec}</label>`,
-                    '</div>'
-                ].join('');
+                wrapper.innerHTML = `<div class="form-check">
+                       <input class="form-check-input" id="exec${i}" type="radio" name="executable" value="${exec}">
+                       <label class="form-check-label" for="exec${i}">${exec}</label>
+                    </div>`;
                 $('#radioExecutables').append(wrapper);
             }
             $('#exec0').attr('checked', 'checked');
@@ -101,10 +100,30 @@ function getExecutableFiles(files) {
 }
 
 function ensureNoRootFolder(entries) {
-    var starts = entries.filter(str => str.filename.startsWith(entries[0].filename));
-    if (entries.length == starts.length) {
-        throw Error('Zip files should not contain a root directory');
+    if (!entries || entries.length === 0) {
+        throw Error('Zip file should not be empty');
     }
+    const hasExecutableAtTopLevel = entries.some((entry) => {
+        return isExecutable(entry) && !entry.filename.includes("/");
+    });
+    if (!hasExecutableAtTopLevel) {
+        throw Error('Zip files should contain at least one executable file');
+    }
+    const hasRoot = entries.some((entry) => {
+        const parts = entry.filename.split("/");
+        if (parts.length > 1 && parts[0] === "") {
+            return true;
+        }
+        return false;
+    });
+    if (hasRoot) {
+        throw new Error("Zip files should not contain a root directory.");
+    }
+}
+
+function isExecutable(entry) {
+    const lowerEntry = entry.filename.toLocaleLowerCase();
+    return lowerEntry.endsWith(".exe") || lowerEntry.endsWith(".bat") || lowerEntry.endsWith(".com");
 }
 
 async function getZipExecutables(data) {
@@ -117,11 +136,8 @@ async function getZipExecutables(data) {
         const entries = await zipReader.getEntries();
         ensureNoRootFolder(entries);
         for (const entry of entries) {
-            const filename = entry.filename;
-            if (filename.toLocaleLowerCase().endsWith(".com") ||
-                filename.toLocaleLowerCase().endsWith(".exe") ||
-                filename.toLocaleLowerCase().endsWith(".bat")) {
-                executables.push(filename);
+            if (isExecutable(entry) && !entry.filename.includes("/")) {
+                executables.push(entry.filename);
             }
         }
         return executables;

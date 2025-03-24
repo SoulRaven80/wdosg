@@ -73,7 +73,12 @@ const openListDOSZone = (page, filter, genre) => {
             var wrapper = '';
             for (let i = 0; i < result.items.length; i++) {
                 const game = result.items[i];
-                wrapper += `<tr><td>${game.title}</td><td>${game.release}</td><td>${game.genre}</td>
+                var genres = game.genre.split(',');
+                var genresHtml = '';
+                for (let g = 0; g < genres.length; g++) {
+                    genresHtml += '<span class="badge text-bg-secondary">' + genres[g] + '</span> ';
+                }
+                wrapper += `<tr><td>${game.title}</td><td>${game.release}</td><td>${genresHtml}</td>
                     <td>
                         <button type="button" class="btn bi-plus-square" aria-label="Add" onclick="downloadAndAdd('${game.id}')"></button>
                     </td>

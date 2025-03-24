@@ -10,7 +10,8 @@
   <link href="/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/docs.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
-  
+  <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
   <link href="/css/index.css" rel="stylesheet">
   <link href="/img/favicon.png" rel="icon" type="image/png">
 </head>
@@ -21,10 +22,45 @@
 
 <!-- MAIN -->
 <main>
-  <div class="container px-4 pb-4 bg-body-tertiary" id="main_container">
+  <div class="container px-4 pb-4 bg-body-tertiary">
     <div id="alertPlaceholder"></div>
-    <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-3 mb-3" id="games_list">
-    </div>
+    <div  id="main_container">
+      <!-- FILTERS -->
+      <div class="row py-3 d-none" id="filter_container">
+        <div class="col-xl-6 col-lg-5 col-md-5 col-sm-4">
+          <input class="form-control auto-caret" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterInputName">
+        </div>
+        <div class="col-1">
+          <input class="form-control auto-caret" type="text" placeholder="Year" aria-label="Game year filter" id="filterInputYear">
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+          <select class="form-select" aria-label="Genre filter" id="filterGenre"><option value="-1" selected>-- Genre --</option></select>
+        </div>
+        <div class="col-auto btn-group">
+          <button id="listViewButton" class="btn" type="button" title="View as list" onclick="setView('list')">
+            <i class="bi bi-list"></i>
+          </button>
+          <button id="gridViewButton" class="btn" type="button" title="View as grid" onclick="setView('grid')">
+            <i class="bi bi-grid"></i>
+          </button>
+        </div>
+      </div>
+      <!-- VIEW AS GRID -->
+      <div id="games_grid" class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-3 mb-3 d-none">
+      </div>
+      <!-- VIEW AS LIST -->
+      <table id="games_table" class="table table-hover align-middle d-none">
+        <thead>
+          <tr>
+            <th>Game Title</th>
+            <th>Year</th>
+            <th>Genres</th>
+            <th>Cover</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+      </table>
+
   </div>
 </main>
 <!-- MAIN -->
@@ -45,6 +81,6 @@
 <script src="/js/color-modes.js"></script>
 <script src="/js/common.js"></script>
 <script src="/js/index.js"></script>
-
+<script src="/js/dataTables.2.2.2.min.js"></script>
 </body>
 </html>

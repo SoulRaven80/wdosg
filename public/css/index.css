@@ -81,6 +81,12 @@
     max-height: 225px;
 }
 
+.img-list-content {
+    width: fit-content;
+    height: fit-content;
+    max-height: 100px;
+}
+
 div.card.shadow-sm:hover {
     --bs-card-bg: var(--bs-card-bg);
     --bs-card-border-color: black;
@@ -92,4 +98,16 @@ div.card.shadow-sm:hover {
 
 .auto-caret {
     caret-color: auto !important;
+}
+
+#games_table_info {
+    display: none !important;
+}
+
+div.dt-layout-row:has(div.dt-search) {
+    display: none !important;
+}
+
+div.dt-container div.dt-layout-row {
+    margin: 0 0 0.5em 0 !important;
 }

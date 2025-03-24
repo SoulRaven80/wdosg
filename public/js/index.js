@@ -2,7 +2,7 @@ $(document).ready(function() {
     $.getJSON("/api/games", function(data) {
         try {
             if (data.length == 0) {
-                appendInfo("Empty games library. Please upload games under Settings");
+                appendInfo("Empty games library. Please request an admin to add games through the app Settings");
                 return;
             }
             var sortedData = data.sort((a, b) => {
@@ -33,12 +33,19 @@ const hideTooltips = () => {
     }
 };
 
-const appyFilters = (nameFilter, genreFilter, data) => {
+const appyFilters = (data) => {
+    const nameFilter = $("#filterInputName").val();
+    const yearFilter =$("#filterInputYear").val();
+    const genreFilter = $("#filterGenre :selected").val();
     // build list filtered by name
     var filteredData = data;
     hideTooltips();
     filteredData = data.filter(function(i) {
         return i.name.toLowerCase().includes(nameFilter.toLowerCase());
+    });
+    // filter list by year
+    filteredData = filteredData.filter(function(i) {
+        return i.year.includes(yearFilter);
     });
     // filter list by genre
     if (genreFilter == -1) {
@@ -53,14 +60,14 @@ const appyFilters = (nameFilter, genreFilter, data) => {
 };
 
 const buildMainScreen = (data) => {
-    $("#main_container").prepend(`<div class="row py-3">
-          <div class="col-6">
-            <input class="form-control auto-caret" type="text" placeholder="Filter by name" aria-label="Game name filter" id="filterInputText">
-          </div>
-          <div class="col-6">
-            <select class="form-select" aria-label="Genre filter" id="filterGenre"><option value="-1" selected>Filter by genre</option></select>
-          </div>
-        </div>`);
+    var viewMode = sessionStorage.getItem('viewMode');
+    if (!viewMode) {
+        viewMode = 'grid';
+        sessionStorage.setItem('viewMode', 'grid');
+    }
+    $("#filter_container").removeClass('d-none');
+    $("#listViewButton").addClass(`btn-${viewMode == 'list' ? '' : 'outline-'}secondary`);
+    $("#gridViewButton").addClass(`btn-${viewMode == 'grid' ? '' : 'outline-'}secondary`);
 
     $.getJSON(`/api/genres`, function(result) {
         var sortedGenres = result.sort((a, b) => {
@@ -68,24 +75,61 @@ const buildMainScreen = (data) => {
                 return -1;
             }
         });
-
+        sessionStorage.setItem('sortedGenres', JSON.stringify(sortedGenres));
         sortedGenres.forEach(genre => {
             $("#filterGenre").append(`<option value="${genre.id}">${genre.name}</option>`);
         });
     });
-    
-    $("#filterGenre").on("change", event => {
-        appyFilters($("#filterInputText").val(), event.target.value, data);
+
+    $("#filterGenre").on("change", () => {
+        appyFilters(data);
     });
 
-    $("#filterInputText").on("input", event => {
-        appyFilters(event.target.value, $("#filterGenre :selected").val(), data);
+    $("#filterInputYear").on("input", () => {
+        appyFilters(data);
     });
+
+    $("#filterInputName").on("input", () => {
+        appyFilters(data);
+    });
+
     buildGamesList(data);
 };
 
+// eslint-disable-next-line no-unused-vars
+const setView = (viewMode) => {
+    sessionStorage.setItem('viewMode', viewMode);
+    var sortedData = JSON.parse(sessionStorage.getItem('gamesList'));
+    $('#listViewButton').removeClass($('#listViewButton').attr('class'));
+    $('#listViewButton').addClass(`btn btn-${viewMode == 'list' ? '' : 'outline-'}secondary`);
+
+    $('#gridViewButton').removeClass($('#gridViewButton').attr('class'));
+    $('#gridViewButton').addClass(`btn btn-${viewMode == 'grid' ? '' : 'outline-'}secondary`);
+
+    buildGamesList(sortedData);
+    appyFilters(sortedData);
+};
+
 const buildGamesList = (data) => {
-    const gamesList = document.getElementById('games_list');
+    var viewMode = sessionStorage.getItem('viewMode');
+    if (!viewMode) {
+        sessionStorage.setItem('viewMode', 'grid');
+        viewMode = 'grid';
+    }
+    if (viewMode == 'grid') {
+        buildGamesAsGrid(data);
+    }
+    else {
+        buildGamesAsList(data);
+    }
+};
+
+const buildGamesAsGrid = (data) => {
+    $('#games_table').addClass('d-none');
+    $('#games_grid').removeClass('d-none');
+
+    const gamesList = document.getElementById('games_grid');
+
     gamesList.innerHTML = '';
     for (let i = 0; i < data.length; i++) {
         const game = data[i];
@@ -110,4 +154,81 @@ const buildGamesList = (data) => {
     }
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+};
+
+const buildGamesAsList = (data) => {
+    $('#games_grid').addClass('d-none');
+    $('#games_table').removeClass('d-none');
+
+    const sortedGenres = JSON.parse(sessionStorage.getItem('sortedGenres'));
+    var genresMap = {};
+    if (sortedGenres) {
+        genresMap = new Map(sortedGenres.map((o) => [o.id, o.name]));
+    }
+
+    $('#games_table').DataTable({
+        retrieve: true,
+        searching: true,
+        paging: false,
+        order: [[0, 'asc']],
+        data: data,
+        columns: [
+            {
+                render: function(data, type, row) {
+                    return `<a href="details.html?game=${row.id}" class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover w-100">
+                    <span class="text-body-secondary d-inline-block text-truncate w-100" data-bs-toggle="tooltip" data-bs-title="${row.name}"><strong>${row.name}</strong></span>
+                    </a>`;
+                },
+                searchable: true
+            },
+            {
+                data: 'year',
+                className: 'dt-body-center'
+            },
+            {
+                data: 'genres',
+                render: function (data, type, row) {
+                    return row.genres.map((o) => ('<span class="badge text-bg-secondary">' + genresMap.get(o.id) + '</span>')).sort((a, b) => {
+                        if (a < b) {
+                            return -1;
+                        }
+                    }).join(" ");
+                },
+                searchable: true
+            },
+            {
+                render: function (data, type, row) {
+                    return `<img role="button" onclick="window.location.href='details.html?game=${row.id}'" 
+                    src="/library/${row.path}/metadata/cover" class="img-list-content mx-auto rounded m-1" alt="${row.name}">`;
+                },
+                orderable: false,
+                className: 'dt-body-center'
+            },
+            {
+                render: function (data, type, row) {
+                    return `<a class="btn btn-sm btn-outline-secondary" href="/library/${row.path}/index.html">Play!</a>`;
+                },
+                orderable: false,
+                className: 'dt-body-center'
+            }
+        ]
+    });
+
+    $("#filterInputName").on("input", event => {
+        $('#games_table').dataTable().api().column(0).search(event.target.value).draw();
+    });
+
+    $("#filterInputYear").on("input", event => {
+        $('#games_table').dataTable().api().column(1).search(event.target.value).draw();
+    });
+
+    $("#filterGenre").on("change", event => {
+        var column = $('#games_table').dataTable().api().column(2);
+        if (event.target.value == -1) {
+            column.search('').draw();
+        }
+        else {
+            column.search( $(event.target).find(':selected').text()).draw();
+        }
+    });
 };

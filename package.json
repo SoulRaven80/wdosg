@@ -12,12 +12,12 @@
   "dependencies": {
     "adm-zip": "^0.5.16",
     "apicache": "^1.6.3",
+    "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "express-fileupload": "^1.5.1",
-    "igdb-api-node": "^5.0.2",
     "image-downloader": "^4.3.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.16",

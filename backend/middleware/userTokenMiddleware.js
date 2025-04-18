@@ -10,7 +10,7 @@ const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
 
 // Middleware for JWT validation
 export const verifyToken = async (req, res, next) => {
-    var comesFrom = req.originalUrl && (['/login.html', '/api/login', '/finish-registration.html']
+    var comesFrom = req.originalUrl && (['/login.html', '/api/login', '/finish-registration.html', '/api/logout', 'bootstrap']
         .some(url => req.originalUrl.includes(url)));
     var refererFrom = req.headers.referer && ['/login.html', '/api/login', '/finish-registration.html']
         .some(url => req.headers.referer.includes(url));

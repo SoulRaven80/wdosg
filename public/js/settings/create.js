@@ -39,8 +39,8 @@ const findMetadata = () => {
                           <input class="form-check-input me-1" type="radio" name="igdb_id" value="${game.id}" id="radio${game.id}">
                           <label class="form-check-label" for="radio${game.id}">${game.name} (${new Date(game.first_release_date * 1000).getFullYear()})</label>
                         </div>
-                        <div class="col-auto">
-                          <a href="#" onclick="getCover(${game.id}, this)" tabindex="0" data-bs-toggle="popover" data-bs-placement="left" data-bs-title="Cover"><i class="bi bi-images"></i></a>
+                        <div class="col-auto ${game.cover && game.cover.image_id ? '' : 'd-none'}">
+                          <i class="bi bi-images" onmouseover="getCover(${game.id}, this)" onmouseout="hideCover()" tabindex="0" data-bs-toggle="popover" data-bs-placement="left" data-bs-title="Cover"></i>
                         </div>
                     </li>`;
             }
@@ -77,17 +77,7 @@ const findMetadata = () => {
 
 // eslint-disable-next-line no-unused-vars
 const getCover = (igdb_id, parentElement) => {
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-    for (let i = 0; i < popoverTriggerList.length; i++) {
-        const element = popoverTriggerList[i];
-        var popover = bootstrap.Popover.getInstance(element);
-        if(popover) {
-            popover.dispose();
-            // workaround for https://github.com/twbs/bootstrap/issues/37474
-            popover._activeTrigger = {};
-            popover._element = document.createElement('noscript'); // placeholder with no behavior
-        }
-    }
+    hideCover();
     var data_content = parentElement.getAttribute('data-bs-content');
     if (data_content !== null && data_content !== undefined && data_content !== '') {
         new bootstrap.Popover(parentElement, {
@@ -105,6 +95,20 @@ const getCover = (igdb_id, parentElement) => {
             html: true,
             trigger: 'focus'
         }).show();
+    }
+};
+
+const hideCover = () => {
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    for (let i = 0; i < popoverTriggerList.length; i++) {
+        const element = popoverTriggerList[i];
+        var popover = bootstrap.Popover.getInstance(element);
+        if(popover) {
+            popover.dispose();
+            // workaround for https://github.com/twbs/bootstrap/issues/37474
+            popover._activeTrigger = {};
+            popover._element = document.createElement('noscript'); // placeholder with no behavior
+        }
     }
 };
 

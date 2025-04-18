@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+  <meta name="version" content="1.3.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <style>
+    html,
+    body,
+    #jsdos {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .emulator-root {
+      background-color: var(--bs-body-bg) !important;
+    }
+    :root, 
+    [data-bs-theme=light] {
+      --bs-body-bg: #fff;
+    }
+    [data-bs-theme=dark] {
+      --bs-body-bg: #212529;
+    }
+  </style>
+  <script src="/js-dos/v8/js-dos.8.3.14.js"></script>
+  <link href="/js-dos/v8/js-dos.8.3.14.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="jsdos"></div>
+  <script>
+    // pass along Function keys to the emulator instead of being captured by the browser
+    window.addEventListener("keydown", (e) => e.preventDefault());
+
+    const dosProps = Dos(document.getElementById("jsdos"), {
+        url: `${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/bundle.jsdos`,
+        noCloud: true,
+        theme: document.documentElement.getAttribute('data-bs-theme'),
+        onEvent: (event , ci) => {
+          console.log("js-dos event", event);
+          if (event === 'bnd-play') {
+            activityPolling();
+          }
+        }
+    });
+
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-bs-theme") {
+          dosProps.setTheme(document.documentElement.getAttribute('data-bs-theme'));
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true
+    });
+
+    function sendActivityToParent() {
+      if (window.parent) {
+        window.parent.postMessage('userActive', window.location.origin);
+      }
+    }
+
+    function activityPolling() {
+      const events = ['mousemove', 'mousedown', 'keydown'];
+      const divOverlay = document.getElementsByClassName("w-full h-full relative")[0];
+      if (divOverlay) {
+        events.forEach(function(event) {
+          divOverlay.addEventListener(event, sendActivityToParent);
+        });
+      }
+      const canvas = document.getElementsByTagName("canvas")[0];
+      if (canvas) {
+        events.forEach(function(event) {
+          canvas.addEventListener(event, sendActivityToParent);
+        });
+      }
+    }
+
+</script>
+</body>
+
+</html>

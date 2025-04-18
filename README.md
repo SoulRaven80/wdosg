@@ -64,21 +64,23 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [x] Dark / Light themes
   - [x] User authentication (local)
   - [x] User administration
-  - [x] Add Manuals / Attachments to each game
-  - [x] ~~Cloud saving (enabled through _js-dos_)~~ Server saving for multiple device support `NEW!`
   - [x] Device local saving
-  - [x] _js-dos_ per-game configuration
-  - [x] Send registering invites via email
-  - [x] Password recovery `NEW!`
-  - [x] Support for Docker Secrets `NEW!`
+  - [x] _js-dos_ per-game configuration `v1.2.0`
+  - [x] Add Manuals / Attachments to each game `v1.2.0`
+  - [x] Send registering invites via email `v1.3.0`
+  - [x] Server saving for multiple devices support - (js-dos v7) `v1.3.1`
+  - [x] Password recovery `v1.3.1`
+  - [x] Support for Docker Secrets `v1.3.1`
+  - [x] Game library as list or grid `NEW! v1.3.5`
+  - [x] Support for _js-dos_ v8 `NEW! v1.3.5`
 - Down the line
   - [ ] Create entry from game folder - as opposed to a _jsdos bundle_ file
-  - [ ] Support for _js-dos_ v8 (currently v7)
   - [ ] Ability to scan library folder (bulk import)
 
 > [!CAUTION]
 > wDOSg has been imagined as a _convenient_ way to run DOS games. Although it requires user authentication, it has not been 
-> designed to be exposed to the open internet. **Make sure** your instance is **NOT** exposed. 
+> designed to be exposed to the open internet.
+> **Make sure** your instance is **NOT** exposed.
 
 # Installation
 
@@ -103,13 +105,8 @@ ultimately served so the underlying _js-dos_ engine executes the game on screen.
 **wDOSg** uses _IGDB_ as a metadata provider to fetch metadata for your games. To use the _IGDB_ metadata provider, please 
 follow these [instructions](https://api-docs.igdb.com/#account-creation).
 
-Once you get your Twitch **client secret**, you can obtain your token through a post request, such as the following:
-
-```
-curl -X POST https://id.twitch.tv/oauth2/token \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'grant_type=client_credentials&client_id=YOUR_ID_HERE&client_secret=YOUR_SECRET_HERE'
-```
+> [!CAUTION]
+> Starting from _wDOSg v1.3.5_, use of Twitch client *token* is removed in favor of client *secret*, avoiding the need for manual token refreshes.
 
 ### Configuration
 
@@ -119,7 +116,7 @@ curl -X POST https://id.twitch.tv/oauth2/token \
 | Variable | Description | Default value |
 | --- | --- | --- |
 |`TWITCH_CLIENT_ID`|Your personal Twitch Client ID|Empty|
-|`TWITCH_APP_ACCESS_TOKEN`|Your Twitch Access Token|Empty|
+|`TWITCH_CLIENT_SECRET`|Your Twitch Client Secret|Empty|
 |`LOG_LEVEL`|info, debug, trace|`info`|
 |`TOKEN_SECRET`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
 |`GAMES_LIBRARY` (*) |Path to your games library (If using docker this variable references its internal location, so make sure the appropriate path gets reflected as a mapped volume)|`'/app/wdosglibrary'`|
@@ -137,7 +134,7 @@ Some environment variables are supported to be included as docker secrets instea
 | Variable | Description | Default value |
 | --- | --- | --- |
 |`TWITCH_CLIENT_ID_FILE`|Your personal Twitch Client ID|Empty|
-|`TWITCH_APP_ACCESS_TOKEN_FILE`|Your Twitch Access Token|Empty|
+|`TWITCH_CLIENT_SECRET_FILE`|Your Twitch Client Secret|Empty|
 |`TOKEN_SECRET_FILE`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
 |`EMAIL_PASS_FILE`|Email account password from which wDOSg will send invitation emails from|Empty|
 
@@ -157,8 +154,7 @@ services:
       - 3001:3001 # to access the web client
     environment:
       - TWITCH_CLIENT_ID=xxxx # Your IGDB (Twitch) client ID
-      - TWITCH_APP_ACCESS_TOKEN=xxxx # Your IGDB (Twitch) Token
-                                     # **NOT your secret**
+      - TWITCH_CLIENT_SECRET=xxxx # Your IGDB (Twitch) client secret
       - LOG_LEVEL=info # Level of logging to be reflected on console
       - TOKEN_SECRET=secret # Your key to encrypt the session tokens
       # - GAMES_LIBRARY=/app/wdosglibrary # If for some reason you need to modify this variable, 
@@ -185,8 +181,7 @@ services:
       - 3001:3001 # to access the web client
     environment:
       - TWITCH_CLIENT_ID_FILE=/run/secrets/TWITCH_CLIENT_ID # Secret file with your IGDB (Twitch) client ID
-      - TWITCH_APP_ACCESS_TOKEN_FILE=/run/secrets/TWITCH_APP_ACCESS_TOKEN # Secret file with your IGDB (Twitch) Token
-                                                                          # **NOT your secret**
+      - TWITCH_CLIENT_SECRET_FILE=/run/secrets/TWITCH_CLIENT_SECRET # Secret file with your IGDB (Twitch) secret
       - LOG_LEVEL=info # Level of logging to be reflected on console
       - TOKEN_SECRET_FILE=/run/secrets/TOKEN_SECRET # Secret file with your key to encrypt the session tokens
       # - GAMES_LIBRARY=/your/games/library/path/ # If for some reason you need to modify this variable, 
@@ -204,7 +199,7 @@ services:
       - proxy # assuming "proxy" is the network for the reverse proxy (i.e. Traefik)
     secrets:
       - TWITCH_CLIENT_ID
-      - TWITCH_APP_ACCESS_TOKEN
+      - TWITCH_CLIENT_SECRET
       - TOKEN_SECRET
       - EMAIL_PASS
 
@@ -215,8 +210,8 @@ networks:
 secrets:
    TWITCH_CLIENT_ID:
      file: secrets/TWITCH_CLIENT_ID
-   TWITCH_APP_ACCESS_TOKEN:
-     file: secrets/TWITCH_APP_ACCESS_TOKEN
+   TWITCH_CLIENT_SECRET:
+     file: secrets/TWITCH_CLIENT_SECRET
    TOKEN_SECRET:
      file: secrets/TOKEN_SECRET
    EMAIL_PASS:

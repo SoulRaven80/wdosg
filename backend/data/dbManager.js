@@ -358,7 +358,11 @@ export async function findUser(email) {
 
 export async function blacklistToken(token) {
     logger.info(`Invalidating token`);
-    return await sqlite.execute(`INSERT INTO tokens_blacklist(token) VALUES (?)`, [token]);
+    try {
+        return await sqlite.execute(`INSERT INTO tokens_blacklist(token) VALUES (?)`, [token]);
+    } catch (err) {
+        logger.error(err, `Error while blacklisting token`);
+    }
 }
 
 export async function findBlacklistedToken(token) {

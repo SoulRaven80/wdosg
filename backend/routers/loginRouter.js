@@ -25,10 +25,7 @@ router.post('/', async(req, res) => {
             });
         }
 
-        let options = {
-            expiresIn: 120 * 60 * 1000 // would expire in 120 minutes
-        };
-        const token = jwt.sign({ email: user.email }, getJWTSecretKey(), options);
+        const token = jwt.sign({ email: user.email }, getJWTSecretKey());
         const isAdmin = (user && user.role == 'admin');
     
         res.status(200).json({

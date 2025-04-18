@@ -33,7 +33,7 @@
       console.log(deleteRequest.result);
     };
   </script>
-<script src="/js-dos/js-dos.js"></script>
+  <script src="/js-dos/js-dos.js"></script>
   <link href="/js-dos/js-dos.css" rel="stylesheet">
 </head>
 
@@ -48,9 +48,10 @@
     let ci;
     let dos;
     (async () => {
-      dos = await Dos(document.getElementById("jsdos"))
-      ci = await dos.run("bundle.jsdos");
+      dos = await Dos(document.getElementById("jsdos"));
+      ci = await dos.run(`${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/bundle.jsdos`);
 
+      activityPolling();
       const old_onSaveEnded = dos.layers.onSaveEnded;
       dos.layers.onSaveEnded = async () => {
         const changes = await ci?.persist();
@@ -83,6 +84,23 @@
         }
       };
       xhr.send(formData);
+    }
+
+    function sendActivityToParent() {
+      if (window.parent) {
+        window.parent.postMessage('userActive', window.location.origin);
+      }
+    }
+
+    function activityPolling() {
+      const jsdosDiv = document.getElementById("jsdos");
+      jsdosDiv.addEventListener('keydown', sendActivityToParent);
+
+      const divOverlay = document.getElementsByClassName("emulator-mouse-overlay")[0];
+      if (divOverlay) {
+        divOverlay.addEventListener('mousemove', sendActivityToParent);
+        divOverlay.addEventListener('mousedown', sendActivityToParent);
+      }
     }
   </script>
 </body>

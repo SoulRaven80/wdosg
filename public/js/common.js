@@ -75,7 +75,7 @@ const logout = () => {
     sessionStorage.setItem('isAdmin', '');
     sessionStorage.setItem('gamesList', '');
     document.cookie = 'wdowsg-auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    window.location.replace('/login.html');
+    window.location.replace('/api/logout');
 };
 
 const openChangePassword = () => {
@@ -165,3 +165,26 @@ function appendErrorToPlaceholder(xhr, err) {
         appendAlert(err);
     }
 }
+
+const logoutTimeout = 120 * 60 * 1000; // 120 mins
+let timer;
+const events = ['mousemove', 'mousedown', 'keydown'];
+
+function resetTimer() {
+    clearTimeout(timer);
+    timer = setTimeout(logout, logoutTimeout);
+}
+
+events.forEach(function(event) {
+    document.addEventListener(event, resetTimer);
+});
+
+window.addEventListener('message', function(event) {
+    if (event.origin === window.location.origin) {
+        if (event.data === 'userActive') {
+            resetTimer();
+        }
+    }
+});
+
+resetTimer();

@@ -19,8 +19,9 @@ export async function runMigrate() {
         functions.push(migrateTo131);
         functions.push(migrateTo132);
         functions.push(migrateTo133);
+        functions.push(migrateTo135);
         if (version.version_number < functions.length) {
-            await functions[version.version_number].call(); //.call(this, param);
+            await functions[version.version_number].call();
         }
     }
     logger.debug(`Migrate process updated`);
@@ -84,7 +85,22 @@ async function migrateTo133() {
         }
     }
     await dbManager.updateMigrateVersion(3);
-    // await migrateTo134();
+    await migrateTo135();
+}
+
+async function migrateTo135() {
+    logger.debug(`Running Migrate process v1.3.5`);
+    const gamesFolders = getSubfolders(games_library);
+    // Updating latest game.html files
+    for (const folder of gamesFolders) {
+        fs.copyFileSync(`${template_path}/index.html`, `${games_library}/${folder}/index.html`);
+        fs.copyFileSync(`${template_path}/game.html`, `${games_library}/${folder}/game.html`);
+        fs.copyFileSync(`${template_path}/index_v8.html`, `${games_library}/${folder}/index_v8.html`);
+        fs.copyFileSync(`${template_path}/game_v8.html`, `${games_library}/${folder}/game_v8.html`);
+        fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
+    }
+    await dbManager.updateMigrateVersion(4);
+    // await migrateTo136();
 }
 
 export default runMigrate;

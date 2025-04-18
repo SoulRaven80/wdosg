@@ -24,14 +24,19 @@ import * as genresRouter from './backend/routers/genresRouter.js';
 import * as saveGameRouter from './backend/routers/saveGameRouter.js';
 import * as coversRouter from './backend/routers/coversRouter.js';
 
+if (process.env.TWITCH_APP_ACCESS_TOKEN_FILE || process.env.TWITCH_APP_ACCESS_TOKEN) {
+    logger.warn("TWITCH_APP_ACCESS_TOKEN & TWITCH_APP_ACCESS_TOKEN_FILE environment vars are deprecated since v1.3.5.");
+    logger.warn("Make sure your wDOSg instance is configured with TWITCH_CLIENT_SECRET or TWITCH_CLIENT_SECRET_FILE environment variables instead");
+}
 if (process.env.TWITCH_CLIENT_ID_FILE) {
     process.env.TWITCH_CLIENT_ID = fs.readFileSync(process.env.TWITCH_CLIENT_ID_FILE, 'utf8').trim();
 }
-if (process.env.TWITCH_APP_ACCESS_TOKEN_FILE) {
-    process.env.TWITCH_APP_ACCESS_TOKEN = fs.readFileSync(process.env.TWITCH_APP_ACCESS_TOKEN_FILE, 'utf8').trim();
+if (process.env.TWITCH_CLIENT_SECRET_FILE) {
+    process.env.TWITCH_CLIENT_SECRET = fs.readFileSync(process.env.TWITCH_CLIENT_SECRET_FILE, 'utf8').trim();
 }
-if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_APP_ACCESS_TOKEN) {
-    logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_APP_ACCESS_TOKEN as environment variables");
+
+if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_CLIENT_SECRET) {
+    logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET as environment variables or docker secrets (if applicable)");
     logger.fatal("following the instructions located at https://api-docs.igdb.com/#account-creation");
     process.exit(1);
 }

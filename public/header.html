@@ -15,8 +15,14 @@
     <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
       <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
     </symbol>
+    <symbol id="js-dos-version-7" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.37 5.11h3.972v.07L6.025 12H7.42l3.258-6.85V4.002H5.369v1.107Z"/>
+    </symbol>
+    <symbol id="js-dos-version-8" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-5.03 1.803c0-1.248-.943-1.84-1.646-1.992v-.065c.598-.187 1.336-.72 1.336-1.781 0-1.225-1.084-2.121-2.654-2.121s-2.66.896-2.66 2.12c0 1.044.709 1.589 1.33 1.782v.065c-.697.152-1.647.732-1.647 2.003 0 1.39 1.19 2.344 2.953 2.344 1.77 0 2.989-.96 2.989-2.355Zm-4.347-3.71c0 .739.586 1.255 1.383 1.255s1.377-.516 1.377-1.254c0-.733-.58-1.23-1.377-1.23s-1.383.497-1.383 1.23Zm-.281 3.645c0 .838.72 1.412 1.664 1.412.943 0 1.658-.574 1.658-1.412 0-.843-.715-1.424-1.658-1.424-.944 0-1.664.58-1.664 1.424"/>
+    </symbol>
   </svg>
-  
+
   <header style="caret-color: transparent !important;">
     <nav class="navbar shadow-sm bg-body-tertiary">
         <div class="container justify-content-between align-items-center">
@@ -31,7 +37,35 @@
                     <a href="/settings.html" class="bi-sliders btn btn-outline-secondary"> Settings</a>
                 </div>
                 <div class="vr mx-md-2 mx-sm-1 mx-1"></div>
-                <div class="dropdown align-content-center bd-mode-toggle">
+                <div class="dropdown align-content-center bd-mode-toggle" id="div-version-toggle">
+                  <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+                          id="bd-js-dos-version"
+                          type="button"
+                          aria-expanded="false"
+                          data-bs-toggle="dropdown"
+                          aria-label="Toggle js-dos version">
+                    <svg class="bi my-1 js-dos-version-icon-active" width="1em" height="1em"><use href="#js-dos-version-7"></use></svg>
+                    <span class="visually-hidden" id="bd-js-dos-version-text">js-dos version</span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-js-dos-version-text">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-js-dos-version-value="7" aria-pressed="false">
+                          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#js-dos-version-7"></use></svg>
+                          Version 7
+                          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-js-dos-version-value="8" aria-pressed="false">
+                          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#js-dos-version-8"></use></svg>
+                          Version 8
+                          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                        </button>
+                    </li>
+                  </ul>
+                </div>
+                <div class="vr mx-md-2 mx-sm-1 mx-1"></div>
+                <div class="dropdown align-content-center bd-mode-toggle" id="div-theme-toggle">
                     <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
                             id="bd-theme"
                             type="button"

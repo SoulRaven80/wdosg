@@ -17,14 +17,20 @@ const showActiveTheme = (theme, focus = false) => {
   const activeThemeIcon = document.querySelector('.theme-icon-active use')
   const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
   const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
+  const tickOfActiveBtn = btnToActive.querySelector('svg:has(use[href="#check2"])');
+  const mainDiv = document.getElementById('div-theme-toggle');
 
   document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
     element.classList.remove('active')
     element.setAttribute('aria-pressed', 'false')
   })
+  mainDiv.querySelectorAll('svg:has(use[href="#check2"])').forEach(element => {
+    element.classList.add('d-none');
+  });
 
   btnToActive.classList.add('active')
   btnToActive.setAttribute('aria-pressed', 'true')
+  tickOfActiveBtn.classList.remove('d-none');
   activeThemeIcon.setAttribute('href', svgOfActiveBtn)
   const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
   themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)

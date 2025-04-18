@@ -124,6 +124,13 @@ const buildGamesList = (data) => {
     }
 };
 
+// eslint-disable-next-line no-unused-vars
+const playGame = (path) => {
+    // eslint-disable-next-line no-undef
+    const version = getStoredVersion();
+    window.location.replace(`/library/${path}/index${version == '7' ? '' : '_v8'}.html`);
+};
+
 const buildGamesAsGrid = (data) => {
     $('#games_table').addClass('d-none');
     $('#games_grid').removeClass('d-none');
@@ -145,7 +152,7 @@ const buildGamesAsGrid = (data) => {
                     </a>
                   </div>
                   <div class="btn-group d-flex w-25">
-                    <a class="btn btn-sm btn-outline-secondary" href="/library/${game.path}/index.html">Play!</a>
+                    <a class="btn btn-sm btn-outline-secondary" onclick="playGame('${game.path}')">Play!</a>
                   </div>
                 </div>
               </div>

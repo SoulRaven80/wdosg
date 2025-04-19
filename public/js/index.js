@@ -9,6 +9,10 @@ $(document).ready(function() {
                 if (a.name.toLowerCase() < b.name.toLowerCase()) {
                     return -1;
                 }
+                else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                    return 1;
+                }
+                return 0;
             });
             sessionStorage.setItem('gamesList', JSON.stringify(sortedData));
 

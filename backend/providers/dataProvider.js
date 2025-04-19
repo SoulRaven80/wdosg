@@ -85,6 +85,8 @@ export async function saveNewGame(gamesLibrary, file, game) {
     logger.debug(`Copying templates to ${gamesLibrary}/${game.path}`);
     fs.copyFileSync(`${template_path}/index.html`, `${gamesLibrary}/${game.path}/index.html`);
     fs.copyFileSync(`${template_path}/game.html`, `${gamesLibrary}/${game.path}/game.html`);
+    fs.copyFileSync(`${template_path}/index_v8.html`, `${gamesLibrary}/${game.path}/index_v8.html`);
+    fs.copyFileSync(`${template_path}/game_v8.html`, `${gamesLibrary}/${game.path}/game_v8.html`);
     fs.copyFileSync(`${template_path}/info.json`, `${gamesLibrary}/${game.path}/info.json`);
     logger.debug(`Saving ${game.name} to DB`);
     return await dbManager.saveNewGame(game);

@@ -11,14 +11,15 @@ const showActiveVersion = (version, focus = false) => {
     const activeVersionIcon = document.querySelector('.js-dos-version-icon-active use');
     const btnToActive = document.querySelector(`[data-bs-js-dos-version-value="${version}"]`);
     const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href');
-    const tickOfActiveBtn = btnToActive.querySelector('svg:has(use[href="#check2"])');
+    const tickOfActiveBtn = $(btnToActive.querySelectorAll('svg use')).filter((index, e) => { return e.getAttribute('href') === '#check2'; })[0];
+
     const mainDiv = document.getElementById('div-version-toggle');
 
     document.querySelectorAll('[data-bs-js-dos-version-value]').forEach(element => {
         element.classList.remove('active');
         element.setAttribute('aria-pressed', 'false');
     });
-    mainDiv.querySelectorAll('svg:has(use[href="#check2"])').forEach(element => {
+    $.grep(mainDiv.querySelectorAll('svg use'), e => { return e.getAttribute('href') === '#check2'; }).forEach(element => {
         element.classList.add('d-none');
     });
 

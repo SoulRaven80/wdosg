@@ -19,7 +19,9 @@ $(document).ready(function() {
                 arrayToText(game.publishers, "#publishers");
                 arrayToText(game.genres, "#genres");
                 $("#year").text(game.year);
-                $("#play_button").attr('href', '/library/' + game.path);
+                // eslint-disable-next-line no-undef
+                const version = getStoredVersion();
+                $("#play_button").attr('href', `/library/${game.path}/index${version == '7' ? '' : '_v8'}.html`);
             }
             catch (error) {
                 appendAlert(`An error has occurred while reading the game information: ${error}`);

@@ -135,7 +135,7 @@ function downloadAndAdd(gameId) {
         const workingModal = new bootstrap.Modal('#waitingModal', {});
         $('#waitingModalTitle').text('Downloading game');
         workingModal.show();
-        fetch(result.url).then(response => {
+        fetch(`/api/dosZoneGames/fetch?url=${encodeURIComponent(result.url)}`).then(response => {
             if (!response.ok) {
                 throw Error(response.status);
             } else {

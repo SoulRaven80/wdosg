@@ -2,6 +2,7 @@ import express from 'express';
 import apicache from 'apicache';
 import { verifyAdminToken } from '../middleware/userTokenMiddleware.js';
 import * as dataProvider from '../providers/dataProvider.js';
+import * as dosZoneGameProvider from '../providers/dosZoneGameProvider.js';
 import querystring from 'querystring';
 
 export const router = express.Router();
@@ -66,4 +67,14 @@ router.get('/find', [verifyAdminToken, cache('1 day')], async(req, res) => {
         title: game.title,
         id: game.id
     });
+});
+
+router.get('/fetch', [verifyAdminToken, cache('1 day')], async(req, res) => {
+    if (!req.query.url) {
+        return res.status(422).send('Empty or invalid game url');
+    }
+    var url = querystring.unescape(req.query.url);
+    var ret = await dosZoneGameProvider.fetchGame(url);
+
+    return res.status(200).send(ret);
 });

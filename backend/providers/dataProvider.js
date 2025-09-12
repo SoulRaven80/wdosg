@@ -76,6 +76,14 @@ export async function findDosZoneGame(gameId) {
     return await dbManager.fetchDosZoneGame(gameId);
 }
 
+export async function findDosZoneGameByTitle(title) {
+    return await dbManager.fetchDosZoneGameByTitle(title);
+}
+
+export async function addDosZoneGame(gameName, year, genres, gameUrl) {
+    return await dbManager.addDosZoneGame(gameName, year, genres, gameUrl);
+}
+
 export async function saveNewGame(gamesLibrary, file, game) {
     // TODO Validate if exists, then throw an error
     logger.debug(`Creating ${gamesLibrary}/${game.path} directory`);

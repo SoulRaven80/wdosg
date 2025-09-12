@@ -157,6 +157,28 @@ export async function fetchDosZoneGame(gameId) {
     }
 }
 
+export async function fetchDosZoneGameByTitle(gameTitle) {
+    logger.debug(`Retrieving game from dos_zone_games table with title: ${gameTitle}`);
+    try {
+        const game = await sqlite.fetch(`SELECT * FROM dos_zone_games WHERE title = ?`, [gameTitle]);
+        return game;
+    } catch (err) {
+        logger.error(err, `Error while retrieving game from DOS-Zone with title: ${gameTitle}`);
+    }
+}
+
+export async function addDosZoneGame(gameName, year, genres, gameUrl) {
+    logger.debug(`Adding new game to dos_zone_games table with title ${gameName}`);
+    try {
+        const res = await sqlite.fetch(`SELECT MAX(id) as max FROM dos_zone_games`);
+        await sqlite.execute(`INSERT INTO dos_zone_games(id,title,release,genre,url) VALUES (?, ?, ?, ?, ?)`,
+            [(res.max + 1), gameName, year, genres, gameUrl]);
+    } catch (err) {
+        logger.error(err, `Error while adding new DosZone game with title: ${gameName}`);
+        throw err;
+    }
+}
+
 export async function saveNewGame(game) {
     logger.info(`Saving new game with name: ${game.name}`);
     try {

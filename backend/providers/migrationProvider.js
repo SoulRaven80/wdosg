@@ -11,6 +11,7 @@ const root_path = config.getRootPath();
 
 export async function runMigrate() {
     const version = await dbManager.fetchMigrateVersion();
+    logger.debug(`Running Migrate process. Current version: ${version ? JSON.stringify(version, null, 2) : 'NULL'}`);
     if (!version) {
         await migrateTo131();
     }
@@ -20,6 +21,7 @@ export async function runMigrate() {
         functions.push(migrateTo132);
         functions.push(migrateTo133);
         functions.push(migrateTo135);
+        functions.push(migrateTo1310);
         if (version.version_number < functions.length) {
             await functions[version.version_number].call();
         }
@@ -100,7 +102,16 @@ async function migrateTo135() {
         fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
     }
     await dbManager.updateMigrateVersion(4);
-    // await migrateTo136();
+    await migrateTo1310();
+}
+
+async function migrateTo1310() {
+    logger.debug(`Running Migrate process v1.3.10`);
+    const sqlFile = root_path + 'sql/dos-zone-titles-1.3.10.sql';
+    const queries = fs.readFileSync(sqlFile).toString().split(os.EOL);
+    dbManager.runTransaction(queries);
+    await dbManager.updateMigrateVersion(5);
+    // await migrateTo1311();
 }
 
 export default runMigrate;

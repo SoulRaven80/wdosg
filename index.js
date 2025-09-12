@@ -105,13 +105,44 @@ dataProvider.init().then(() => {
     logger.debug(`Clearing up TEMP folder`);
     fs.rmSync(temporaryDir, { recursive: true, force: true });
 
-    dataProvider.runMigrate(games_library).then(() => {
-        app.listen(app.get('port'), function(err) {
-            if (err) {
-                logger.fatal(err, "Error in server setup");
-                process.exit(1);
-            }
-            logger.info(`Application ready. Server listening on port ${app.get('port')}`);
-        });
+    dataProvider.runMigrate(games_library).then(async() => {
+        try {
+            await updateDosZoneGameList();
+        } catch (error) {
+            logger.warn(`Error while trying to update DOSZone games list. Error: ${error}`);
+        }
+        finally {
+            app.listen(app.get('port'), function(err) {
+                if (err) {
+                    logger.fatal(err, "Error in server setup");
+                    process.exit(1);
+                }
+                logger.info(`Application ready. Server listening on port ${app.get('port')}`);
+            });
+        }
     });
 });
+
+/* extact list of games from fuzzy-index
+    find new (unstored games)
+    for each unstored games
+        | fetch metadata from IGDB
+        | store it into dosZoneGames database table
+*/
+const updateDosZoneGameList = async () => {
+   const gameList = await dosZoneGamesRouter.fetchGameList();
+    for (let i = 0; i < gameList.length; i++) {
+        const item = gameList[i];
+        const storedGame = await dosZoneGamesRouter.findDosZoneGameByTitle(item.k.target);
+        if (!storedGame) {
+            try {
+                const gameData = await dosZoneGamesRouter.findDosZoneGameData(item);
+                if (gameData) {
+                    await dosZoneGamesRouter.addDosZoneGame(gameData.gameName, gameData.year, gameData.genres, gameData.url);
+                }
+            } catch (error) {
+                logger.error(`Skipping DosZone game data with path ${item.v} processing. Error message: ${error.message}`);
+            }
+        }
+    }
+}

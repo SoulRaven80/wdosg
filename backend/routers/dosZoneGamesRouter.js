@@ -78,3 +78,30 @@ router.get('/fetch', [verifyAdminToken, cache('1 day')], async(req, res) => {
 
     return res.status(200).send(ret);
 });
+
+export async function fetchGameList() {
+    const jsonArray = await dosZoneGameProvider.fetchGameList();
+    const gameList = [];
+    for (const node of jsonArray) {
+        gameList.push(node);
+        if (node.v === "/zombie-wars") {
+            break;
+        }
+    }
+    gameList.sort((a, b) => {
+        return a.v.localeCompare(b.v);
+    });
+    return gameList;
+}
+
+export async function findDosZoneGameByTitle(gameTitle) {
+    return await dataProvider.findDosZoneGameByTitle(gameTitle);
+}
+
+export async function findDosZoneGameData(item) {
+    return await dosZoneGameProvider.findDosZoneGameData(item);
+}
+
+export async function addDosZoneGame(gameName, year, genres, gameUrl) {
+    return await dataProvider.addDosZoneGame(gameName, year, genres, gameUrl);
+}

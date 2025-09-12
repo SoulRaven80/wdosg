@@ -25,10 +25,13 @@ router.get('/find', verifyToken, async(req, res) => {
 router.get('/metadata', verifyAdminToken, async(req, res) => {
     var response;
     try {
-        response = await igdbProvider.searchGame(req.query.gameName);
+        response = await fetchMetadata(req.query.gameName);
     } catch (error) {
         res.status(500).json(error.message);
     }
     res.status(200).json(response);
 });
 
+export async function fetchMetadata(gameName) {
+    return await igdbProvider.searchGame(gameName);
+}

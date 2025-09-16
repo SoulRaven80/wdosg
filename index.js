@@ -109,7 +109,7 @@ dataProvider.init().then(() => {
         try {
             await updateDosZoneGameList();
         } catch (error) {
-            logger.warn(`Error while trying to update DOSZone games list. Error: ${error}`);
+            logger.warn(`Error while trying to update DOSZone games list. Error message: ${error.message}`);
         }
         finally {
             app.listen(app.get('port'), function(err) {

@@ -74,24 +74,31 @@ router.get('/fetch', [verifyAdminToken, cache('1 day')], async(req, res) => {
         return res.status(422).send('Empty or invalid game url');
     }
     var url = querystring.unescape(req.query.url);
-    var ret = await dosZoneGameProvider.fetchGame(url);
-
-    return res.status(200).send(ret);
+    try {
+        var ret = await dosZoneGameProvider.fetchGame(url);
+        return res.status(200).send(ret);
+    } catch (error) {
+        return res.status(500).send(`Internal error while getting DosZone game info. Error: ${error}`);
+    }
 });
 
 export async function fetchGameList() {
-    const jsonArray = await dosZoneGameProvider.fetchGameList();
-    const gameList = [];
-    for (const node of jsonArray) {
-        gameList.push(node);
-        if (node.v === "/zombie-wars") {
-            break;
+    try {
+        const jsonArray = await dosZoneGameProvider.fetchGameList();
+        const gameList = [];
+        for (const node of jsonArray) {
+            gameList.push(node);
+            if (node.v === "/zombie-wars") {
+                break;
+            }
         }
+        gameList.sort((a, b) => {
+            return a.v.localeCompare(b.v);
+        });
+        return gameList;
+    } catch (error) {
+        return [];
     }
-    gameList.sort((a, b) => {
-        return a.v.localeCompare(b.v);
-    });
-    return gameList;
 }
 
 export async function findDosZoneGameByTitle(gameTitle) {

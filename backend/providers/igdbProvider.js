@@ -2,6 +2,9 @@ import axios from 'axios';
 import { logger } from '../logger/logger.js';
 
 export async function searchGame(name) {
+    if (process.env.TWITCH_CLIENT_ID == 'DISABLED') {
+        return [];
+    }
     logger.debug(`Calling IGDB for game with name: ${name}`);
     try {
         const accessToken = await axios.post('https://id.twitch.tv/oauth2/token', {

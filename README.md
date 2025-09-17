@@ -29,7 +29,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 ## Features
 
 - Centralized repository to host your DOS games
-- Automatically fetches game metadata and artworks from _IGDB_ (requires authentication information)
+- Automatically fetches game metadata and artworks from _IGDB_ (requires authentication information - optional)
 - Ability to edit information for games
 - Include manuals / attachments for each game
 - Web access: access your library from anywhere
@@ -59,7 +59,7 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
 - Features
   - [x] Add / remove games
   - [x] Edit games information
-  - [x] Download IGDB metadata
+  - [x] Download IGDB metadata (optional `v1.3.10`)
   - [x] Local save games / states
   - [x] Dark / Light themes
   - [x] User authentication (local)
@@ -71,8 +71,8 @@ and run your games on the browser through [_js-dos_](https://github.com/caiiiycu
   - [x] Server saving for multiple devices support - (js-dos v7) `v1.3.1`
   - [x] Password recovery `v1.3.1`
   - [x] Support for Docker Secrets `v1.3.1`
-  - [x] Game library as list or grid `NEW! v1.3.5`
-  - [x] Support for _js-dos_ v8 `NEW! v1.3.5`
+  - [x] Game library as list or grid `v1.3.5`
+  - [x] Support for _js-dos_ v8 `v1.3.5`
 - Down the line
   - [ ] Create entry from game folder - as opposed to a _jsdos bundle_ file
   - [ ] Ability to scan library folder (bulk import)
@@ -104,6 +104,7 @@ ultimately served so the underlying _js-dos_ engine executes the game on screen.
 
 **wDOSg** uses _IGDB_ as a metadata provider to fetch metadata for your games. To use the _IGDB_ metadata provider, please 
 follow these [instructions](https://api-docs.igdb.com/#account-creation).
+If you do not wish to use _IGDB_ services, update your `TWITCH_CLIENT_ID` configuration variable (as described below) to `'DISABLED'`. Bear in mind, no metadata will be fetched from internet; all metadata will need to be done manually.
 
 > [!CAUTION]
 > Starting from _wDOSg v1.3.5_, use of Twitch client *token* is removed in favor of client *secret*, avoiding the need for manual token refreshes.
@@ -115,7 +116,7 @@ follow these [instructions](https://api-docs.igdb.com/#account-creation).
 
 | Variable | Description | Default value |
 | --- | --- | --- |
-|`TWITCH_CLIENT_ID`|Your personal Twitch Client ID|Empty|
+|`TWITCH_CLIENT_ID`|Your personal Twitch Client ID. Set it to `'DISABLED'` if you do not wish to use IGDB services|Empty|
 |`TWITCH_CLIENT_SECRET`|Your Twitch Client Secret|Empty|
 |`LOG_LEVEL`|info, debug, trace|`info`|
 |`TOKEN_SECRET`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
@@ -133,7 +134,7 @@ Some environment variables are supported to be included as docker secrets instea
 
 | Variable | Description | Default value |
 | --- | --- | --- |
-|`TWITCH_CLIENT_ID_FILE`|Your personal Twitch Client ID|Empty|
+|`TWITCH_CLIENT_ID_FILE`|Your personal Twitch Client ID. Set it to `'DISABLED'` if you do not wish to use IGDB services|Empty|
 |`TWITCH_CLIENT_SECRET_FILE`|Your Twitch Client Secret|Empty|
 |`TOKEN_SECRET_FILE`|The encryption key for your sessions. Keep this very secure.|`'secret'`|
 |`EMAIL_PASS_FILE`|Email account password from which wDOSg will send invitation emails from|Empty|

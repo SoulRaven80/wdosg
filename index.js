@@ -36,9 +36,10 @@ if (process.env.TWITCH_CLIENT_SECRET_FILE) {
 }
 
 if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_CLIENT_SECRET) {
-    logger.fatal("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET as environment variables or docker secrets (if applicable)");
-    logger.fatal("following the instructions located at https://api-docs.igdb.com/#account-creation");
-    process.exit(1);
+    logger.warn("IGDB credentials not found. Please set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET as environment variables or docker secrets (if applicable)");
+    logger.warn("following the instructions located at https://api-docs.igdb.com/#account-creation");
+    logger.warn("Disabling IGDB metadata retrieval feature.");
+    process.env.TWITCH_CLIENT_ID = 'DISABLED';
 }
 
 const games_library = config.getGamesLibraryLocation();

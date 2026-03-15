@@ -131,7 +131,7 @@ dataProvider.init().then(() => {
         | store it into dosZoneGames database table
 */
 const updateDosZoneGameList = async () => {
-   const gameList = await dosZoneGamesRouter.fetchGameList();
+    const gameList = await dosZoneGamesRouter.fetchGameList();
     for (let i = 0; i < gameList.length; i++) {
         const item = gameList[i];
         const storedGame = await dosZoneGamesRouter.findDosZoneGameByTitle(item.k.target);
@@ -146,4 +146,4 @@ const updateDosZoneGameList = async () => {
             }
         }
     }
-}
+};

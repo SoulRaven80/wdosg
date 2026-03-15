@@ -17,26 +17,21 @@
                                         <div class="col-auto me-auto">
                                             <div class="row">
                                                 <div class="col-auto me-auto">
-                                                    <h5 class="card-title">DOSBOX</h5>
+                                                    <h5 class="card-title">MACHINE</h5>
+                                                </div>
+                                                <div class="col me-auto">
+                                                    <i class="bi bi-info-circle align-baseline" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
+                                                    data-bs-title="The type of machine (specifically the type of graphics hardware) DOSBox tries to emulate."></i>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <button class="btn btn-primary" id="buttonEyeDosboxConfig" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleDosboxConfig" aria-expanded="true">
+                                            <button class="btn btn-primary" type="button" id="buttonEyeDosboxConfig" data-bs-toggle="collapse" data-bs-target="#collapsibleMachine" aria-expanded="true">
                                                 <i class="bi bi-eye" id="eyeDosboxConfig"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="collapse show card-body" id="collapsibleDosboxConfig">
-                                        <div class="row">
-                                            <div class="col-auto me-auto">
-                                                <p class="card-text">Machine</p>
-                                            </div>
-                                            <div class="col me-auto">
-                                                <i class="bi bi-info-circle align-baseline" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
-                                                data-bs-title="The type of machine (specifically the type of graphics hardware) DOSBox tries to emulate."></i>
-                                            </div>
-                                        </div>
+                                    <div class="collapse show card-body" id="collapsibleMachine">
                                         <div class="row">
                                             <div class="col">
                                                 <div class="form-check form-check-inline">
@@ -140,7 +135,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="collapse show card-body" id="collapsibleCpuDosboxConfig">
+                                    <div class="collapse show card-body" id="collapsibleCpu">
                                         <div class="row">
                                             <div class="col">
                                                 <div class="row">
@@ -251,7 +246,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="collapse show card-body" id="collapsibleSdlDosboxConfig">
+                                    <div class="collapse show card-body" id="collapsibleSdl">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <div class="row">
@@ -295,7 +290,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="collapse show card-body" id="collapsibleMixerDosboxConfig">
+                                    <div class="collapse show card-body" id="collapsibleMixer">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <label class="form-check-label" for="rate1">Rate</label>

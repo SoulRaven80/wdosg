@@ -14,16 +14,16 @@ const fileTypes = {
     'txt': 'text'
 };
 
-router.get('/', verifyAdminToken, async(req, res) => {
-    var list = await dataProvider.listAttachments(req.query.gameId);
+router.get('/', verifyAdminToken, (req, res) => {
+    var list = dataProvider.listAttachments(req.query.gameId);
     res.status(200).json(list);
 });
 
-router.post('/add', verifyAdminToken, async(req, res) => {
+router.post('/add', verifyAdminToken, (req, res) => {
     if (!req.files || !req.files.attachments) {
         return res.status(422).send('No files were uploaded');
     }
-    await dataProvider.addAttachment(games_library, req.body.gamePath, req.body.gameId, req.files.attachments);
+    dataProvider.addAttachment(games_library, req.body.gamePath, req.body.gameId, req.files.attachments);
     res.status(200).json({
         'initialPreview': [`/library/${req.body.gamePath}/attachments/${req.files.attachments.name}`],
         'initialPreviewConfig': [{
@@ -37,9 +37,9 @@ router.post('/add', verifyAdminToken, async(req, res) => {
     });
 });
 
-router.post('/delete/:gameId', verifyAdminToken, async(req, res) => {
+router.post('/delete/:gameId', verifyAdminToken, (req, res) => {
     var gameId = req.params.gameId;
-    var gamePath = await dataProvider.findGamePath(gameId);
-    await dataProvider.deleteAttachment(games_library, gamePath.path, gameId, req.body.key);
+    var gamePath = dataProvider.findGamePath(gameId);
+    dataProvider.deleteAttachment(games_library, gamePath.path, gameId, req.body.key);
     res.status(200).json({ "success": true });
 });

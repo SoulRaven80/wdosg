@@ -1,6 +1,8 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { logger } from '../logger/logger.js';
+import * as gamesRouter from '../routers/gamesRouter.js';
+
 
 export async function fetchGame(gameUrl) {
     logger.debug(`Fetching game with URL: '${gameUrl}' from DosZone`);

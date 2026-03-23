@@ -7,52 +7,52 @@ import * as migrationProvider from './migrationProvider.js';
 
 const template_path = config.getBundleTemplatePath();
 
-export async function listGames() {
-    return await dbManager.listGames();
+export function listGames() {
+    return dbManager.listGames();
 }
 
-export async function listGamesShallow() {
-    return await dbManager.listGamesShallow();
+export function listGamesShallow() {
+    return dbManager.listGamesShallow();
 }
 
-export async function listCompanies() {
-    return await dbManager.listCompanies();
+export function listCompanies() {
+    return dbManager.listCompanies();
 }
 
-export async function listGenres() {
-    return await dbManager.listGenres();
+export function listGenres() {
+    return dbManager.listGenres();
 }
 
-export async function searchCompanies(name) {
-    return await dbManager.searchCompanies(name);
+export function searchCompanies(name) {
+    return dbManager.searchCompanies(name);
 }
 
-export async function listAttachments(gameId) {
+export function listAttachments(gameId) {
     var attachments = [];
-    var attachmentNames = await dbManager.fetchAttachments(gameId);
+    var attachmentNames = dbManager.fetchAttachments(gameId);
     for (let i = 0; i < attachmentNames.length; i++) {
         attachments.push({ name: attachmentNames[i].file_name });
     }
     return attachments;
 }
 
-export async function findGamePath(gameId) {
-    return await dbManager.fetchGamePath(gameId);
+export function findGamePath(gameId) {
+    return dbManager.fetchGamePath(gameId);
 }
 
-export async function addAttachment(gamesLibrary, gamePath, gameId, file) {
+export function addAttachment(gamesLibrary, gamePath, gameId, file) {
     fs.mkdirSync(`${gamesLibrary}/${gamePath}/attachments`, { recursive: true });
     file.mv(`${gamesLibrary}/${gamePath}/attachments/${file.name}`);
-    return await dbManager.addAttachment(gameId, file.name);
+    return dbManager.addAttachment(gameId, file.name);
 }
 
-export async function deleteAttachment(gamesLibrary, gamePath, gameId, attachmentName) {
+export function deleteAttachment(gamesLibrary, gamePath, gameId, attachmentName) {
     fs.unlinkSync(`${gamesLibrary}/${gamePath}/attachments/${attachmentName}`);
-    return await dbManager.deleteAttachment(gameId, attachmentName);
+    return dbManager.deleteAttachment(gameId, attachmentName);
 }
 
-export async function findGame(gameId) {
-    return await dbManager.fetchGame(gameId);
+export function findGame(gameId) {
+    return dbManager.fetchGame(gameId);
 }
 
 export function saveGameBundle(gamesLibrary, gamePath, file) {
@@ -60,31 +60,31 @@ export function saveGameBundle(gamesLibrary, gamePath, file) {
     file.mv(`${gamesLibrary}/${gamePath}/bundle.jsdos`);
 }
 
-export async function listDosZoneGames(itemsPerPage, offset, searchTerm, genre) {
-    return await dbManager.listDosZoneGames(itemsPerPage, offset, searchTerm, genre);
+export function listDosZoneGames(itemsPerPage, offset, searchTerm, genre) {
+    return dbManager.listDosZoneGames(itemsPerPage, offset, searchTerm, genre);
 }
 
-export async function listDosZoneGenres() {
-    return await dbManager.listDosZoneGenres();
+export function listDosZoneGenres() {
+    return dbManager.listDosZoneGenres();
 }
 
-export async function countDosZoneGames(searchTerm, genre) {
-    return await dbManager.countDosZoneGames(searchTerm, genre);
+export function countDosZoneGames(searchTerm, genre) {
+    return dbManager.countDosZoneGames(searchTerm, genre);
 }
 
-export async function findDosZoneGame(gameId) {
-    return await dbManager.fetchDosZoneGame(gameId);
+export function findDosZoneGame(gameId) {
+    return dbManager.fetchDosZoneGame(gameId);
 }
 
-export async function findDosZoneGameByTitle(title) {
-    return await dbManager.fetchDosZoneGameByTitle(title);
+export function findDosZoneGameByTitle(title) {
+    return dbManager.fetchDosZoneGameByTitle(title);
 }
 
-export async function addDosZoneGame(gameName, year, genres, gameUrl) {
-    return await dbManager.addDosZoneGame(gameName, year, genres, gameUrl);
+export function addDosZoneGame(gameName, year, genres, gameUrl) {
+    return dbManager.addDosZoneGame(gameName, year, genres, gameUrl);
 }
 
-export async function saveNewGame(gamesLibrary, file, game) {
+export function saveNewGame(gamesLibrary, file, game) {
     // TODO Validate if exists, then throw an error
     logger.debug(`Creating ${gamesLibrary}/${game.path} directory`);
     fs.mkdirSync(`${gamesLibrary}/${game.path}/metadata`, { recursive: true });
@@ -97,67 +97,67 @@ export async function saveNewGame(gamesLibrary, file, game) {
     fs.copyFileSync(`${template_path}/game_v8.html`, `${gamesLibrary}/${game.path}/game_v8.html`);
     fs.copyFileSync(`${template_path}/info.json`, `${gamesLibrary}/${game.path}/info.json`);
     logger.debug(`Saving ${game.name} to DB`);
-    return await dbManager.saveNewGame(game);
+    return dbManager.saveNewGame(game);
 }
 
-export async function updateGame(game) {
-    return await dbManager.updateGame(game);
+export function updateGame(game) {
+    return dbManager.updateGame(game);
 }
 
-export async function deleteGame(gamesLibrary, gameId) {
-    return await dbManager.deleteGame(gamesLibrary, gameId);
+export function deleteGame(gamesLibrary, gameId) {
+    return dbManager.deleteGame(gamesLibrary, gameId);
 }
 
-export async function listUsers() {
-    return await dbManager.listUsers();
+export function listUsers() {
+    return dbManager.listUsers();
 }
 
-export async function addUser(user) {
-    return await dbManager.addUser(user);
+export function addUser(user) {
+    return dbManager.addUser(user);
 }
 
-export async function deleteUser(username) {
-    return await dbManager.deleteUser(username);
+export function deleteUser(username) {
+    return dbManager.deleteUser(username);
 }
 
-export async function updateUserPassword(email, password) {
-    return await dbManager.updateUserPassword(email, password);
+export function updateUserPassword(email, password) {
+    return dbManager.updateUserPassword(email, password);
 }
 
-export async function findUser(email) {
-    return await dbManager.findUser(email);
+export function findUser(email) {
+    return dbManager.findUser(email);
 }
 
-export async function blacklistToken(token) {
-    return await dbManager.blacklistToken(token);
+export function blacklistToken(token) {
+    return dbManager.blacklistToken(token);
 }
 
-export async function findBlacklistedToken(token) {
-    return await dbManager.findBlacklistedToken(token);
+export function findBlacklistedToken(token) {
+    return dbManager.findBlacklistedToken(token);
 }
 
-export async function addInvitationToken(email, role, token) {
-    return await dbManager.addInvitationToken(email, role, token);
+export function addInvitationToken(email, role, token) {
+    return dbManager.addInvitationToken(email, role, token);
 }
 
-export async function findRegistrationToken(email, token) {
-    return await dbManager.findRegistrationToken(email, token);
+export function findRegistrationToken(email, token) {
+    return dbManager.findRegistrationToken(email, token);
 }
 
-export async function deleteRegistrationToken(email, token) {
-    return await dbManager.deleteRegistrationToken(email, token);
+export function deleteRegistrationToken(email, token) {
+    return dbManager.deleteRegistrationToken(email, token);
 }
 
-export async function addResetPasswordToken(email, token) {
-    return await dbManager.addResetPasswordToken(email, token);
+export function addResetPasswordToken(email, token) {
+    return dbManager.addResetPasswordToken(email, token);
 }
 
-export async function findResetPasswordToken(email, token) {
-    return await dbManager.findResetPasswordToken(email, token);
+export function findResetPasswordToken(email, token) {
+    return dbManager.findResetPasswordToken(email, token);
 }
 
-export async function deleteResetPasswordToken(email, token) {
-    return await dbManager.deleteResetPasswordToken(email, token);
+export function deleteResetPasswordToken(email, token) {
+    return dbManager.deleteResetPasswordToken(email, token);
 }
 
 export function appendSavegame(gamesLibrary, gamePath, file) {
@@ -179,11 +179,11 @@ export function addCover(gamesLibrary, gamePath, file) {
     file.mv(`${gamesLibrary}/${gamePath}/metadata/cover`);
 }
 
-export async function runMigrate(gamesLibrary) {
-    await migrationProvider.runMigrate(gamesLibrary);
+export function runMigrate(gamesLibrary) {
+    migrationProvider.runMigrate(gamesLibrary);
 }
 
-export async function init() {
+export function init() {
     return dbManager.init();
 }
 

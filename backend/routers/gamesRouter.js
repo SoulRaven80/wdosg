@@ -5,21 +5,21 @@ import * as igdbProvider from '../providers/igdbProvider.js';
 
 export const router = express.Router();
 
-router.get('/', verifyToken, async(req, res) => {
-    var list = await dataProvider.listGames();
+router.get('/', verifyToken, (req, res) => {
+    var list = dataProvider.listGames();
     res.status(200).json(list);
 });
 
-router.get('/shallowInfo', verifyToken, async(req, res) => {
-    var list = await dataProvider.listGamesShallow();
+router.get('/shallowInfo', verifyToken, (req, res) => {
+    var list = dataProvider.listGamesShallow();
     res.status(200).json(list);
 });
 
-router.get('/find', verifyToken, async(req, res) => {
+router.get('/find', verifyToken, (req, res) => {
     if (!req.query.gameId) {
         return res.status(422).send('Empty game id');
     }
-    res.status(200).json(await dataProvider.findGame(req.query.gameId));
+    res.status(200).json(dataProvider.findGame(req.query.gameId));
 });
 
 router.get('/metadata', verifyAdminToken, async(req, res) => {

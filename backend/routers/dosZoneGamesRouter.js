@@ -8,18 +8,18 @@ import querystring from 'querystring';
 export const router = express.Router();
 const cache = apicache.middleware;
 
-router.get('/', [verifyAdminToken, cache('1 day')], async(req, res) => {
+router.get('/', [verifyAdminToken, cache('1 day')], (req, res) => {
     const itemsPerPage = 20;
     var page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
     const filter = querystring.unescape(req.query.filter) || ''; // Filter keyword from query params
     const genre = querystring.unescape(req.query.genre) || ''; // Filter keyword from query params
 
-    var count = await dataProvider.countDosZoneGames(filter, genre);
+    var count = dataProvider.countDosZoneGames(filter, genre);
     const totalPages = Math.ceil(count / itemsPerPage);
     page = Math.min(page, totalPages);
     const offset = (page - 1) * itemsPerPage;
 
-    var list = await dataProvider.listDosZoneGames(itemsPerPage, offset, filter, genre);
+    var list = dataProvider.listDosZoneGames(itemsPerPage, offset, filter, genre);
 
     // Calculate the range of pages to display (limit to 10 page links)
     const rangeSize = 10;
@@ -39,8 +39,8 @@ router.get('/', [verifyAdminToken, cache('1 day')], async(req, res) => {
     });
 });
 
-router.get('/genres', [verifyAdminToken, cache('1 day')], async(req, res) => {
-    var genres = await dataProvider.listDosZoneGenres();
+router.get('/genres', [verifyAdminToken, cache('1 day')], (req, res) => {
+    var genres = dataProvider.listDosZoneGenres();
     genres = genres.map(g => g.genre);
     // Some games had multiple genre in the same value. Splitting and filtering
     var filteredGenres = [];
@@ -55,12 +55,12 @@ router.get('/genres', [verifyAdminToken, cache('1 day')], async(req, res) => {
     );
 });
 
-router.get('/find', [verifyAdminToken, cache('1 day')], async(req, res) => {
+router.get('/find', [verifyAdminToken, cache('1 day')], (req, res) => {
     if (!req.query.id || !parseInt(req.query.id)) {
         return res.status(422).send('Empty or invalid game id');
     }
     var gameId = parseInt(req.query.id);
-    var game = await dataProvider.findDosZoneGame(gameId);
+    var game = dataProvider.findDosZoneGame(gameId);
 
     res.status(200).json({
         url: game.url,
@@ -88,7 +88,7 @@ export async function fetchGameList() {
         const gameList = [];
         for (const node of jsonArray) {
             gameList.push(node);
-            if (node.v === "/zombie-wars") {
+            if (node.v === "/zurks-learning-safari-1993") {
                 break;
             }
         }
@@ -101,14 +101,14 @@ export async function fetchGameList() {
     }
 }
 
-export async function findDosZoneGameByTitle(gameTitle) {
-    return await dataProvider.findDosZoneGameByTitle(gameTitle);
+export function findDosZoneGameByTitle(gameTitle) {
+    return dataProvider.findDosZoneGameByTitle(gameTitle);
 }
 
 export async function findDosZoneGameData(item) {
     return await dosZoneGameProvider.findDosZoneGameData(item);
 }
 
-export async function addDosZoneGame(gameName, year, genres, gameUrl) {
-    return await dataProvider.addDosZoneGame(gameName, year, genres, gameUrl);
+export function addDosZoneGame(gameName, year, genres, gameUrl) {
+    return dataProvider.addDosZoneGame(gameName, year, genres, gameUrl);
 }

@@ -101,29 +101,6 @@ app.get("/", verifyToken, (req, res) => {
     res.status(201).redirect("/index.html");
 });
 
-await mailSender.init(appPort);
-dataProvider.init().then(() => {
-    logger.debug(`Clearing up TEMP folder`);
-    fs.rmSync(temporaryDir, { recursive: true, force: true });
-
-    dataProvider.runMigrate(games_library).then(async() => {
-        try {
-            await updateDosZoneGameList();
-        } catch (error) {
-            logger.warn(`Error while trying to update DOSZone games list. Error message: ${error.message}`);
-        }
-        finally {
-            app.listen(app.get('port'), function(err) {
-                if (err) {
-                    logger.fatal(err, "Error in server setup");
-                    process.exit(1);
-                }
-                logger.info(`Application ready. Server listening on port ${app.get('port')}`);
-            });
-        }
-    });
-});
-
 /* extact list of games from fuzzy-index
     find new (unstored games)
     for each unstored games
@@ -139,7 +116,7 @@ const updateDosZoneGameList = async () => {
             try {
                 const gameData = await dosZoneGamesRouter.findDosZoneGameData(item);
                 if (gameData) {
-                    await dosZoneGamesRouter.addDosZoneGame(gameData.gameName, gameData.year, gameData.genres, gameData.url);
+                    dosZoneGamesRouter.addDosZoneGame(gameData.gameName, gameData.year, gameData.genres, gameData.url);
                 }
             } catch (error) {
                 logger.error(`Skipping DosZone game data with path ${item.v} processing. Error message: ${error.message}`);
@@ -147,3 +124,23 @@ const updateDosZoneGameList = async () => {
         }
     }
 };
+
+await mailSender.init(appPort);
+dataProvider.init();
+logger.debug(`Clearing up TEMP folder`);
+fs.rmSync(temporaryDir, { recursive: true, force: true });
+dataProvider.runMigrate(games_library);
+try {
+    await updateDosZoneGameList();
+} catch (error) {
+    logger.warn(`Error while trying to update DOSZone games list. Error message: ${error.message}`);
+}
+finally {
+    app.listen(app.get('port'), function(err) {
+        if (err) {
+            logger.fatal(err, "Error in server setup");
+            process.exit(1);
+        }
+        logger.info(`Application ready. Server listening on port ${app.get('port')}`);
+    });
+}

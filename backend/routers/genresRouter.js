@@ -4,6 +4,6 @@ import * as dataProvider from '../providers/dataProvider.js';
 
 export const router = express.Router();
 
-router.get('/', verifyToken, async(req, res) => {
-    res.status(200).json(await dataProvider.listGenres());
+router.get('/', verifyToken, (req, res) => {
+    res.status(200).json(dataProvider.listGenres());
 });

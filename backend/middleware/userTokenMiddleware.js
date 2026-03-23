@@ -9,7 +9,7 @@ if (process.env.TOKEN_SECRET_FILE) {
 const jwtSecretKey = process.env.TOKEN_SECRET || 'secret';
 
 // Middleware for JWT validation
-export const verifyToken = async (req, res, next) => {
+export const verifyToken = (req, res, next) => {
     var comesFrom = req.originalUrl && (['/login.html', '/api/login', '/finish-registration.html', '/api/logout', 'bootstrap']
         .some(url => req.originalUrl.includes(url)));
     var refererFrom = req.headers.referer && ['/login.html', '/api/login', '/finish-registration.html']
@@ -26,7 +26,7 @@ export const verifyToken = async (req, res, next) => {
     }
 
     // check db blacklist
-    var result = await dataProvider.findBlacklistedToken(token);
+    var result = dataProvider.findBlacklistedToken(token);
     if (result) {
         logger.debug('Session expired');
         return res.status(401).json({ error: 'Session expired' });
@@ -42,7 +42,7 @@ export const verifyToken = async (req, res, next) => {
     });
 };
 
-export const verifyAdminToken = async (req, res, next) => {
+export const verifyAdminToken = (req, res, next) => {
     var token = getAuthToken(req);
     if (!token) {
         logger.debug('Unauthorized access - non-existent token');
@@ -50,19 +50,19 @@ export const verifyAdminToken = async (req, res, next) => {
     }
 
     // check db blacklist
-    var result = await dataProvider.findBlacklistedToken(token);
+    var result = dataProvider.findBlacklistedToken(token);
     if (result) {
         logger.debug('Session expired');
         return res.status(401).json({ error: 'Session expired' });
     }
 
-    jwt.verify(token, jwtSecretKey, async(err, decoded) => {
+    jwt.verify(token, jwtSecretKey, (err, decoded) => {
         if (err) {
             logger.debug('Unauthorized access - error');
             return res.status(401).json({ error: 'Unauthorized' });
         }
         req.user = decoded;
-        const user = await dataProvider.findUser(req.user.email);
+        const user = dataProvider.findUser(req.user.email);
         const isAdmin = { isAdmin: (user && user.role == 'admin') };
         if (!isAdmin.isAdmin) {
             logger.debug('Unauthorized access - credentials');

@@ -8,7 +8,7 @@ export const router = express.Router();
 
 router.post('/', async(req, res) => {
     try {
-        const user = await dataProvider.findUser(req.body.email);
+        const user = dataProvider.findUser(req.body.email);
         if (!user) {
             return res.status(401).json({
                 status: "failed",

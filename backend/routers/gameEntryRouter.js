@@ -30,7 +30,7 @@ const getGameFromBody = (body) => {
     return game;
 };
 
-router.post('/create', verifyAdminToken, async(req, res) => {
+router.post('/create', verifyAdminToken, (req, res) => {
     if (!req.files || !req.files.file) {
         return res.status(422).send('No files were uploaded');
     }
@@ -59,7 +59,7 @@ router.post('/create', verifyAdminToken, async(req, res) => {
     game.id = shortuuid.generate();
     logger.debug(`Generating game path`);
     game.path = stringSanitizer.sanitize.keepNumber(game.name);
-    await dataProvider.saveNewGame(games_library, req.files.file, game);
+    dataProvider.saveNewGame(games_library, req.files.file, game);
     if (req.body.img) {
         logger.debug(`Downloading image url ${req.body.img}`);
         imageProvider.downloadImage(req.body.img, `${games_library}/${game.path}/metadata/`, 'cover', `${rootPath}public/img/image-not-found.png`);
@@ -74,7 +74,7 @@ router.post('/create', verifyAdminToken, async(req, res) => {
     res.status(200).json({ "success": true });
 });
 
-router.post('/update', verifyAdminToken, async(req, res) => {
+router.post('/update', verifyAdminToken, (req, res) => {
     var game = getGameFromBody(req.body);
     // these props comes as arrays per form select
     game.developers = req.body.developers;
@@ -82,7 +82,7 @@ router.post('/update', verifyAdminToken, async(req, res) => {
     game.genres = req.body.genres;
     game.id = req.body.id;
     game.path = stringSanitizer.sanitize.keepNumber(game.name);
-    await dataProvider.updateGame(game);
+    dataProvider.updateGame(game);
     // Ensure there IS a cover
     if (!fs.existsSync(`${games_library}/${game.path}/metadata/cover`)) {
         fs.copyFileSync(`${rootPath}public/img/image-not-found.png`, `${games_library}/${game.path}/metadata/cover`);
@@ -90,7 +90,7 @@ router.post('/update', verifyAdminToken, async(req, res) => {
     res.status(200).redirect('/settings.html?action=updated');
 });
 
-router.delete('/delete', verifyAdminToken, async(req, res) => {
-    await dataProvider.deleteGame(games_library, req.body.gameId);
+router.delete('/delete', verifyAdminToken, (req, res) => {
+    dataProvider.deleteGame(games_library, req.body.gameId);
     res.status(200).json({"success": true});
 });

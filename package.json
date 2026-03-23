@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "apicache": "^1.6.3",
     "axios": "^1.12.0",
     "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.8.0",
     "cheerio": "^1.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -21,20 +22,21 @@
     "express-fileupload": "^1.5.1",
     "image-downloader": "^4.3.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.16",
+    "nodemailer": "^8.0.2",
     "pino": "^9.5.0",
     "pino-http": "^10.3.0",
     "pino-pretty": "^13.0.0",
     "public-ip": "^7.0.1",
     "querystring": "^0.2.1",
     "short-uuid": "^5.2.0",
-    "sqlite3": "^5.1.7",
     "string-sanitizer": "^2.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
     "@stylistic/eslint-plugin-js": "^3.1.0",
     "eslint": "^9.20.0",
-    "globals": "^15.14.0"
+    "eslint-plugin-jest": "^29.15.0",
+    "globals": "^15.14.0",
+    "jest": "^30.3.0"
   }
 }

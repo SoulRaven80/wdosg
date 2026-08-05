@@ -2,6 +2,7 @@
 const openCreateManuallyModal = () => {
     $('#createManuallyModal').trigger("reset");
     $('#createManuallyFile')[0].files = $('#createFile')[0].files;
+    $('#createManuallyName').val($("#createName").val());
     $('#createManuallyFile').removeClass('is-valid is-invalid');
     $('#createManuallyName').removeClass('is-valid is-invalid');
 

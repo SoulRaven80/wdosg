@@ -26,6 +26,8 @@ const findMetadata = () => {
         return;
     }
     $('#createName').removeClass('is-valid is-invalid').addClass('is-valid');
+    $('#createButtonFind').addClass('d-none');
+    $('#findMetadataSpinner').removeClass('d-none');
     $.getJSON(`/api/games/metadata?gameName=${encodeURIComponent(gameName)}`, function(result) {
         if (result.length > 0) {
             sessionStorage.setItem('searchResults', JSON.stringify(result));
@@ -72,6 +74,10 @@ const findMetadata = () => {
         }
     }).fail(function(jqXHR, status, error) {
         appendAlert(`An error has occurred while getting the game information: ${error}`);
+    })
+    .always(function() {
+        $('#createButtonFind').removeClass('d-none');
+        $('#findMetadataSpinner').addClass('d-none');
     });
 };
 

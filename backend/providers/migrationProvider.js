@@ -92,15 +92,7 @@ function migrateTo133() {
 
 function migrateTo135() {
     logger.debug(`Running Migrate process v1.3.5`);
-    const gamesFolders = getSubfolders(games_library);
-    // Updating latest game.html files
-    for (const folder of gamesFolders) {
-        fs.copyFileSync(`${template_path}/index.html`, `${games_library}/${folder}/index.html`);
-        fs.copyFileSync(`${template_path}/game.html`, `${games_library}/${folder}/game.html`);
-        fs.copyFileSync(`${template_path}/index_v8.html`, `${games_library}/${folder}/index_v8.html`);
-        fs.copyFileSync(`${template_path}/game_v8.html`, `${games_library}/${folder}/game_v8.html`);
-        fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
-    }
+    updateBundleTemplates();
     dbManager.updateMigrateVersion(4);
     migrateTo1310();
 }
@@ -110,8 +102,21 @@ function migrateTo1310() {
     const sqlFile = root_path + 'sql/dos-zone-titles-1.3.10.sql';
     const queries = fs.readFileSync(sqlFile).toString().split(os.EOL);
     dbManager.runTransaction(queries);
+    updateBundleTemplates();
     dbManager.updateMigrateVersion(5);
     // migrateTo1311();
+}
+
+function updateBundleTemplates() {
+    const gamesFolders = getSubfolders(games_library);
+    // Updating latest html files
+    for (const folder of gamesFolders) {
+        fs.copyFileSync(`${template_path}/index.html`, `${games_library}/${folder}/index.html`);
+        fs.copyFileSync(`${template_path}/game.html`, `${games_library}/${folder}/game.html`);
+        fs.copyFileSync(`${template_path}/index_v8.html`, `${games_library}/${folder}/index_v8.html`);
+        fs.copyFileSync(`${template_path}/game_v8.html`, `${games_library}/${folder}/game_v8.html`);
+        fs.copyFileSync(`${template_path}/info.json`, `${games_library}/${folder}/info.json`);
+    }
 }
 
 export default runMigrate;

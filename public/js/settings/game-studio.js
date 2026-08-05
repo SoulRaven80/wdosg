@@ -236,5 +236,6 @@ async function createAndAdd() {
     $('#createBundleStepTwoModalSpinner').addClass('d-none');
     $("#createBundleStepTwoModal").modal("hide");
     // eslint-disable-next-line no-undef
+    $("#createName").val('');
     openCreateModal(false);
 };

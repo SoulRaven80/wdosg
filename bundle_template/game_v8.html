@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="auto">
 
 <head>
-  <meta name="version" content="1.3.1" />
+  <meta name="version" content="1.3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     html,
@@ -24,8 +24,17 @@
       --bs-body-bg: #212529;
     }
   </style>
-  <script src="/js-dos/v8/js-dos.8.3.14.js"></script>
-  <link href="/js-dos/v8/js-dos.8.3.14.css" rel="stylesheet">
+  <script src="/js-dos/v8/js-dos-v8.3.20/js-dos.js"></script>
+  <link href="/js-dos/v8/js-dos-v8.3.20/js-dos.css" rel="stylesheet">
+  <script>
+    let deleteRequest = indexedDB.deleteDatabase("js-dos-cache (guest)");
+    deleteRequest.onerror = (event) => {
+      console.error("Error on deleting browser cache", deleteRequest.error);
+    };
+    deleteRequest.onsuccess = (event) => {
+      console.log("Browser cache deleted successfully");
+    };
+  </script>
 </head>
 
 <body>
@@ -34,17 +43,70 @@
     // pass along Function keys to the emulator instead of being captured by the browser
     window.addEventListener("keydown", (e) => e.preventDefault());
 
+    var commandInterface;
+    var dispatcher;
     const dosProps = Dos(document.getElementById("jsdos"), {
         url: `${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/bundle.jsdos`,
         noCloud: true,
+        autoStart: true,
         theme: document.documentElement.getAttribute('data-bs-theme'),
         onEvent: (event , ci) => {
-          console.log("js-dos event", event);
           if (event === 'bnd-play') {
             activityPolling();
           }
+          if (event === 'ci-ready') {
+            commandInterface = ci;
+            // overriding persist method
+            const old_persist = commandInterface.persist;
+            commandInterface.persist = async () => {
+              const changes = await old_persist.call(commandInterface);
+              if (changes) {
+                downloadFile(changes, "saves.zip", "application/zip");
+              }
+              return changes;
+            };
+
+            // overriding save method
+            const old_oi = Oi;
+            Oi = async (state, nonSerializableStore, dispatch, emulationEnded, encodedChanges) => {
+              dispatcher = dispatch;
+              return old_oi.call(old_oi, state, nonSerializableStore, dispatch, emulationEnded, encodedChanges);
+            };
+          }
         }
     });
+
+    function downloadFile(data, fileName, mimeType) {
+      const blob = new Blob([data], {
+        type: mimeType,
+      });
+      let formData = new FormData();
+      formData.append("file", blob, fileName);
+      formData.append("gamePath", window.location.pathname.split('/')[2]);
+      ajaxCall(formData);
+    }
+
+    function ajaxCall(formData) {
+      let xhr = new XMLHttpRequest();
+
+      xhr.open('POST', '/api/saveGame/upload', true);
+      xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          dispatcher(Zr.actions.showToast({
+            message: "Savegame synched to server",
+            intent: "success",
+            long: !0
+          }));
+        } else if (this.readyState == 2 && this.status == 422) {
+          dispatcher(Zr.actions.showToast({
+            message: "Error while synching to server",
+            intent: "error",
+            long: !0
+        }));
+        }
+      };
+      xhr.send(formData);
+    }
 
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
@@ -65,7 +127,7 @@
     }
 
     function activityPolling() {
-      const events = ['mousemove', 'mousedown', 'keydown'];
+      const events = ['mousemove', 'mousedown'];
       const divOverlay = document.getElementsByClassName("w-full h-full relative")[0];
       if (divOverlay) {
         events.forEach(function(event) {
@@ -78,9 +140,28 @@
           canvas.addEventListener(event, sendActivityToParent);
         });
       }
+      // Capture SHIFT and CAPS keys to handle case properly
+      const KBD_leftshift = 340;
+      var shiftDown = false;
+      window.addEventListener("keydown", (e) => {
+        if (shiftDown) {
+          commandInterface.sendKeyEvent(KBD_leftshift, false);
+          shiftDown = false;
+        }
+        if (e.getModifierState("CapsLock") && isSingleAlpha(e.key)) {
+          commandInterface.sendKeyEvent(KBD_leftshift, !e.shiftKey);
+          if (!e.shiftKey) {
+            shiftDown = true;
+          }
+        }
+        sendActivityToParent();
+      });
     }
 
+    function isSingleAlpha(key) {
+      let regEx = /^[a-zA-Z]+$/i;
+      return regEx.test(key) && key.length === 1;
+    }
 </script>
 </body>
-
 </html>

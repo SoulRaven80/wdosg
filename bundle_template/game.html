@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="auto">
 
 <head>
-  <meta name="version" content="1.3.1" />
+  <meta name="version" content="1.3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     html,
@@ -26,11 +26,11 @@
   </style>
   <script>
     let deleteRequest = indexedDB.deleteDatabase("js-dos-cache (emulators-ui-saves)");
-    deleteRequest.onerror = function() {
-      console.error("Error", deleteRequest.error);
+    deleteRequest.onerror = (event) => {
+      console.error("Error on deleting browser cache", deleteRequest.error);
     };
-    deleteRequest.onsuccess = function() {
-      console.log(deleteRequest.result);
+    deleteRequest.onsuccess = (event) => {
+      console.log("Browser cache deleted successfully");
     };
   </script>
   <script src="/js-dos/js-dos.js"></script>
